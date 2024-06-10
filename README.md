@@ -2,7 +2,7 @@
 
 
 
-<p align="center"><img width="501" height="106" src="./images/README/StarryFramework-Logo.png"></p>
+<p align="center"><img src="./images/README/StarryFramework-Logo.png"></p>
 
 <p align="center">
 	<a href="https://github.com/starryforest-ymxk/StarryFramework/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-blue.svg" title="license-mit" /></a>

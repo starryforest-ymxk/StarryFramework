@@ -5,7 +5,7 @@
 <p align="center"><img width="501" height="106" src="./images/README/StarryFramework-Logo.png"></p>
 
 <p align="center">
-	<a href="https://github.com/starryforest-ymxk/StarryFramework/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" title="license-mit" /></a>
+	<a href="https://github.com/starryforest-ymxk/StarryFramework/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-blue.svg" title="license-mit" /></a>
     <a href="https://github.com/starryforest-ymxk/StarryFramework/releases"><img src="https://img.shields.io/github/v/release/:starryforest-ymxk/:StarryFramework" title="GitHub version" /></a>
 </p>
 
@@ -215,7 +215,7 @@ In the current version, one extension module is included:
 
 ## License and Acknowledgements
 
-StarryFramework is licensed under the [MIT License](https://github.com/starryforest-ymxk/StarryFramework/master/LICENSE)
+StarryFramework is licensed under the [MIT License](https://github.com/starryforest-ymxk/StarryFramework/blob/master/LICENSE.md)
 
 This project utilizes the following open-source libraries:
 

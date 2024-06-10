@@ -8,9 +8,8 @@
 	<a href="https://github.com/starryforest-ymxk/StarryFramework/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" title="license-mit" /></a>
     <a href="https://github.com/starryforest-ymxk/StarryFramework/releases"><img src="https://img.shields.io/github/v/release/:starryforest-ymxk/:StarryFramework" title="GitHub version" /></a>
 </p>
-|[中文](README.md)|[English](README_EN.md)|
 
-[toc]
+|[中文](/README.md)|[English](/README_EN.md)|
 
 ---
 

@@ -113,7 +113,7 @@ In the current version, one extension module is included:
 
 
 
-## Donwload
+## Download
 
 - Download the unitypackage
 

@@ -11,25 +11,16 @@
 
 |[中文](README.md)|[English](README_EN.md)|
 
-​	[About StarryFramework](#about-starryframework)
-
-​		[Introduction to Basic Modules](#introduction-to-basic-modules)
-
-​		[Folder Structure](#folder-structure)
-
-​		[Extension Module](#extension-module)
-
-​	[Download](#download)
-
-​	[Quick Start](#quick-start)
-
-​		[Basic Setup](#basic-setup)
-
-​		[Extension Part](#extension-part)
-
-​	[License and Acknowledgements](#license-and-acknowledgements)
-
-​	[Support](#support)
+- [About StarryFramework](#about-starryframework)
+	- [Introduction to Basic Modules](#introduction-to-basic-modules)
+	- [Folder Structure](#folder-structure)
+	- [Extension Module](#extension-module)
+- [Download](#download)
+- [Quick Start](#quick-start)
+	- [Basic Setup](#basic-setup)
+	- [Extension Part](#extension-part)
+- [License and Acknowledgements](#license-and-acknowledgements)
+- [Support](#support)
 
 ---
 
@@ -131,7 +122,7 @@ In the current version, one extension module is included:
 
 
 
-## Donwload
+## Download
 
 - Download the unitypackage
 

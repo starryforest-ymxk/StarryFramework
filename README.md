@@ -8,27 +8,19 @@
 	<a href="https://github.com/starryforest-ymxk/StarryFramework/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-blue.svg" title="license-mit" /></a>
     <a href="https://github.com/starryforest-ymxk/StarryFramework/releases"><img src="https://img.shields.io/github/v/release/:starryforest-ymxk/:StarryFramework" title="GitHub version" /></a>
 </p>
+
 |[中文](README.md)|[English](README_EN.md)|
 
-​	[关于StarryFramework](#关于starryframework)
-
-​		[基础模块简介](#基础模块简介)
-
-​		[文件夹结构](#文件夹结构)
-
-​		[扩展模块](#扩展模块)
-
-​	[框架下载](#框架下载)
-
-​	[快速开始](#快速开始)
-
-​		[基础部分](#基础部分)
-
-​		[扩展部分](#扩展部分)
-
-​	[版权声明与致谢](#版权声明与致谢)
-
-​	[支持](#支持)
+- [关于StarryFramework](#关于starryframework)
+	- [基础模块简介](#基础模块简介)
+	- [文件夹结构](#文件夹结构)
+	- [扩展模块](#扩展模块)
+- [框架下载](#框架下载)
+- [快速开始](#快速开始)
+	- [基础部分](#基础部分)
+ 	- [扩展部分](#扩展部分)
+- [版权声明与致谢](#版权声明与致谢)
+- [支持](#支持)
 
 ---
 

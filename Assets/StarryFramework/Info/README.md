@@ -5,12 +5,12 @@
 <p align="center"><img width="501" height="106" src="./images/README/StarryFramework-Logo.png"></p>
 
 <p align="center">
-	<a href="https://github.com/starryforest-ymxk/StarryFramework/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" title="license-mit" /></a>
+	<a href="https://github.com/starryforest-ymxk/StarryFramework/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-blue.svg" title="license-mit" /></a>
     <a href="https://github.com/starryforest-ymxk/StarryFramework/releases"><img src="https://img.shields.io/github/v/release/:starryforest-ymxk/:StarryFramework" title="GitHub version" /></a>
 </p>
 |[中文](README.md)|[English](README_EN.md)|
 
-[toc]
+[TOC]
 
 ---
 
@@ -187,7 +187,7 @@ StarryFramework/
 
 ## 版权声明与致谢
 
-StarryFramework采用[MIT协议](https://github.com/starryforest-ymxk/StarryFramework/master/LICENSE)
+StarryFramework采用[MIT协议](https://github.com/starryforest-ymxk/StarryFramework/blob/master/LICENSE.md)
 
 本项目使用了以下开源项目库：
 

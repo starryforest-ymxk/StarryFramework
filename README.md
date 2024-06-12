@@ -117,7 +117,7 @@ StarryFramework/
 
 ### 基础部分
 
-- 将下载的`StarryFramework.unitypackage`全部导入到项目中。打开`StarryFramework/Scene/GameFramework.unity`场景，将这个场景添加到Build Settings 的 Scenes in Build 里面。**确保GameFramework场景的buildIndex是0。**这个场景将用作游戏的启动场景，作为游戏入口点，且在游戏全程都不会卸载。
+- 将下载的`StarryFramework.unitypackage`全部导入到项目中。打开`StarryFramework/Scene/GameFramework.unity`场景，将这个场景添加到Build Settings 的 Scenes in Build 里面。**<u>确保GameFramework场景的buildIndex是0</u>**。这个场景将用作游戏的启动场景，作为游戏入口点，且在游戏全程都不会卸载。
 
 - 此时，你的Hierarchy窗口应该看起来像这样：
 

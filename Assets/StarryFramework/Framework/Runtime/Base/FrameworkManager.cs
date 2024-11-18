@@ -53,10 +53,14 @@ namespace StarryFramework
 
         internal static void Awake()
         {
-
             foreach (ModuleType type in Setting.modules)
             {
-                managerTypeList.Add(GetManagerType(type));
+                var managerType = GetManagerType(type);
+                if (managerType == null)
+                {
+                    Debug.LogError($"{type} Module does not exist in the framework.");
+                }
+                else managerTypeList.Add(managerType);
             }
         }
 

@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -130,29 +129,23 @@ namespace StarryFramework
         /// </summary>
         private void SetComponentsActive()
         {
-            Component[] components  = gameObject.GetComponentsInChildren<BaseComponent>();
+            BaseComponent[] components = gameObject.GetComponentsInChildren<BaseComponent>();
             foreach(BaseComponent component in components)
             {
                 try
                 {
-                    if(!component.Equals(this))
+                    ModuleType type = (ModuleType)Enum.Parse(typeof(ModuleType), component.gameObject.name);
+
+                    if (!frameworkSetting.modules.Contains(type))
                     {
-                        ModuleType type = (ModuleType)Enum.Parse(typeof(ModuleType), component.gameObject.name);
-
-                        if (!frameworkSetting.modules.Contains(type))
-                        {
-                            component.DisableProcess();
-                            component.gameObject.SetActive(false);
-                        }
+                        FrameworkManager.Debugger.Log($"Unused module: {type}");
+                        component.gameObject.SetActive(false);
                     }
-
                 }
                 catch
                 {
                     Debug.LogError("The Name of component gameObject can not be modified.");
-                    
                 }
-
             }
         }
     }

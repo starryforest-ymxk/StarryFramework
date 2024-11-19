@@ -25,9 +25,22 @@ public class ExampleLoadBar : LoadProgressBase
     {
 
         _text.text = "Press any key to start.";
-        if(Input.anyKeyDown)
+        StartCoroutine(Routine());
+        return;
+
+        IEnumerator Routine()
         {
-            AllowSceneActivate(asyncOperation);
+            while(true)
+            {
+                if (Input.anyKeyDown)
+                {
+                    AllowSceneActivate(asyncOperation);
+                    break;
+                }
+
+                yield return null;
+            }
         }
+        
     }
 }

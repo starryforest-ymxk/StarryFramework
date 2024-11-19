@@ -74,7 +74,7 @@ namespace StarryFramework
             {
                 if (check.Contains(type))
                 {
-                    Debug.LogError("Same components are not allowed in the Mpdule List");
+                    Debug.LogError("Same components are not allowed in the Module List");
                 }
                 else
                 {

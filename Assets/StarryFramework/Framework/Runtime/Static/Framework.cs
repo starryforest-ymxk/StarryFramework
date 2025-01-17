@@ -14,6 +14,7 @@ namespace StarryFramework
         public static ResourceComponent ResourceComponent => FrameworkComponent.GetComponent<ResourceComponent>();
         public static ObjectPoolComponent ObjectPoolComponent => FrameworkComponent.GetComponent<ObjectPoolComponent>();
         public static FSMComponent FSMComponent => FrameworkComponent.GetComponent<FSMComponent>();
+        public static UIComponent UIComponent => FrameworkComponent.GetComponent<UIComponent>();
         
         public static void ShutDown(ShutdownType shutdownType)
         {

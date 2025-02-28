@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using StarryFramework.Editor;
 using UnityEditor;
 
-namespace StarryFramework.Editor
+namespace StarryFramework.Extentions.Editor
 {
     [CustomEditor(typeof(AudioComponent))]
     public class AudioComponentInspector : FrameworkInspector

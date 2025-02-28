@@ -6,12 +6,12 @@ using StarryFramework;
 
 public class TestState2 : FSMState<Developer>
 {
-    protected internal override void OnEnter(IFSM<Developer> fsm)
+    protected override void OnEnter(IFSM<Developer> fsm)
     {
         Debug.Log("Go to Godot!");
     }
 
-    protected internal override void OnUpdate(IFSM<Developer> fsm)
+    protected override void OnUpdate(IFSM<Developer> fsm)
     {
         Debug.Log("Love Godot!");
     }

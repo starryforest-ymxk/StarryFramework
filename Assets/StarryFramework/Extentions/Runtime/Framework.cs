@@ -1,8 +1,6 @@
-
-
-namespace StarryFramework
+namespace StarryFramework.Extentions
 {
-    public static partial class Framework
+    public static class FrameworkExtensions
     {
         public static AudioComponent AudioComponent => FrameworkComponent.GetComponent<AudioComponent>();
     }

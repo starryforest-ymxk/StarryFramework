@@ -1,8 +1,6 @@
 using UnityEditor;
 using UnityEngine;
 
-
-
 namespace StarryFramework.Editor
 {
 
@@ -10,9 +8,7 @@ namespace StarryFramework.Editor
     public class SceneIndexDrawer : PropertyDrawer
     {
         int sceneIndex = -1;
-
         GUIContent[] sceneNames;
-
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (sceneIndex == -1)
@@ -22,7 +18,7 @@ namespace StarryFramework.Editor
 
             sceneIndex = property.intValue;
             
-            string key = $"{property.serializedObject.targetObject.GetInstanceID()}.{property.name}";
+            string key = $"{property.serializedObject.targetObject.GetInstanceID()}.{property.propertyPath}";
             string sceneName = EditorPrefs.GetString(key, string.Empty);
 
             if (!string.IsNullOrEmpty(sceneName) && sceneName != sceneNames[sceneIndex].text)

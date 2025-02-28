@@ -5,32 +5,18 @@ using UnityEditor;
 using UnityEngine;
 using GUID = FMOD.GUID;
 
-
-namespace StarryFramework
+namespace StarryFramework.Extentions
 {
     public class AudioComponent : BaseComponent
     {
-        private AudioManager _manager = null;
-        private AudioManager manager
-        {
-            get
-            {
-                if (_manager == null)
-                {
-                    _manager = FrameworkManager.GetManager<AudioManager>();
-                }
-                return _manager;
-            }
-        }
-                
-        [SerializeField] private AudioSettings settings = new AudioSettings();
+        private AudioManager _manager;
+        private AudioManager Manager => _manager ??= FrameworkManager.GetManager<AudioManager>();
+
+        [SerializeField] private AudioSettings settings = new();
         
         private List<EventReference> loadedAudio;
-
         private string currentBGM;
-
         private AudioState bgmState = AudioState.Stop;
-
         private List<EventReference> currentBGMList;
 
         public string CurrentBGM => currentBGM;
@@ -65,11 +51,11 @@ namespace StarryFramework
         
         private void InActiveCurrentScene(int sceneIndex)
         {
-            manager.StopBGM(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-            manager.StopAndReleaseAllUntaggedAudio(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-            manager.StopAndReleaseAllTaggedAudio(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+            Manager.StopBGM(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+            Manager.StopAndReleaseAllUntaggedAudio(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+            Manager.StopAndReleaseAllTaggedAudio(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
             if(loadedAudio != null)
-                manager.UnloadData(loadedAudio);
+                Manager.UnloadData(loadedAudio);
         }
         
         private void OnNewActiveScene(int sceneIndex)
@@ -81,10 +67,10 @@ namespace StarryFramework
                     currentBGMList = s.BGMList;
                     if(s.autoPlayBGM && s.BGMList.Count!=0)
                     {
-                        manager.PlayBGM(s.BGMList[0]);
+                        Manager.PlayBGM(s.BGMList[0]);
                     }
                     loadedAudio = s.preloadedAudios;
-                    manager.PreloadData(s.preloadedAudios);
+                    Manager.PreloadData(s.preloadedAudios);
                     foreach(var e in s.autoPlayAudios)
                     {
                         if(e.tag == "")
@@ -110,7 +96,7 @@ namespace StarryFramework
         /// <param Name="pos">播放位置（3D）</param>
         public void PlayOneShot(EventReference reference, Vector3 pos = default)
         {
-            manager.PlayOneShot(reference, pos);
+            Manager.PlayOneShot(reference, pos);
         }
 
         /// <summary>
@@ -121,7 +107,7 @@ namespace StarryFramework
         /// <param Name="pos">播放位置（3D）</param>
         public void PlayOneShot(string path, Vector3 pos = default)
         {
-            manager.PlayOneShot(path, pos);
+            Manager.PlayOneShot(path, pos);
         }
 
         /// <summary>
@@ -132,7 +118,7 @@ namespace StarryFramework
         /// <param Name="gameObject">附着物</param>
         public void PlayOneShotAttached(EventReference reference, GameObject gameObject)
         {
-            manager.PlayOneShotAttached(reference, gameObject);
+            Manager.PlayOneShotAttached(reference, gameObject);
         }
 
         /// <summary>
@@ -143,7 +129,7 @@ namespace StarryFramework
         /// <param Name="gameObject">附着物</param>
         public void PlayOneShotAttached(string path, GameObject gameObject)
         {
-            manager.PlayOneShotAttached(path, gameObject);
+            Manager.PlayOneShotAttached(path, gameObject);
         }
 
         #endregion
@@ -157,7 +143,7 @@ namespace StarryFramework
         /// <param Name="value"></param>
         public void SetVolume(string VCAPath, float value)
         {
-            manager.SetVolume(VCAPath, value);
+            Manager.SetVolume(VCAPath, value);
         }
 
         /// <summary>
@@ -167,7 +153,7 @@ namespace StarryFramework
         /// <returns></returns>
         public float GetVolume(string VCAPath)
         {
-            return manager.GetVolume(VCAPath);
+            return Manager.GetVolume(VCAPath);
         }
 
         #endregion
@@ -182,7 +168,7 @@ namespace StarryFramework
         {
             if(index>=0 && index< currentBGMList.Count)
             {
-                manager.PlayBGM(currentBGMList[index]);
+                Manager.PlayBGM(currentBGMList[index]);
 #if UNITY_EDITOR
                 currentBGM = currentBGMList[index].Path;
 #endif
@@ -200,7 +186,7 @@ namespace StarryFramework
         /// <param Name="mode">FMOD.Studio.STOP_MODE枚举，用于声明停止类型</param>
         public void StopBGM(FMOD.Studio.STOP_MODE mode)
         {
-            manager.StopBGM(mode);
+            Manager.StopBGM(mode);
             bgmState = AudioState.Stop;
         }
 
@@ -213,7 +199,7 @@ namespace StarryFramework
         {
             if (index >= 0 && index < currentBGMList.Count)
             {
-                manager.ChangeBGM(currentBGMList[index],mode);
+                Manager.ChangeBGM(currentBGMList[index],mode);
                 bgmState = AudioState.Playing;
 #if UNITY_EDITOR
                 currentBGM = currentBGMList[index].Path;
@@ -231,7 +217,7 @@ namespace StarryFramework
         /// <param Name="value">true为暂停，false为继续播放</param>
         public void SetBGMPause(bool value)
         {
-            manager.SetBGMPause(value);
+            Manager.SetBGMPause(value);
             bgmState = value ? AudioState.Pause : AudioState.Playing;
         }
 
@@ -252,7 +238,7 @@ namespace StarryFramework
         /// <param Name="ignoreSeekSpeed"></param>
         public void SetBGMParameter(PARAMETER_ID ID, float value, bool ignoreSeekSpeed = false)
         {
-            manager.SetBGMParameter(ID, value, ignoreSeekSpeed);    
+            Manager.SetBGMParameter(ID, value, ignoreSeekSpeed);    
         }
 
         /// <summary>
@@ -263,7 +249,7 @@ namespace StarryFramework
         /// <param Name="ignoreSeekSpeed"></param>
         public void SetBGMParameter(string name, float value, bool ignoreSeekSpeed = false)
         {
-            manager.SetBGMParameter(name, value, ignoreSeekSpeed);
+            Manager.SetBGMParameter(name, value, ignoreSeekSpeed);
         }
 
         /// <summary>
@@ -275,7 +261,7 @@ namespace StarryFramework
         /// <param Name="ignoreSeekSpeed"></param>
         public void SetBGMParameters(PARAMETER_ID[] IDs, float[] values, int count, bool ignoreSeekSpeed = false)
         {
-            manager.SetBGMParameters(IDs, values, count, ignoreSeekSpeed);  
+            Manager.SetBGMParameters(IDs, values, count, ignoreSeekSpeed);  
         }
 
         /// <summary>
@@ -286,7 +272,7 @@ namespace StarryFramework
         /// <param Name="ignoreSeekSpeed"></param>
         public void SetBGMParameterWithLabel(PARAMETER_ID ID, string valueLable, bool ignoreSeekSpeed = false)
         {
-            manager.SetBGMParameterWithLabel(ID, valueLable, ignoreSeekSpeed);
+            Manager.SetBGMParameterWithLabel(ID, valueLable, ignoreSeekSpeed);
         }
 
         /// <summary>
@@ -297,7 +283,7 @@ namespace StarryFramework
         /// <param Name="ignoreSeekSpeed"></param>
         public void SetBGMParameterWithLabel(string name, string valueLable, bool ignoreSeekSpeed = false)
         {
-            manager.SetBGMParameterWithLabel(name, valueLable, ignoreSeekSpeed);    
+            Manager.SetBGMParameterWithLabel(name, valueLable, ignoreSeekSpeed);    
         }
 
         /// <summary>
@@ -307,7 +293,7 @@ namespace StarryFramework
         /// <returns></returns>
         public float GetBGMParameter(string name)
         {
-            return manager.GetBGMParameter(name);
+            return Manager.GetBGMParameter(name);
         }
 
         /// <summary>
@@ -317,7 +303,7 @@ namespace StarryFramework
         /// <returns></returns>
         public float GetBGMParameter(PARAMETER_ID ID)
         {
-            return manager.GetBGMParameter(ID);
+            return Manager.GetBGMParameter(ID);
         }
 
         /// <summary>
@@ -327,7 +313,7 @@ namespace StarryFramework
         /// <param Name="value"></param>
         public void SetBGMProperty(EVENT_PROPERTY property, float value)
         {
-            manager.SetBGMProperty(property, value);
+            Manager.SetBGMProperty(property, value);
         }
 
         /// <summary>
@@ -337,7 +323,7 @@ namespace StarryFramework
         /// <returns></returns>
         public float GetBGMProperty(EVENT_PROPERTY property)
         {
-            return manager.GetBGMProperty(property);
+            return Manager.GetBGMProperty(property);
         }
         #endregion
 
@@ -352,7 +338,7 @@ namespace StarryFramework
         public void PlayUntaggedAudio(string path, float volume = 1f)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
-            manager.PlayUntaggedAudio(guid, volume);
+            Manager.PlayUntaggedAudio(guid, volume);
         }
         /// <summary>
         /// 播放未标记的音频
@@ -360,7 +346,7 @@ namespace StarryFramework
         public void PlayUntaggedAudio(EventReference eventReference, float volume = 1f)
         {
             GUID guid = eventReference.Guid;
-            manager.PlayUntaggedAudio(guid, volume);
+            Manager.PlayUntaggedAudio(guid, volume);
         }
         /// <summary>
         /// 播放未标记的音频，并设置音频源位置
@@ -368,7 +354,7 @@ namespace StarryFramework
         public void PlayUntaggedAudio(string path, Transform transform, float volume = 1f)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
-            manager.PlayUntaggedAudio(guid, transform, volume);
+            Manager.PlayUntaggedAudio(guid, transform, volume);
         }
         /// <summary>
         /// 播放未标记的音频，并设置音频源位置
@@ -376,7 +362,7 @@ namespace StarryFramework
         public void PlayUntaggedAudio(EventReference eventReference, Transform transform, float volume = 1f)
         {
             GUID guid = eventReference.Guid;
-            manager.PlayUntaggedAudio(guid, transform, volume);
+            Manager.PlayUntaggedAudio(guid, transform, volume);
         }
         /// <summary>
         /// 播放未标记的音频，并附着到物体
@@ -384,7 +370,7 @@ namespace StarryFramework
         public void PlayUntaggedAudio(string path, Transform transform, Rigidbody body, float volume = 1f)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
-            manager.PlayUntaggedAudio(guid, transform, body, volume);
+            Manager.PlayUntaggedAudio(guid, transform, body, volume);
         }
         /// <summary>
         /// 播放未标记的音频，并附着到物体
@@ -392,7 +378,7 @@ namespace StarryFramework
         public void PlayUntaggedAudio(EventReference eventReference, Transform transform, Rigidbody body, float volume = 1f)
         {
             GUID guid = eventReference.Guid;
-            manager.PlayUntaggedAudio(guid, transform, body, volume);
+            Manager.PlayUntaggedAudio(guid, transform, body, volume);
         }
         /// <summary>
         /// 播放未标记的音频，并附着到2D物体
@@ -400,7 +386,7 @@ namespace StarryFramework
         public void PlayUntaggedAudio(string path, Transform transform, Rigidbody2D body2d, float volume = 1f)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
-            manager.PlayUntaggedAudio(guid, transform, body2d, volume);
+            Manager.PlayUntaggedAudio(guid, transform, body2d, volume);
         }
         /// <summary>
         /// 播放未标记的音频，并附着到2D物体
@@ -408,7 +394,7 @@ namespace StarryFramework
         public void PlayUntaggedAudio(EventReference eventReference, Transform transform, Rigidbody2D body2d, float volume = 1f)
         {
             GUID guid = eventReference.Guid;
-            manager.PlayUntaggedAudio(guid, transform, body2d, volume);
+            Manager.PlayUntaggedAudio(guid, transform, body2d, volume);
         }
 
         /// <summary>
@@ -419,7 +405,7 @@ namespace StarryFramework
         public void StopUntaggedAudio(string path, FMOD.Studio.STOP_MODE mode)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
-            manager.StopUntaggedAudio(guid, mode);
+            Manager.StopUntaggedAudio(guid, mode);
         }
         /// <summary>
         /// 停止播放未标记的音频
@@ -429,7 +415,7 @@ namespace StarryFramework
         public void StopUntaggedAudio(EventReference eventReference, FMOD.Studio.STOP_MODE mode)
         {
             GUID guid = eventReference.Guid;
-            manager.StopUntaggedAudio(guid, mode);
+            Manager.StopUntaggedAudio(guid, mode);
         }
         /// <summary>
         /// 停止并释放未标记的音频
@@ -439,7 +425,7 @@ namespace StarryFramework
         public void StopAndReleaseUntaggedAudio(string path, FMOD.Studio.STOP_MODE mode)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
-            manager.StopAndReleaseUntaggedAudio(guid, mode);
+            Manager.StopAndReleaseUntaggedAudio(guid, mode);
         }
 
         /// <summary>
@@ -450,7 +436,7 @@ namespace StarryFramework
         public void StopAndReleaseUntaggedAudio(EventReference eventReference, FMOD.Studio.STOP_MODE mode)
         {
             GUID guid = eventReference.Guid;
-            manager.StopAndReleaseUntaggedAudio(guid, mode);
+            Manager.StopAndReleaseUntaggedAudio(guid, mode);
         }
 
         /// <summary>
@@ -461,7 +447,7 @@ namespace StarryFramework
         public void SetUntaggedAudioPaused(string path, bool pause)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
-            manager.SetUntaggedAudioPaused(guid, pause);
+            Manager.SetUntaggedAudioPaused(guid, pause);
         }
         /// <summary>
         /// 设置未标记的音频暂停/播放状态
@@ -471,7 +457,7 @@ namespace StarryFramework
         public void SetUntaggedAudioPaused(EventReference eventReference, bool pause)
         {
             GUID guid = eventReference.Guid;
-            manager.SetUntaggedAudioPaused(guid, pause);
+            Manager.SetUntaggedAudioPaused(guid, pause);
         }
         /// <summary>
         /// 设置未标记的音频音量
@@ -481,7 +467,7 @@ namespace StarryFramework
         public void SetUntaggedAudioVolume(string path, float volume)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
-            manager.SetUntaggedAudioVolume(guid, volume);
+            Manager.SetUntaggedAudioVolume(guid, volume);
         }
         /// <summary>
         /// 设置未标记的音频音量
@@ -491,7 +477,7 @@ namespace StarryFramework
         public void SetUntaggedAudioVolume(EventReference eventReference, float volume)
         {
             GUID guid = eventReference.Guid;
-            manager.SetUntaggedAudioVolume(guid, volume);
+            Manager.SetUntaggedAudioVolume(guid, volume);
         }
 
         /// <summary>
@@ -499,7 +485,7 @@ namespace StarryFramework
         /// </summary>
         public void ClearStoppedUntaggedAudio()
         {
-            manager.ClearStoppedUntaggedAudio();
+            Manager.ClearStoppedUntaggedAudio();
         }
 
         /// <summary>
@@ -508,7 +494,7 @@ namespace StarryFramework
         /// <param Name="mode"></param>
         public void StopAndReleaseAllUntaggedAudio(FMOD.Studio.STOP_MODE mode)
         {
-            manager.StopAndReleaseAllUntaggedAudio(mode);
+            Manager.StopAndReleaseAllUntaggedAudio(mode);
         }
 
         /// <summary>
@@ -517,7 +503,7 @@ namespace StarryFramework
         public void SetUntaggedAudioProperty(string path, EVENT_PROPERTY property, float value)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
-            manager.SetUntaggedAudioProperty(guid, property, value);
+            Manager.SetUntaggedAudioProperty(guid, property, value);
         }
         /// <summary>
         /// 设置未标记的音频的属性
@@ -525,7 +511,7 @@ namespace StarryFramework
         public void SetUntaggedAudioProperty(EventReference eventReference, EVENT_PROPERTY property, float value)
         {
             GUID guid = eventReference.Guid;
-            manager.SetUntaggedAudioProperty(guid, property, value);
+            Manager.SetUntaggedAudioProperty(guid, property, value);
         }
         /// <summary>
         /// 设置未标记的音频的参数
@@ -533,7 +519,7 @@ namespace StarryFramework
         public void SetUntaggedAudioParameter(string path, string name, float value, bool ignoreSeekSpeed = false)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
-            manager.SetUntaggedAudioParameter(guid, name, value, ignoreSeekSpeed);  
+            Manager.SetUntaggedAudioParameter(guid, name, value, ignoreSeekSpeed);  
         }
         /// <summary>
         /// 设置未标记的音频的参数
@@ -541,7 +527,7 @@ namespace StarryFramework
         public void SetUntaggedAudioParameter(EventReference eventReference, string name, float value, bool ignoreSeekSpeed = false)
         {
             GUID guid = eventReference.Guid;
-            manager.SetUntaggedAudioParameter(guid, name, value, ignoreSeekSpeed);
+            Manager.SetUntaggedAudioParameter(guid, name, value, ignoreSeekSpeed);
         }
         /// <summary>
         /// 设置未标记的音频的参数
@@ -549,7 +535,7 @@ namespace StarryFramework
         public void SetUntaggedAudioParameter(string path, PARAMETER_ID id, float value, bool ignoreSeekSpeed = false)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
-            manager.SetUntaggedAudioParameter(guid, id, value, ignoreSeekSpeed);    
+            Manager.SetUntaggedAudioParameter(guid, id, value, ignoreSeekSpeed);    
         }
         /// <summary>
         /// 设置未标记的音频的参数
@@ -557,7 +543,7 @@ namespace StarryFramework
         public void SetUntaggedAudioParameter(EventReference eventReference, PARAMETER_ID id, float value, bool ignoreSeekSpeed = false)
         {
             GUID guid = eventReference.Guid;
-            manager.SetUntaggedAudioParameter(guid, id, value, ignoreSeekSpeed);
+            Manager.SetUntaggedAudioParameter(guid, id, value, ignoreSeekSpeed);
         }
         /// <summary>
         /// 用标签设置未标记的音频的参数
@@ -565,7 +551,7 @@ namespace StarryFramework
         public void SetUntaggedAudioParameterWithLabel(string path, string name, string label, bool ignoreSeekSpeed = false)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
-            manager.SetUntaggedAudioParameterWithLabel(guid, name, label, ignoreSeekSpeed);
+            Manager.SetUntaggedAudioParameterWithLabel(guid, name, label, ignoreSeekSpeed);
         }
         /// <summary>
         /// 用标签设置未标记的音频的参数
@@ -573,7 +559,7 @@ namespace StarryFramework
         public void SetUntaggedAudioParameterWithLabel(EventReference eventReference, string name, string label, bool ignoreSeekSpeed = false)
         {
             GUID guid = eventReference.Guid;
-            manager.SetUntaggedAudioParameterWithLabel(guid, name, label, ignoreSeekSpeed);
+            Manager.SetUntaggedAudioParameterWithLabel(guid, name, label, ignoreSeekSpeed);
         }
         /// <summary>
         /// 用标签设置未标记的音频的参数
@@ -581,7 +567,7 @@ namespace StarryFramework
         public void SetUntaggedAudioParameterWithLabel(string path, PARAMETER_ID id, string label, bool ignoreSeekSpeed = false)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
-            manager.SetUntaggedAudioParameterWithLabel(guid, id, label, ignoreSeekSpeed);
+            Manager.SetUntaggedAudioParameterWithLabel(guid, id, label, ignoreSeekSpeed);
         }
         /// <summary>
         /// 用标签设置未标记的音频的参数
@@ -589,7 +575,7 @@ namespace StarryFramework
         public void SetUntaggedAudioParameterWithLabel(EventReference eventReference, PARAMETER_ID id, string label, bool ignoreSeekSpeed = false)
         {
             GUID guid = eventReference.Guid;
-            manager.SetUntaggedAudioParameterWithLabel(guid, id, label, ignoreSeekSpeed);
+            Manager.SetUntaggedAudioParameterWithLabel(guid, id, label, ignoreSeekSpeed);
         }
         /// <summary>
         /// 设置未标记的音频的参数
@@ -597,7 +583,7 @@ namespace StarryFramework
         public void SetUntaggedAudioParameters(string path, PARAMETER_ID[] ids, float[] values, int count, bool ignoreSeekSpeed = false)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
-            manager.SetUntaggedAudioParameters(guid, ids, values, count, ignoreSeekSpeed);
+            Manager.SetUntaggedAudioParameters(guid, ids, values, count, ignoreSeekSpeed);
         }
         /// <summary>
         /// 用标签设置未标记的音频的一组参数值
@@ -605,7 +591,7 @@ namespace StarryFramework
         public void SetUntaggedAudioParameters(EventReference eventReference, PARAMETER_ID[] ids, float[] values, int count, bool ignoreSeekSpeed = false)
         {
             GUID guid = eventReference.Guid;
-            manager.SetUntaggedAudioParameters(guid, ids, values, count, ignoreSeekSpeed);
+            Manager.SetUntaggedAudioParameters(guid, ids, values, count, ignoreSeekSpeed);
         }
 
         #endregion
@@ -622,7 +608,7 @@ namespace StarryFramework
         public void CreateAudio(string path, string tag, bool play = true)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
-            manager.CreateAudio(guid, tag, play);
+            Manager.CreateAudio(guid, tag, play);
         }
 
         /// <summary>
@@ -634,7 +620,7 @@ namespace StarryFramework
         public void CreateAudio(EventReference eventReference, string tag, bool play = true)
         {
             GUID guid = eventReference.Guid;
-            manager.CreateAudio(guid, tag, play);
+            Manager.CreateAudio(guid, tag, play);
         }
 
         /// <summary>
@@ -642,7 +628,7 @@ namespace StarryFramework
         /// </summary>
         public void PlayTaggedAudio(string tag)
         {
-            manager.PlayTaggedAudio(tag);
+            Manager.PlayTaggedAudio(tag);
         }
 
         /// <summary>
@@ -650,7 +636,7 @@ namespace StarryFramework
         /// </summary>
         public void StopTaggedAudio(string tag, FMOD.Studio.STOP_MODE mode)
         {
-            manager.StopTaggedAudio(tag, mode);
+            Manager.StopTaggedAudio(tag, mode);
         }
 
         /// <summary>
@@ -658,7 +644,7 @@ namespace StarryFramework
         /// </summary>
         public void ReleaseTaggedAudio(string tag)
         {
-            manager.ReleaseTaggedAudio(tag);
+            Manager.ReleaseTaggedAudio(tag);
         }
 
         /// <summary>
@@ -666,7 +652,7 @@ namespace StarryFramework
         /// </summary>
         public void StopAndReleaseTaggedAudio(string tag, FMOD.Studio.STOP_MODE mode)
         {
-            manager.StopAndReleaseTaggedAudio(tag, mode);
+            Manager.StopAndReleaseTaggedAudio(tag, mode);
         }
 
         /// <summary>
@@ -674,7 +660,7 @@ namespace StarryFramework
         /// </summary>
         public void StopAndReleaseAllTaggedAudio(FMOD.Studio.STOP_MODE mode)
         {
-            manager.StopAndReleaseAllTaggedAudio(mode);
+            Manager.StopAndReleaseAllTaggedAudio(mode);
         }
 
         /// <summary>
@@ -684,7 +670,7 @@ namespace StarryFramework
         /// <param Name="transform"></param>
         public void AttachedTaggedAudio(string tag, Transform transform)
         {
-            manager.AttachedTaggedAudio(tag, transform);
+            Manager.AttachedTaggedAudio(tag, transform);
         }
 
         /// <summary>
@@ -695,7 +681,7 @@ namespace StarryFramework
         /// <param Name="body"></param>
         public void AttachedTaggedAudio(string tag, Transform transform, Rigidbody body)
         {
-            manager.AttachedTaggedAudio(tag, transform, body);    
+            Manager.AttachedTaggedAudio(tag, transform, body);    
         }
 
         /// <summary>
@@ -706,7 +692,7 @@ namespace StarryFramework
         /// <param Name="body2d"></param>
         public void AttachTaggedAudio(string tag, Transform transform, Rigidbody2D body2d)
         {
-            manager.AttachTaggedAudio(tag, transform, body2d);
+            Manager.AttachTaggedAudio(tag, transform, body2d);
         }
 
         /// <summary>
@@ -715,7 +701,7 @@ namespace StarryFramework
         /// <param Name="tag"></param>
         public void DetachTaggedAudio(string tag)
         {
-            manager.DetachTaggedAudio(tag);
+            Manager.DetachTaggedAudio(tag);
         }
 
         /// <summary>
@@ -725,7 +711,7 @@ namespace StarryFramework
         /// <param Name="pause">true为暂停，false为继续播放</param>
         public void SetTaggedAudioPaused(string tag, bool pause)
         {
-            manager.SetTaggedAudioPaused(tag, pause);
+            Manager.SetTaggedAudioPaused(tag, pause);
         }
 
         /// <summary>
@@ -735,7 +721,7 @@ namespace StarryFramework
         /// <returns></returns>
         public bool GetTaggedAudioPaused(string tag)
         {
-            return manager.GetTaggedAudioPaused(tag);
+            return Manager.GetTaggedAudioPaused(tag);
         }
 
         /// <summary>
@@ -745,7 +731,7 @@ namespace StarryFramework
         /// <returns></returns>
         public PLAYBACK_STATE GetTaggedAudioStage(string tag)
         {
-            return manager.GetTaggedAudioStage(tag);
+            return Manager.GetTaggedAudioStage(tag);
         }
 
         /// <summary>
@@ -755,7 +741,7 @@ namespace StarryFramework
         /// <param Name="value"></param>
         public void SetTaggedAudioVolume(string tag, float value)
         {
-            manager.SetTaggedAudioVolume(tag, value);
+            Manager.SetTaggedAudioVolume(tag, value);
         }
 
         /// <summary>
@@ -765,7 +751,7 @@ namespace StarryFramework
         /// <returns></returns>
         public float GetTaggedAudioVolume(string tag)
         {
-            return manager.GetTaggedAudioVolume(tag);
+            return Manager.GetTaggedAudioVolume(tag);
         }
 
         /// <summary>
@@ -773,7 +759,7 @@ namespace StarryFramework
         /// </summary>
         public void SetTaggedAudioProperty(string tag, EVENT_PROPERTY property, float value)
         {
-            manager.SetTaggedAudioProperty(tag, property, value);
+            Manager.SetTaggedAudioProperty(tag, property, value);
         }
 
         /// <summary>
@@ -781,7 +767,7 @@ namespace StarryFramework
         /// </summary>
         public float GetTaggedAudioProperty(string tag, EVENT_PROPERTY property)
         {
-            return manager.GetTaggedAudioProperty(tag, property);
+            return Manager.GetTaggedAudioProperty(tag, property);
         }
 
         /// <summary>
@@ -789,7 +775,7 @@ namespace StarryFramework
         /// </summary>
         public void SetTaggedAudioParameter(string tag, PARAMETER_ID ID, float value, bool ignoreSeekSpeed = false)
         {
-            manager.SetTaggedAudioParameter(tag, ID, value, ignoreSeekSpeed);
+            Manager.SetTaggedAudioParameter(tag, ID, value, ignoreSeekSpeed);
         }
 
         /// <summary>
@@ -797,7 +783,7 @@ namespace StarryFramework
         /// </summary>
         public void SetTaggedAudioParameter(string tag, string name, float value, bool ignoreSeekSpeed = false)
         {
-            manager.SetTaggedAudioParameter(tag, name, value, ignoreSeekSpeed);
+            Manager.SetTaggedAudioParameter(tag, name, value, ignoreSeekSpeed);
         }
 
         /// <summary>
@@ -805,7 +791,7 @@ namespace StarryFramework
         /// </summary>
         public void SetTaggedAudioParameters(string tag, PARAMETER_ID[] IDs, float[] values, int count, bool ignoreSeekSpeed = false)
         {
-            manager.SetTaggedAudioParameters(tag, IDs, values, count, ignoreSeekSpeed);
+            Manager.SetTaggedAudioParameters(tag, IDs, values, count, ignoreSeekSpeed);
         }
 
         /// <summary>
@@ -813,7 +799,7 @@ namespace StarryFramework
         /// </summary>
         public void SetTaggedAudioParameterWithLabel(string tag, PARAMETER_ID ID, string valueLable, bool ignoreSeekSpeed = false)
         {
-            manager.SetTaggedAudioParameterWithLabel(tag, ID, valueLable, ignoreSeekSpeed);
+            Manager.SetTaggedAudioParameterWithLabel(tag, ID, valueLable, ignoreSeekSpeed);
         }
 
         /// <summary>
@@ -821,7 +807,7 @@ namespace StarryFramework
         /// </summary>
         public void SetTaggedAudioParameterWithLabel(string tag, string name, string valueLable, bool ignoreSeekSpeed = false)
         {
-            manager.SetTaggedAudioParameterWithLabel(tag, name, valueLable, ignoreSeekSpeed);
+            Manager.SetTaggedAudioParameterWithLabel(tag, name, valueLable, ignoreSeekSpeed);
         }
 
         /// <summary>
@@ -829,7 +815,7 @@ namespace StarryFramework
         /// </summary>
         public float GetTaggedAudioParameter(string tag, string name)
         {
-            return manager.GetTaggedAudioParameter(tag, name);
+            return Manager.GetTaggedAudioParameter(tag, name);
         }
 
         /// <summary>
@@ -837,7 +823,7 @@ namespace StarryFramework
         /// </summary>
         public float GetTaggedAudioParameter(string tag, PARAMETER_ID ID)
         {
-            return manager.GetTaggedAudioParameter(tag, ID);
+            return Manager.GetTaggedAudioParameter(tag, ID);
         }
 
         /// <summary>
@@ -845,7 +831,7 @@ namespace StarryFramework
         /// </summary>
         public void ReleaseAllStoppedTaggedAudios()
         {
-            manager.ReleaseAllStoppedTaggedAudios();
+            Manager.ReleaseAllStoppedTaggedAudios();
         }
 
         #endregion

@@ -6,32 +6,17 @@ namespace StarryFramework
 {
     public class ObjectPoolComponent : BaseComponent
     {
-        private List<ObjectPoolProperty> objectPools = new List<ObjectPoolProperty>();
-
+        private List<ObjectPoolProperty> objectPools = new();
         public List<ObjectPoolProperty> ObjectPools => objectPools;
 
-        private ObjectPoolManager _manager = null;
-
-        private ObjectPoolManager manager
-        {
-            get
-            {
-                if (_manager == null)
-                {
-                    _manager = FrameworkManager.GetManager<ObjectPoolManager>();
-                }
-                return _manager;
-            }
-        }
+        private ObjectPoolManager _manager;
+        private ObjectPoolManager Manager => _manager ??= FrameworkManager.GetManager<ObjectPoolManager>();
 
         protected override void Awake()
         {
             base.Awake();
-            if (_manager == null)
-            {
-                _manager = FrameworkManager.GetManager<ObjectPoolManager>();
-            }
-            objectPools = manager.getObjectPoolProperties();
+            _manager ??= FrameworkManager.GetManager<ObjectPoolManager>();
+            objectPools = Manager.getObjectPoolProperties();
         }
 
         internal override void Shutdown()
@@ -52,7 +37,7 @@ namespace StarryFramework
         /// <param Name="key">物体标记，用于给同一个物体注册多个对象池</param>
         public void Register<T>(float autoReleaseInterval, float expireTime, string key = "") where T : ObjectBase, new()
         {
-           manager.Register<T>(autoReleaseInterval, expireTime, key);
+           Manager.Register<T>(autoReleaseInterval, expireTime, key);
         }
 
         /// <summary>
@@ -66,7 +51,7 @@ namespace StarryFramework
         /// <param Name="key">物体标记，用于给同一个物体注册多个对象池</param>
         public void Register<T>(GameObject targetObject, float autoReleaseInterval, float expireTime, GameObject fatherObject = null, string key = "") where T : GameObjectBase
         {
-            manager.Register<T>(targetObject, autoReleaseInterval, expireTime, fatherObject, key);
+            Manager.Register<T>(targetObject, autoReleaseInterval, expireTime, fatherObject, key);
         }
 
         /// <summary>
@@ -80,7 +65,7 @@ namespace StarryFramework
         /// <param Name="key">物体标记，用于给同一个物体注册多个对象池</param>
         public void Register<T>(string path, float autoReleaseInterval, float expireTime, GameObject fatherObject = null, string key = "") where T : GameObjectBase
         {
-            manager.Register<T>(path, autoReleaseInterval, expireTime, fatherObject, key);
+            Manager.Register<T>(path, autoReleaseInterval, expireTime, fatherObject, key);
         }
 
         /// <summary>
@@ -91,7 +76,7 @@ namespace StarryFramework
         /// <returns>要获取的物体</returns>
         public T Require<T>(string key = "") where T : class, IObjectBase
         {
-            return manager.Require<T>(key);
+            return Manager.Require<T>(key);
         }
 
         /// <summary>
@@ -102,7 +87,7 @@ namespace StarryFramework
         /// <param Name="key">物体标记</param>
         public void Recycle<T>(T obj, string key = "") where T : class, IObjectBase
         {
-            manager.Recycle(obj, key);
+            Manager.Recycle(obj, key);
         }
 
         /// <summary>
@@ -113,7 +98,7 @@ namespace StarryFramework
         /// <param Name="key"></param>
         public void SetLocked<T>(bool locked, string key = "") where T : class, IObjectBase
         {
-            manager.SetLocked<T>(locked, key);
+            Manager.SetLocked<T>(locked, key);
         }
 
         /// <summary>
@@ -124,7 +109,7 @@ namespace StarryFramework
         /// <param Name="key"></param>
         public void ReleaseObject<T>(T obj, string key = "") where T : class, IObjectBase
         {
-            manager.ReleaseObject(obj, key);
+            Manager.ReleaseObject(obj, key);
         }
 
         /// <summary>
@@ -134,7 +119,7 @@ namespace StarryFramework
         /// <param Name="key"></param>
         public void ReleaseAllUnused<T>(string key = "") where T : class, IObjectBase
         {
-            manager.ReleaseAllUnused<T>(key);
+            Manager.ReleaseAllUnused<T>(key);
         }
 
         /// <summary>
@@ -144,7 +129,7 @@ namespace StarryFramework
         /// <param Name="key"></param>
         public void ReleaseAllObjects<T>(string key = "") where T : class, IObjectBase
         {
-            manager.ReleaseAllObjects<T>(key);
+            Manager.ReleaseAllObjects<T>(key);
         }
 
         /// <summary>
@@ -154,7 +139,7 @@ namespace StarryFramework
         /// <param Name="key"></param>
         public void ReleasePool<T>(string key = "") where T : class, IObjectBase
         {
-            manager.ReleasePool<T>(key);
+            Manager.ReleasePool<T>(key);
         }
 
         #endregion

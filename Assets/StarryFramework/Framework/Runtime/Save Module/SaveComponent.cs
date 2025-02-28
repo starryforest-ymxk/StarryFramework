@@ -8,57 +8,47 @@ namespace StarryFramework
     [DisallowMultipleComponent]
     public class SaveComponent: BaseComponent
     {
-        private SaveManager _manager = null;
-        private SaveManager manager
-        {
-            get
-            {
-                if (_manager == null)
-                {
-                    _manager = FrameworkManager.GetManager<SaveManager>();
-                }
-                return _manager;
-            }
-        }
+        private SaveManager _manager;
+        private SaveManager Manager => _manager ??= FrameworkManager.GetManager<SaveManager>();
 
         [SerializeField] private SaveSettings settings;
 
-        private UnityAction OnLeaveMainGame;
+        private UnityAction onLeaveMainGame;
 
 
-        public int DefaultDataIndex => manager.DefaultDataIndex;
-        public int CurrentLoadedDataIndex => manager.CurrentLoadedDataIndex;
-        public float AutoSaveDataInterval => manager.AutoSaveDataInterval;
-        public float LastAutoSaveTime => manager.LastAutoSaveTime;
-        public bool AutoSave => manager.AutoSave;
-        public string AutoSaveInfo => manager.AutoSaveInfo;
-        public List<string> SaveInfoList => manager.SaveInfoList;
-        public Dictionary<int, PlayerDataInfo> DataInfoDic => manager.infoDic;
+        public int DefaultDataIndex => Manager.DefaultDataIndex;
+        public int CurrentLoadedDataIndex => Manager.CurrentLoadedDataIndex;
+        public float AutoSaveDataInterval => Manager.AutoSaveDataInterval;
+        public float LastAutoSaveTime => Manager.LastAutoSaveTime;
+        public bool AutoSave => Manager.AutoSave;
+        public string AutoSaveInfo => Manager.AutoSaveInfo;
+        public List<string> SaveInfoList => Manager.SaveInfoList;
+        public Dictionary<int, PlayerDataInfo> DataInfoDic => Manager.infoDic;
 
         public GameSettings GameSettings
         {
             get
             {
-                if (manager.GameSettings == null)
+                if (Manager.GameSettings == null)
                 {
                     FrameworkManager.Debugger.LogError("游戏设置数据错误/游戏设置数据尚未加载");
                     return null;
                 }
-                else
-                    return manager.GameSettings;
+
+                return Manager.GameSettings;
             }
         }
         public PlayerData PlayerData
         { 
-            get 
-            { 
-                if(manager.PlayerData == null)
+            get
+            {
+                if(Manager.PlayerData == null)
                 {
                     FrameworkManager.Debugger.LogError("存档数据尚未加载");
                     return null;
                 }
-                else
-                    return manager.PlayerData; 
+
+                return Manager.PlayerData;
             } 
         }
         
@@ -74,22 +64,18 @@ namespace StarryFramework
         protected override void Awake()
         {
             base.Awake();
-            if (_manager == null)
-            {
-                _manager = FrameworkManager.GetManager<SaveManager>();
-            }
-
-            OnLeaveMainGame = new UnityAction(() => { UnloadData();});
-            
+            _manager ??= FrameworkManager.GetManager<SaveManager>();
             (_manager as IManager).SetSettings(settings);
+            
+            onLeaveMainGame = () => { UnloadData();};
         }
         private void Start()
         {
-            FrameworkManager.EventManager.AddEventListener(FrameworkEvent.OnLeaveMainGame, OnLeaveMainGame);
+            FrameworkManager.EventManager.AddEventListener(FrameworkEvent.OnLeaveMainGame, onLeaveMainGame);
         }
         internal override void Shutdown()
         {
-            FrameworkManager.EventManager?.RemoveEventListener(FrameworkEvent.OnLeaveMainGame, OnLeaveMainGame);
+            FrameworkManager.EventManager?.RemoveEventListener(FrameworkEvent.OnLeaveMainGame, onLeaveMainGame);
         }
 
 
@@ -102,7 +88,7 @@ namespace StarryFramework
         /// <param Name="i"></param>
         public void SetSaveInfo(int i)
         {
-            manager.SetSaveInfo(i);
+            Manager.SetSaveInfo(i);
         }
 
         /// <summary>
@@ -112,7 +98,7 @@ namespace StarryFramework
         /// <param Name="info"></param>
         public void SetSaveInfo(string info)
         {
-            manager.SetSaveInfo(info);
+            Manager.SetSaveInfo(info);
         }
 
         #endregion
@@ -125,14 +111,14 @@ namespace StarryFramework
         /// <param Name="note">存档信息</param>
         public void CreateNewData(bool isNewGame, string note = "")
         {
-            manager.CreateNewData(isNewGame, note);
+            Manager.CreateNewData(isNewGame, note);
         }
         /// <summary>
         /// 储存存档,快速存档和自动存档
         /// </summary>
         public void SaveData(string note = "")
         {
-            manager.SaveData(note);
+            Manager.SaveData(note);
         }
         /// <summary>
         /// 储存存档到编号i，手动选择
@@ -140,7 +126,7 @@ namespace StarryFramework
         /// <param Name="i">储存存档的编号</param>
         public void SaveData(int i, string note = "")
         {
-            manager.SaveData(i, note);
+            Manager.SaveData(i, note);
 
         }
         /// <summary>
@@ -148,14 +134,14 @@ namespace StarryFramework
         /// </summary>
         public bool LoadData()
         {
-            return manager.LoadData();
+            return Manager.LoadData();
         }
         /// <summary>
         /// 读取存档信息
         /// </summary>
         public PlayerDataInfo LoadDataInfo()
         {
-            return manager.LoadDataInfo();
+            return Manager.LoadDataInfo();
         }
         /// <summary>
         /// 手动读取编号为i的存档
@@ -163,7 +149,7 @@ namespace StarryFramework
         /// <param Name="i">存档编号</param>
         public bool LoadData(int i)
         {
-            return manager.LoadData(i);
+            return Manager.LoadData(i);
         }
         /// <summary>
         /// 获取编号为i的存档信息
@@ -171,7 +157,7 @@ namespace StarryFramework
         /// <returns>编号为i的存档信息</returns>
         public PlayerDataInfo LoadDataInfo(int i)
         {
-            return manager.LoadDataInfo(i);
+            return Manager.LoadDataInfo(i);
         }
         /// <summary>
         /// 卸载当前已加载的存档
@@ -179,7 +165,7 @@ namespace StarryFramework
         /// <returns></returns>
         public bool UnloadData()
         {
-            return manager.UnloadData();
+            return Manager.UnloadData();
         }
         /// <summary>
         /// 删除存档
@@ -187,7 +173,7 @@ namespace StarryFramework
         /// <param Name="i">删除的存档编号</param>
         public bool DeleteData(int i)
         {
-            return manager.DeleteData(i);
+            return Manager.DeleteData(i);
         }
         /// <summary>
         /// 获取全部存档信息
@@ -195,7 +181,7 @@ namespace StarryFramework
         /// <returns></returns>
         public List<PlayerDataInfo> GetDataInfos()
         {
-            return manager.GetDataInfos();
+            return Manager.GetDataInfos();
         }
 
 
@@ -208,7 +194,7 @@ namespace StarryFramework
         /// </summary>
         public void StartAutoSaveTimer()
         {
-            manager.StartAutoSaveTimer();
+            Manager.StartAutoSaveTimer();
         }
 
         /// <summary>
@@ -216,7 +202,7 @@ namespace StarryFramework
         /// </summary>
         public void StopAutoSaveTimer()
         {
-            manager.StopAutoSaveTimer();
+            Manager.StopAutoSaveTimer();
         }
 
         #endregion

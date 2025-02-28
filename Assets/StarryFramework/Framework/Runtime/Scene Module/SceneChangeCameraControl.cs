@@ -10,15 +10,15 @@ namespace StarryFramework
     public class SceneChangeCameraControl : MonoBehaviour
     {
         private Camera m_camera;
-        private AudioListener _audioListener;
+        private AudioListener m_audioListener;
         [SerializeField] private bool isMainCamera;
         private void Awake()
         {
             m_camera = GetComponent<Camera>();
-            _audioListener = GetComponent<AudioListener>();
+            m_audioListener = GetComponent<AudioListener>();
             gameObject.tag = isMainCamera ? "MainCamera" : "Untagged";
             m_camera.enabled = isMainCamera;
-            _audioListener.enabled = isMainCamera;
+            m_audioListener.enabled = isMainCamera;
             FrameworkManager.EventManager.AddEventListener(FrameworkEvent.StartSceneLoadAnim, SetCameraEnabled);
             FrameworkManager.EventManager.AddEventListener(FrameworkEvent.EndSceneLoadAnim, SetCameraNotEnabled);
         }
@@ -34,7 +34,7 @@ namespace StarryFramework
             if(!isMainCamera)
             {
                 m_camera.enabled = true;
-                _audioListener.enabled = true;
+                m_audioListener.enabled = true;
             }
         }
         
@@ -43,7 +43,7 @@ namespace StarryFramework
             if(!isMainCamera)
             {
                 m_camera.enabled = false;
-                _audioListener.enabled = false;
+                m_audioListener.enabled = false;
             }
         }
     }

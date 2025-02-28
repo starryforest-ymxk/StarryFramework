@@ -94,7 +94,6 @@ namespace StarryFramework
                 UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync("DontDestroyOnLoad");
         }
 
-
         private void OnDestroy()
         {
             if (FrameworkManager.FrameworkState != FrameworkState.ShutDown)
@@ -104,7 +103,6 @@ namespace StarryFramework
 
             Shutdown();
         }
-
 
         private void Shutdown()
         {
@@ -140,6 +138,7 @@ namespace StarryFramework
                     {
                         FrameworkManager.Debugger.Log($"Unused module: {type}");
                         component.gameObject.SetActive(false);
+                        component.DisableProcess();
                     }
                 }
                 catch

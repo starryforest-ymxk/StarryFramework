@@ -6,46 +6,25 @@ namespace StarryFramework
 {
     public class ResourceComponent : BaseComponent
     {
-
-        private ResourceManager _manager = null;
-
-        private ResourceManager manager
-        {
-            get
-            {
-                if (_manager == null)
-                {
-                    _manager = FrameworkManager.GetManager<ResourceManager>();
-                }
-                return _manager;
-            }
-        }
-        private Type _targetType = null;
-
+        private ResourceManager _manager;
+        private ResourceManager Manager => _manager ??= FrameworkManager.GetManager<ResourceManager>();
+        
+        private Type _targetType;
         private string _resourcePath = "";
-
         private LoadState _state = LoadState.Idle;
-
-        private float _progress = 0;
-
-
+        private float _progress;
+        
         public LoadState State => _state;
-
         public float Progress => _progress;
-
         public string ResourcePath => _resourcePath;
-
         public Type TargetType => _targetType;
 
-        private ResourceRequest latestRequest = null;
+        private ResourceRequest latestRequest;
 
         protected override void Awake()
         {
             base.Awake();
-            if (_manager == null)
-            {
-                _manager = FrameworkManager.GetManager<ResourceManager>();
-            }
+            _manager ??= FrameworkManager.GetManager<ResourceManager>();
         }
 
         private void Update()
@@ -56,10 +35,6 @@ namespace StarryFramework
             }
         }
 
-        internal override void DisableProcess()
-        {
-            base.DisableProcess();
-        }
 
         /// <summary>
         /// 同步加载一个资源
@@ -73,7 +48,7 @@ namespace StarryFramework
             _targetType = typeof(T);
             _resourcePath = path;
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.BeforeLoadAsset);
-            T t =  manager.LoadRes<T>(path, GameObjectInstantiate);
+            T t =  Manager.LoadRes<T>(path, GameObjectInstantiate);
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.AfterLoadAsset);
             return t;
         }
@@ -89,7 +64,7 @@ namespace StarryFramework
             _targetType = typeof(T);
             _resourcePath = path;
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.BeforeLoadAsset);
-            T[] t = manager.LoadAllRes<T>(path);
+            T[] t = Manager.LoadAllRes<T>(path);
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.AfterLoadAsset);
             return t;
         }
@@ -113,7 +88,7 @@ namespace StarryFramework
                 _progress = 1f; 
                 FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.AfterLoadAsset); 
             };
-            ResourceRequest r = manager.LoadAsync<T>(path, callBack, GameObjectInstantiate);
+            ResourceRequest r = Manager.LoadAsync<T>(path, callBack, GameObjectInstantiate);
             latestRequest = r;
             return r;
         }
@@ -124,7 +99,7 @@ namespace StarryFramework
         /// <param path="_object"></param>
         public void Unload(UnityEngine.Object _object)
         {
-            manager.Unload(_object);
+            Manager.Unload(_object);
         }
 
         /// <summary>
@@ -132,7 +107,7 @@ namespace StarryFramework
         /// </summary>
         public void UnloadUnused()
         {
-            manager.UnloadUnused();
+            Manager.UnloadUnused();
         }
 
 

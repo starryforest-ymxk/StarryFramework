@@ -11,33 +11,18 @@ namespace StarryFramework
     public sealed class SceneComponent: BaseComponent
     {
 
-        private SceneManager _manager = null;
-        private SceneManager manager
-        {
-            get
-            {
-                if (_manager == null)
-                {
-                    _manager = FrameworkManager.GetManager<SceneManager>();
-                }
-                return _manager;
-            }
-        }
-        
+        private SceneManager _manager;
+        private SceneManager Manager => _manager ??= FrameworkManager.GetManager<SceneManager>();
+
         [SerializeField] private SceneSettings settings;
 
         private int sceneIndex;
-
         private float sceneLoadedTime;
-
         private float sceneTime;
-
         private Scene currentActiveScene;
 
         public Scene CurrentActiveScene => currentActiveScene;
-
         public float SceneLoadedTime => sceneLoadedTime;
-
         public float SceneTime => sceneTime;
 
 #if UNITY_EDITOR
@@ -92,7 +77,7 @@ namespace StarryFramework
         {
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.BeforeUnloadScene);
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.SetCurrentActiveSceneNotActive, currentActiveScene.buildIndex);
-            manager.UnloadScene(() => 
+            Manager.UnloadScene(() => 
             {
                 Scene s = UnityEngine.SceneManagement.SceneManager.GetSceneAt(UnityEngine.SceneManagement.SceneManager.sceneCount - 1);
                 UnityEngine.SceneManagement.SceneManager.SetActiveScene(s);
@@ -117,7 +102,7 @@ namespace StarryFramework
             }
 
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.BeforeUnloadScene);
-            manager.UnloadScene(sceneIndex, () => 
+            Manager.UnloadScene(sceneIndex, () => 
             {
                 if (setSceneActive)
                 {
@@ -145,7 +130,7 @@ namespace StarryFramework
             }
 
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.BeforeUnloadScene);
-            manager.UnloadScene(sceneName, () =>
+            Manager.UnloadScene(sceneName, () =>
             {
                 if (setSceneActive)
                 {
@@ -173,7 +158,7 @@ namespace StarryFramework
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.BeforeLoadScene);
             if(setSceneToLoadActive)
                 FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.SetCurrentActiveSceneNotActive, currentActiveScene.buildIndex);
-            return manager.LoadScene(buildIndex, () => 
+            return Manager.LoadScene(buildIndex, () => 
             {
                 if (setSceneToLoadActive)
                 {
@@ -196,7 +181,7 @@ namespace StarryFramework
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.BeforeLoadScene);
             if (setSceneToLoadActive)
                 FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.SetCurrentActiveSceneNotActive, currentActiveScene.buildIndex);
-            return manager.LoadScene(sceneName, () =>
+            return Manager.LoadScene(sceneName, () =>
             {
                 if (setSceneToLoadActive)
                 {
@@ -223,7 +208,7 @@ namespace StarryFramework
         {
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.BeforeChangeScene);
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.SetCurrentActiveSceneNotActive, currentActiveScene.buildIndex);
-            return manager.ChangeScene(to, from, () => 
+            return Manager.ChangeScene(to, from, () => 
             {
                 UnityEngine.SceneManagement.SceneManager.SetActiveScene(UnityEngine.SceneManagement.SceneManager.GetSceneByBuildIndex(to));
                 UpdateActiveScene();
@@ -243,7 +228,7 @@ namespace StarryFramework
         {
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.BeforeChangeScene);
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.SetCurrentActiveSceneNotActive, currentActiveScene.buildIndex);
-            return manager.ChangeScene(to, from, () =>
+            return Manager.ChangeScene(to, from, () =>
             {
                 UnityEngine.SceneManagement.SceneManager.SetActiveScene(UnityEngine.SceneManagement.SceneManager.GetSceneByName(to));
                 UpdateActiveScene();

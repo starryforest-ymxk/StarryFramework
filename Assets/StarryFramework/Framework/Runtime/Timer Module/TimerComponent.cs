@@ -11,25 +11,15 @@ namespace StarryFramework
     [DisallowMultipleComponent]
     public class TimerComponent : BaseComponent
     {
-        private TimerManager _manager = null;
-        private TimerManager manager
-        {
-            get
-            {
-                if(_manager == null)
-                {
-                    _manager = FrameworkManager.GetManager<TimerManager>();
-                }
-                return _manager;
-            }
-        }
+        private TimerManager _manager;
+        private TimerManager Manager => _manager ??= FrameworkManager.GetManager<TimerManager>();
 
         [SerializeField] private TimerSettings settings;
-        public List<Timer> timers => manager.timers;
-        public List<TriggerTimer> triggerTimers => manager.triggerTimers;
-        public List<AsyncTimer> asyncTimers => manager.asyncTimers;
-        public float ClearUnusedTriggerTimersInterval => manager.ClearUnusedTriggerTimersInterval;
-        public float ClearUnusedAsyncTimersInterval => manager.ClearUnusedAsyncTimersInterval;
+        public List<Timer> Timers => Manager.timers;
+        public List<TriggerTimer> TriggerTimers => Manager.triggerTimers;
+        public List<AsyncTimer> AsyncTimers => Manager.asyncTimers;
+        public float ClearUnusedTriggerTimersInterval => Manager.ClearUnusedTriggerTimersInterval;
+        public float ClearUnusedAsyncTimersInterval => Manager.ClearUnusedAsyncTimersInterval;
 
 #if UNITY_EDITOR
         private void OnValidate()
@@ -42,11 +32,7 @@ namespace StarryFramework
         protected override void Awake()
         {
             base.Awake();
-            if (_manager == null)
-            {
-                _manager = FrameworkManager.GetManager<TimerManager>();
-            }
-            
+            _manager ??= FrameworkManager.GetManager<TimerManager>();
             (_manager as IManager).SetSettings(settings);
         }
 
@@ -63,7 +49,7 @@ namespace StarryFramework
         /// <returns>计时器对象</returns>
         public ITimer RegisterTimer(bool ignoreTimeScale = false, float startValue = 0f, UnityAction bindUpdateAction = null)
         {
-            return manager.RegisterTimer(ignoreTimeScale, startValue, bindUpdateAction);
+            return Manager.RegisterTimer(ignoreTimeScale, startValue, bindUpdateAction);
         }
 
         /// <summary>
@@ -72,7 +58,7 @@ namespace StarryFramework
         /// <param Name="timer">需要回收的匿名计时器</param>
         public void DeleteTimer(ITimer timer)
         {
-            manager.DeleteTimer(timer as Timer);
+            Manager.DeleteTimer(timer as Timer);
         }
 
         /// <summary>
@@ -83,7 +69,7 @@ namespace StarryFramework
         /// <param Name="startValue">计时起始值</param>
         public void RegisterTimer(string name, bool ignoreTimeScale = false, float startValue = 0f)
         {
-            manager.RegisterTimer(name, ignoreTimeScale, startValue);
+            Manager.RegisterTimer(name, ignoreTimeScale, startValue);
         }
         /// <summary>
         /// 回收非匿名计时器
@@ -91,7 +77,7 @@ namespace StarryFramework
         /// <param Name="name"></param>
         public void DeleteTimer(string name)
         {
-            manager.DeleteTimer(name);
+            Manager.DeleteTimer(name);
         }
 
         /// <summary>
@@ -101,7 +87,7 @@ namespace StarryFramework
         /// <param Name="action">Update事件，每帧调用一次</param>
         public void BindUpdateAction(string name, UnityAction action)
         {
-            manager.BindUpdateAction(name, action);
+            Manager.BindUpdateAction(name, action);
         }
         /// <summary>
         /// 查看非匿名计时器状态
@@ -110,7 +96,7 @@ namespace StarryFramework
         /// <returns></returns>
         public TimerState GetTimerState(string name)
         {
-            return manager.GetTimerState(name);
+            return Manager.GetTimerState(name);
         }
         /// <summary>
         /// 查看非匿名计时器时间
@@ -119,7 +105,7 @@ namespace StarryFramework
         /// <returns></returns>
         public float GetTimerTime(string name)
         {
-            return manager.GetTimerTime(name);
+            return Manager.GetTimerTime(name);
         }
         /// <summary>
         /// 暂停非匿名计时器
@@ -127,7 +113,7 @@ namespace StarryFramework
         /// <param Name="name"></param>
         public void PauseTimer(string name)
         {
-            manager.PauseTimer(name);
+            Manager.PauseTimer(name);
         }
         /// <summary>
         /// 停止计时器（恢复初始值）
@@ -135,7 +121,7 @@ namespace StarryFramework
         /// <param Name="name"></param>
         public void StopTimer(string name)
         {
-            manager.StopTimer(name);
+            Manager.StopTimer(name);
         }
         /// <summary>
         /// 恢复计时器
@@ -143,7 +129,7 @@ namespace StarryFramework
         /// <param Name="name"></param>
         public void ResumeTimer(string name)
         {
-            manager.ActivateTimer(name);
+            Manager.ActivateTimer(name);
         }
         /// <summary>
         /// 启动计时器
@@ -151,7 +137,7 @@ namespace StarryFramework
         /// <param Name="name"></param>
         public void StartTimer(string name)
         {
-            manager.StartTimer(name);
+            Manager.StartTimer(name);
         }
         /// <summary>
         /// 重置计时器到初始值
@@ -159,7 +145,7 @@ namespace StarryFramework
         /// <param Name="name"></param>
         public void ResetTimer(string name)
         {
-            manager.ResetTimer(name);
+            Manager.ResetTimer(name);
         }
 
         #endregion
@@ -180,7 +166,7 @@ namespace StarryFramework
         /// <param Name="ignoreTimeScale">是否忽略时间缩放</param>
         public void RegisterTriggerTimer(float timeDelta, UnityAction action, bool repeat = false, string name = "", bool ignoreTimeScale = false)
         {
-            manager.RegisterTriggerTimer(timeDelta, action, ignoreTimeScale, repeat, name);
+            Manager.RegisterTriggerTimer(timeDelta, action, ignoreTimeScale, repeat, name);
         }
 
         /// <summary>
@@ -189,7 +175,7 @@ namespace StarryFramework
         /// <param Name="name"></param>
         public void DeleteTriggerTimer(string name)
         {
-            manager.DeleteTriggerTimer(name);
+            Manager.DeleteTriggerTimer(name);
         }
 
         /// <summary>
@@ -199,7 +185,7 @@ namespace StarryFramework
         /// <returns></returns>
         public TimerState GetTriggerTimerState(string name)
         {
-            return manager.GetTriggerTimerState(name);
+            return Manager.GetTriggerTimerState(name);
         }
 
         /// <summary>
@@ -208,7 +194,7 @@ namespace StarryFramework
         /// <param Name="name"></param>
         public void PauseTriggerTimer(string name)
         {
-            manager.PauseTriggerTimer(name);
+            Manager.PauseTriggerTimer(name);
         }
 
         /// <summary>
@@ -217,7 +203,7 @@ namespace StarryFramework
         /// <param Name="name"></param>
         public void ResumeTriggerTimer(string name)
         {
-            manager.ActivateTriggerTimer(name);
+            Manager.ActivateTriggerTimer(name);
         }
 
         /// <summary>
@@ -226,7 +212,7 @@ namespace StarryFramework
         /// <param Name="name"></param>
         public void StopTriggerTimer(string name)
         {
-            manager.StopTriggerTimer(name);
+            Manager.StopTriggerTimer(name);
         }
 
         /// <summary>
@@ -235,7 +221,7 @@ namespace StarryFramework
         /// <param Name="name"></param>
         public void StartTriggerTimer(string name)
         {
-            manager.StartTriggerTimer(name);
+            Manager.StartTriggerTimer(name);
         }
 
         /// <summary>
@@ -243,7 +229,7 @@ namespace StarryFramework
         /// </summary>
         public void ClearUnnamedTriggerTimers()
         {
-            manager.ClearUnnamedTriggerTimers();
+            Manager.ClearUnnamedTriggerTimers();
         }
 
 
@@ -263,7 +249,7 @@ namespace StarryFramework
         /// <param Name="name">若留为“”则为匿名计时器</param>
         public void RegisterAsyncTimer(float timeDelta, UnityAction action, bool repeat = false, string name = "")
         {
-            manager.RegisterAsyncTimer(timeDelta,action,repeat,name);
+            Manager.RegisterAsyncTimer(timeDelta,action,repeat,name);
         }
 
         /// <summary>
@@ -272,7 +258,7 @@ namespace StarryFramework
         /// <param Name="name"></param>
         internal void DeleteAsyncTimer(string name)
         {
-            manager.DeleteAsyncTimer(name);
+            Manager.DeleteAsyncTimer(name);
         }
 
         /// <summary>
@@ -282,7 +268,7 @@ namespace StarryFramework
         /// <returns></returns>
         public TimerState GetAsyncTimerState(string name)
         {
-            return manager.GetAsyncTimerState(name);
+            return Manager.GetAsyncTimerState(name);
         }
 
         /// <summary>
@@ -291,7 +277,7 @@ namespace StarryFramework
         /// <param Name="name"></param>
         public void StartAsyncTimer(string name)
         {
-            manager.StartAsyncTimer(name);
+            Manager.StartAsyncTimer(name);
         }
 
         /// <summary>
@@ -300,7 +286,7 @@ namespace StarryFramework
         /// <param Name="name"></param>
         public void StopAsyncTimer(string name)
         {
-            manager.StopAsyncTimer(name);
+            Manager.StopAsyncTimer(name);
         }
 
         /// <summary>
@@ -308,7 +294,7 @@ namespace StarryFramework
         /// </summary>
         public void ClearUnnamedAsyncTimers()
         {
-            manager.ClearUnnamedAsyncTimers();
+            Manager.ClearUnnamedAsyncTimers();
         }
 
         #endregion

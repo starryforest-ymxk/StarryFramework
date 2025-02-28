@@ -7,12 +7,11 @@ namespace StarryFramework
 {
     internal static class FrameworkManager
     {
-        private static readonly Dictionary<Type, IManager> managers = new Dictionary<Type, IManager>();
+        private static readonly Dictionary<Type, IManager> managers = new();
 
         //记录module启用以及优先级
-        private static readonly List<Type> managerTypeList = new List<Type>();
-
-
+        private static readonly List<Type> managerTypeList = new();
+        
         private static FrameworkState state = FrameworkState.Stop;
         internal static FrameworkState FrameworkState => state;
 
@@ -155,7 +154,7 @@ namespace StarryFramework
 
         private static Type GetManagerType(ModuleType managerType)
         {
-            return Type.GetType("StarryFramework." + managerType.ToString() + "Manager");
+            return Type.GetType("StarryFramework." + managerType + "Manager");
         }
 
         #endregion

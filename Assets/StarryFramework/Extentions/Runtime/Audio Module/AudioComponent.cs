@@ -48,10 +48,7 @@ namespace StarryFramework
         protected override void Awake()
         {
             base.Awake();
-            if (_manager == null)
-            {
-                _manager = FrameworkManager.GetManager<AudioManager>();
-            }
+            _manager ??= FrameworkManager.GetManager<AudioManager>();
             (_manager as IManager).SetSettings(settings);
         }
 
@@ -65,11 +62,7 @@ namespace StarryFramework
             FrameworkManager.EventManager.RemoveEventListener<int>(FrameworkEvent.SetNewActiveScene, OnNewActiveScene);
             FrameworkManager.EventManager.RemoveEventListener<int>(FrameworkEvent.SetCurrentActiveSceneNotActive, InActiveCurrentScene);
         }
-
-        internal override void DisableProcess()
-        {
-            base.DisableProcess();
-        }
+        
         private void InActiveCurrentScene(int sceneIndex)
         {
             manager.StopBGM(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
@@ -78,6 +71,7 @@ namespace StarryFramework
             if(loadedAudio != null)
                 manager.UnloadData(loadedAudio);
         }
+        
         private void OnNewActiveScene(int sceneIndex)
         {
             foreach(var s in settings.sceneAudioSettings)

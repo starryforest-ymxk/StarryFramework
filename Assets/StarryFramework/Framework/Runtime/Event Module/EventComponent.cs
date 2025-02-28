@@ -10,40 +10,23 @@ namespace StarryFramework
     public class EventComponent : BaseComponent
     {
 
-        private EventManager _manager = null;
-
-        private EventManager manager
-        {
-            get 
-            { 
-                if (_manager == null)
-                {
-                    _manager = FrameworkManager.GetManager<EventManager>();
-                }    
-                return _manager; 
-            }
-        }
-
-        private bool hasBoundTriggers = false;
-
+        private EventManager _manager;
+        private EventManager Manager => _manager ??= FrameworkManager.GetManager<EventManager>(); 
+    
+        private bool hasBoundTriggers;
         private string lastEventName = "Null";
         private string lastEventParam = "Null";
 
         public string LastEventName => lastEventName;
         public string LastEventParam => lastEventParam;
-
-
-
-        private Dictionary<string,UnityAction> triggerActions = new Dictionary<string, UnityAction>();
+        
+        private readonly Dictionary<string,UnityAction> triggerActions = new();
         
 
         protected override void Awake()
         {
             base.Awake();
-            if (_manager == null)
-            {
-                _manager = FrameworkManager.GetManager<EventManager>();
-            }
+            _manager ??= FrameworkManager.GetManager<EventManager>();
         }
         private void Start()
         {
@@ -86,7 +69,7 @@ namespace StarryFramework
                 if (info.FieldType == typeof(bool))
                 {
                     if (!triggerActions.ContainsKey(info.Name))
-                        triggerActions.Add(info.Name, new UnityAction(() => info.SetValue(data, true)));
+                        triggerActions.Add(info.Name, () => info.SetValue(data, true));
                 }
             }
         }
@@ -107,7 +90,7 @@ namespace StarryFramework
 
         public Dictionary<string, Dictionary<string, int>> GetAllEventsInfo()
         {
-            return manager.GetAllEventsInfo();
+            return Manager.GetAllEventsInfo();
         }
 
 
@@ -118,7 +101,7 @@ namespace StarryFramework
         /// </summary>
         public void AddEventListener(string eventName, UnityAction action)
         {
-            manager.AddEventListener(eventName, action);
+            Manager.AddEventListener(eventName, action);
         }
 
         /// <summary>
@@ -126,7 +109,7 @@ namespace StarryFramework
         /// </summary>
         public void AddEventListener<T>(string eventName, UnityAction<T> action)
         {
-            manager.AddEventListener(eventName, action);
+            Manager.AddEventListener(eventName, action);
         }
 
         /// <summary>
@@ -134,7 +117,7 @@ namespace StarryFramework
         /// </summary>
         public void AddEventListener<T1, T2>(string eventName, UnityAction<T1, T2> action)
         {
-            manager.AddEventListener(eventName, action);
+            Manager.AddEventListener(eventName, action);
         }
 
         /// <summary>
@@ -142,7 +125,7 @@ namespace StarryFramework
         /// </summary>
         public void AddEventListener<T1, T2, T3>(string eventName, UnityAction<T1, T2, T3> action)
         {
-            manager.AddEventListener(eventName, action);
+            Manager.AddEventListener(eventName, action);
         }
 
         /// <summary>
@@ -150,7 +133,7 @@ namespace StarryFramework
         /// </summary>
         public void AddEventListener<T1, T2, T3, T4>(string eventName, UnityAction<T1, T2, T3, T4> action)
         {
-            manager.AddEventListener(eventName, action);
+            Manager.AddEventListener(eventName, action);
         }
 
         #endregion
@@ -164,7 +147,7 @@ namespace StarryFramework
         {
             if (FrameworkManager.FrameworkState == FrameworkState.ShutDown)
                 return;
-            manager.RemoveEventListener(eventName, action);
+            Manager.RemoveEventListener(eventName, action);
         }
 
         /// <summary>
@@ -174,7 +157,7 @@ namespace StarryFramework
         {
             if (FrameworkManager.FrameworkState == FrameworkState.ShutDown)
                 return;
-            manager.RemoveEventListener(eventName, action);
+            Manager.RemoveEventListener(eventName, action);
         }
 
         /// <summary>
@@ -184,7 +167,7 @@ namespace StarryFramework
         {
             if (FrameworkManager.FrameworkState == FrameworkState.ShutDown)
                 return;
-            manager.RemoveEventListener(eventName, action);
+            Manager.RemoveEventListener(eventName, action);
         }
 
         /// <summary>
@@ -194,7 +177,7 @@ namespace StarryFramework
         {
             if (FrameworkManager.FrameworkState == FrameworkState.ShutDown)
                 return;
-            manager.RemoveEventListener(eventName, action);
+            Manager.RemoveEventListener(eventName, action);
         }
 
         /// <summary>
@@ -204,7 +187,7 @@ namespace StarryFramework
         {
             if (FrameworkManager.FrameworkState == FrameworkState.ShutDown)
                 return;
-            manager.RemoveEventListener(eventName, action);
+            Manager.RemoveEventListener(eventName, action);
         }
 
 
@@ -219,7 +202,7 @@ namespace StarryFramework
         {
             lastEventName = eventName;
             lastEventParam = "None";
-            manager.InvokeEvent(eventName);
+            Manager.InvokeEvent(eventName);
         }
 
         /// <summary>
@@ -229,7 +212,7 @@ namespace StarryFramework
         {
             lastEventName = eventName;
             lastEventParam = typeof(T).ToString();
-            manager.InvokeEvent(eventName,t);
+            Manager.InvokeEvent(eventName,t);
         }
 
         /// <summary>
@@ -238,8 +221,8 @@ namespace StarryFramework
         public void InvokeEvent<T1, T2>(string eventName, T1 t1, T2 t2)
         {
             lastEventName = eventName;
-            lastEventParam = typeof(T1).ToString()+" , "+ typeof(T2).ToString();
-            manager.InvokeEvent(eventName, t1, t2);
+            lastEventParam = typeof(T1)+" , "+ typeof(T2);
+            Manager.InvokeEvent(eventName, t1, t2);
         }
 
         /// <summary>
@@ -248,8 +231,8 @@ namespace StarryFramework
         public void InvokeEvent<T1, T2, T3>(string eventName, T1 t1, T2 t2, T3 t3)
         {
             lastEventName = eventName;
-            lastEventParam = typeof(T1).ToString() + " , " + typeof(T2).ToString() + " , " + typeof(T3).ToString();
-            manager.InvokeEvent(eventName, t1, t2, t3);
+            lastEventParam = typeof(T1) + " , " + typeof(T2) + " , " + typeof(T3);
+            Manager.InvokeEvent(eventName, t1, t2, t3);
         }
 
         /// <summary>
@@ -258,8 +241,8 @@ namespace StarryFramework
         public void InvokeEvent<T1, T2, T3, T4>(string eventName, T1 t1, T2 t2, T3 t3, T4 t4)
         {
             lastEventName = eventName;
-            lastEventParam = typeof(T1).ToString() + " , " + typeof(T2).ToString() + " , " + typeof(T3).ToString()+ " , " + typeof(T4).ToString();
-            manager.InvokeEvent(eventName, t1, t2, t3, t4);
+            lastEventParam = typeof(T1) + " , " + typeof(T2) + " , " + typeof(T3)+ " , " + typeof(T4);
+            Manager.InvokeEvent(eventName, t1, t2, t3, t4);
         }
 
         #endregion
@@ -283,7 +266,7 @@ namespace StarryFramework
                 else 
                     yield return new WaitForSeconds(delayTime);
 
-                manager.InvokeEvent(eventName);
+                Manager.InvokeEvent(eventName);
             }
 
         }
@@ -305,7 +288,7 @@ namespace StarryFramework
                 else
                     yield return new WaitForSeconds(delayTime);
 
-                manager.InvokeEvent(eventName, t);
+                Manager.InvokeEvent(eventName, t);
             }
         }
 
@@ -317,7 +300,7 @@ namespace StarryFramework
         public void InvokeDelayedEvent<T1, T2>(string eventName, T1 t1, T2 t2, float delayTime, bool realtime = false)
         {
             lastEventName = eventName;
-            lastEventParam = typeof(T1).ToString() + " , " + typeof(T2).ToString();
+            lastEventParam = typeof(T1) + " , " + typeof(T2);
             StartCoroutine(invoke());
             IEnumerator invoke()
             {
@@ -326,7 +309,7 @@ namespace StarryFramework
                 else
                     yield return new WaitForSeconds(delayTime);
 
-                manager.InvokeEvent(eventName, t1, t2);
+                Manager.InvokeEvent(eventName, t1, t2);
             }
 
         }
@@ -339,7 +322,7 @@ namespace StarryFramework
         public void InvokeDelayedEvent<T1, T2, T3>(string eventName, T1 t1, T2 t2, T3 t3, float delayTime, bool realtime = false)
         {
             lastEventName = eventName;
-            lastEventParam = typeof(T1).ToString() + " , " + typeof(T2).ToString() + " , " + typeof(T3).ToString();
+            lastEventParam = typeof(T1) + " , " + typeof(T2) + " , " + typeof(T3);
             StartCoroutine(invoke());
             IEnumerator invoke()
             {
@@ -348,7 +331,7 @@ namespace StarryFramework
                 else
                     yield return new WaitForSeconds(delayTime);
 
-                manager.InvokeEvent(eventName, t1, t2, t3);
+                Manager.InvokeEvent(eventName, t1, t2, t3);
             }
         }
 
@@ -360,7 +343,7 @@ namespace StarryFramework
         public void InvokeDelayedEvent<T1, T2, T3, T4>(string eventName, T1 t1, T2 t2, T3 t3, T4 t4, float delayTime, bool realtime = false)
         {
             lastEventName = eventName;
-            lastEventParam = typeof(T1).ToString() + " , " + typeof(T2).ToString() + " , " + typeof(T3).ToString() + " , " + typeof(T4).ToString();
+            lastEventParam = typeof(T1) + " , " + typeof(T2) + " , " + typeof(T3) + " , " + typeof(T4);
             StartCoroutine(invoke());
             IEnumerator invoke()
             {
@@ -369,7 +352,7 @@ namespace StarryFramework
                 else
                     yield return new WaitForSeconds(delayTime);
 
-                manager.InvokeEvent(eventName, t1, t2, t3, t4);
+                Manager.InvokeEvent(eventName, t1, t2, t3, t4);
             }
         }
 
@@ -382,7 +365,7 @@ namespace StarryFramework
         /// </summary>
         public void ClearAllEventLinsteners(string eventName)
         {
-            manager.ClearAllEventLinsteners(eventName);
+            Manager.ClearAllEventLinsteners(eventName);
         }
 
         /// <summary>
@@ -390,7 +373,7 @@ namespace StarryFramework
         /// </summary>
         public void ClearEventListeners(string eventName)
         {
-            manager.ClearEventListeners(eventName);
+            Manager.ClearEventListeners(eventName);
         }
 
         /// <summary>
@@ -398,7 +381,7 @@ namespace StarryFramework
         /// </summary>
         public void ClearEventListeners<T>(string eventName)
         {
-            manager.ClearEventListeners<T>(eventName);
+            Manager.ClearEventListeners<T>(eventName);
         }
 
         /// <summary>
@@ -406,7 +389,7 @@ namespace StarryFramework
         /// </summary>
         public void ClearEventListeners<T1, T2>(string eventName)
         {
-            manager.ClearEventListeners<T1, T2>(eventName);
+            Manager.ClearEventListeners<T1, T2>(eventName);
         }
 
         /// <summary>
@@ -414,7 +397,7 @@ namespace StarryFramework
         /// </summary>
         public void ClearEventListeners<T1, T2, T3>(string eventName)
         {
-            manager.ClearEventListeners<T1, T2, T3>(eventName);
+            Manager.ClearEventListeners<T1, T2, T3>(eventName);
         }
 
         /// <summary>
@@ -422,7 +405,7 @@ namespace StarryFramework
         /// </summary>
         public void ClearEventListeners<T1, T2, T3, T4>(string eventName)
         {
-            manager.ClearEventListeners<T1, T2, T3, T4>(eventName);
+            Manager.ClearEventListeners<T1, T2, T3, T4>(eventName);
         }
 
 

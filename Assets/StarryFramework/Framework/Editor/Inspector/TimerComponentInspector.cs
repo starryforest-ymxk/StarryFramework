@@ -50,9 +50,9 @@ namespace StarryFramework.Editor
             {
                 EditorGUILayout.BeginVertical("box");
                 {
-                    EditorGUILayout.LabelField("Count", t.timers.Count.ToString());
+                    EditorGUILayout.LabelField("Count", t.Timers.Count.ToString());
                     EditorGUILayout.Space(2);
-                    foreach (var timer in t.timers)
+                    foreach (var timer in t.Timers)
                     {
                         string name = timer.Name == "" ? "Unamed" : timer.Name;
                         string timerState = timer.TimerState.ToString();
@@ -90,9 +90,9 @@ namespace StarryFramework.Editor
             {
                 EditorGUILayout.BeginVertical("box");
                 {
-                    EditorGUILayout.LabelField("Count", t.triggerTimers.Count.ToString());
+                    EditorGUILayout.LabelField("Count", t.TriggerTimers.Count.ToString());
                     EditorGUILayout.Space(2);
-                    foreach (var timer in t.triggerTimers)
+                    foreach (var timer in t.TriggerTimers)
                     {
                         string name = timer.Name == "" ? "Unamed" : timer.Name;
                         string timerState = timer.TimerState.ToString();
@@ -132,9 +132,9 @@ namespace StarryFramework.Editor
             {
                 EditorGUILayout.BeginVertical("box");
                 {
-                    EditorGUILayout.LabelField("Count", t.asyncTimers.Count.ToString());
+                    EditorGUILayout.LabelField("Count", t.AsyncTimers.Count.ToString());
                     EditorGUILayout.Space(2);
-                    foreach (var timer in t.asyncTimers)
+                    foreach (var timer in t.AsyncTimers)
                     {
                         string name = timer.Name == "" ? "Unamed" : timer.Name;
                         string timerState = timer.TimerState.ToString();

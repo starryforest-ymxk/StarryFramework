@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace StarryFramework
 {
@@ -14,23 +15,19 @@ namespace StarryFramework
         internal readonly LinkedList<UIForm> uiFormsCacheList = new();
 
         void IManager.Awake() { }
-
         void IManager.Init()
         {
             serial = settings.startOfSerialID;
             cacheCapacity = settings.cacheCapacity;
         }
-
         void IManager.Update()
         {
             Update();
         }
-
         void IManager.ShutDown()
         {
             ShutDown();
         }
-
         void IManager.SetSettings(IManagerSettings settings)
         {
             this.settings = settings as UISettings;
@@ -40,16 +37,16 @@ namespace StarryFramework
 
         #region Has, Get
 
-        public bool HasUIGroup(string uiGroupName)
+        internal bool HasUIGroup(string uiGroupName)
         {
             return uiGroupsDic.ContainsKey(uiGroupName);
         }
-        public UIGroup GetUIGroup(string uiGroupName)
+        internal UIGroup GetUIGroup(string uiGroupName)
         {
             return uiGroupsDic.GetValueOrDefault(uiGroupName);
         }
 
-        public UIGroup[] GetAllUIGroups()
+        internal UIGroup[] GetAllUIGroups()
         {
             return uiGroupsDic.Values.ToArray();
         }
@@ -58,7 +55,7 @@ namespace StarryFramework
         
         #region Add, Remove
 
-        public void AddUIGroup(string uiGroupName)
+        internal void AddUIGroup(string uiGroupName)
         {
             if (uiGroupsDic.ContainsKey(uiGroupName))
             {
@@ -67,8 +64,7 @@ namespace StarryFramework
             }
             uiGroupsDic.Add(uiGroupName, new UIGroup(uiGroupName));
         }
-
-        public void RemoveUIGroup(string uiGroupName)
+        internal void RemoveUIGroup(string uiGroupName)
         {
             if (!uiGroupsDic.ContainsKey(uiGroupName))
             {
@@ -80,13 +76,15 @@ namespace StarryFramework
 
         #endregion
         
+        
+        
         #endregion
         
         #region UIForm
 
         #region Has, Get
 
-        public bool HasUIForm(string uiFormName)
+        internal bool HasUIForm(string uiFormName)
         {
             foreach (var uiGroup in uiGroupsDic.Values)
             {
@@ -96,14 +94,14 @@ namespace StarryFramework
             return false;
         }
         
-        public UIForm GetUIForm(string uiFormName)
+        internal UIForm GetUIForm(string uiFormName)
         {
             foreach (var uiGroup in uiGroupsDic.Values)
             {
                 if(uiGroup.HasUIForm(uiFormName))
                     return uiGroup.GetUIForm(uiFormName);
             }
-            FrameworkManager.Debugger.LogWarning($"UI Form {uiFormName} doesn't exist");
+            FrameworkManager.Debugger.Log($"UI Form {uiFormName} doesn't exist");
             return null;
         }
 
@@ -111,60 +109,65 @@ namespace StarryFramework
         
         #region Open, Close, Refocus
         
-        public void OpenUIForm(string uiFormName, string uiGroupName, bool pauseCoveredUIForm)
+        internal AsyncOperationHandle<UIForm> OpenUIForm(string uiFormName, string uiGroupName, bool pauseCoveredUIForm)
         {
             if (string.IsNullOrEmpty(uiFormName))
             {
-                FrameworkManager.Debugger.LogError($"UI Form name {uiFormName} can't be null or empty");
-                return;
+                var errorString = $"UI Form name {uiFormName} can't be null or empty";
+                FrameworkManager.Debugger.LogError(errorString);
+                return Addressables.ResourceManager.CreateCompletedOperation<UIForm>(null, errorString);
             }
             if (string.IsNullOrEmpty(uiGroupName))
             {
-                FrameworkManager.Debugger.LogError($"UI Group name {uiGroupName} can't be null or empty");
-                return;
+                var errorString = $"UI Group name {uiGroupName} can't be null or empty";
+                FrameworkManager.Debugger.LogError(errorString);
+                return Addressables.ResourceManager.CreateCompletedOperation<UIForm>(null, errorString);
             }
             UIGroup uiGroup = GetUIGroup(uiGroupName);
             if (uiGroup == null)
             {
-                FrameworkManager.Debugger.LogError($"UI Group {uiGroupName} doesn't exist");
-                return;
+                var errorString = $"UI Group {uiGroupName} doesn't exist";
+                FrameworkManager.Debugger.LogError(errorString);
+                return Addressables.ResourceManager.CreateCompletedOperation<UIForm>(null, errorString);
             }
             
             //Load form from cache
             if (TryGetUIFormFromCache(uiFormName, out UIForm uiForm))
             {
-                uiForm.UIObject.SetActive(true);
+                // uiForm.UIObject.SetActive(true);
                 //Parent?
-                uiGroup.AddUIForm(uiForm);
-                uiForm.OnOpen();
+                uiGroup.AddAndOpenUIForm(uiForm);
                 uiGroup.Refresh();
+                return Addressables.ResourceManager.CreateCompletedOperation(uiForm, null);
             }
             //Load form from disk
-            else
+            
+            var objectHandle = Addressables.LoadAssetAsync<GameObject>(uiFormName);
+            var formHandle = Addressables.ResourceManager.CreateChainOperation(objectHandle,
+            (operationHandle) =>
             {
-                Addressables.LoadAssetAsync<GameObject>(uiFormName).Completed+= (handle) =>
-                {
-                    GameObject uiPrefab = handle.Result;
-                    GameObject uiObject = Object.Instantiate(uiPrefab);
-                    //Parent?
-                    UIFormLogic uiFormLogic = uiObject.GetComponent<UIFormLogic>();
-                    UIForm newForm = new UIForm();
-                    newForm.OnInit(serial++, uiFormName, uiGroup, pauseCoveredUIForm, uiFormLogic, uiPrefab, uiObject);
-                    uiGroup.AddUIForm(newForm);
-                    newForm.OnOpen();
-                    uiGroup.Refresh();
-                };
-            }
+                if (operationHandle.Status != AsyncOperationStatus.Succeeded)
+                    return Addressables.ResourceManager.CreateCompletedOperation<UIForm>(null, operationHandle.OperationException.Message);
+                GameObject uiPrefab = operationHandle.Result;
+                GameObject uiObject = Object.Instantiate(uiPrefab);
+                //Parent?
+                UIFormLogic uiFormLogic = uiObject.GetComponent<UIFormLogic>();
+                UIForm newForm = new UIForm();
+                AddUIFormInCache(newForm);
+                newForm.OnInit(serial++, uiFormName, uiGroup, pauseCoveredUIForm, uiFormLogic, uiPrefab/*, uiObject*/);
+                uiGroup.AddAndOpenUIForm(newForm);
+                uiGroup.Refresh();
+                return Addressables.ResourceManager.CreateCompletedOperation(newForm, null);
+            });
+            return formHandle;
         }
-
-        public void CloseUIForm(string uiFormName)
+        internal void CloseUIForm(string uiFormName)
         {
             UIForm uiForm = GetUIForm(uiFormName);
             if(uiForm != null)
                 CloseUIForm(uiForm);
         }
-        
-        public void CloseUIForm(UIForm uiForm)
+        internal void CloseUIForm(UIForm uiForm)
         {
             if (uiForm == null)
             {
@@ -178,20 +181,16 @@ namespace StarryFramework
                 return;
             }
 
-            uiGroup.RemoveUIForm(uiForm);
-            uiForm.OnClose(false);
+            uiGroup.RemoveAndCloseUIForm(uiForm);
             uiGroup.Refresh();
-            RecycleUIForm(uiForm);
         }
-
-        public void RefocusUIForm(string uiFormName)
+        internal void RefocusUIForm(string uiFormName)
         {
             UIForm uiForm = GetUIForm(uiFormName);
             if(uiForm != null)
                 RefocusUIForm(uiForm);
         }
-
-        public void RefocusUIForm(UIForm uiForm)
+        internal void RefocusUIForm(UIForm uiForm)
         {
             if (uiForm == null)
             {
@@ -210,6 +209,18 @@ namespace StarryFramework
             uiGroup.Refresh();
             uiForm.OnRefocus();
         }
+        internal void CloseAndReleaseAllForms()
+        {
+            foreach (var group in uiGroupsDic.Values)
+            {
+                group.RemoveAndCloseAllUIForms(false);
+            }
+            foreach (var form in uiFormsCacheList)
+            {
+                form.OnRelease();
+            }
+            uiFormsCacheList.Clear();
+        }
         
         #endregion
         
@@ -217,9 +228,9 @@ namespace StarryFramework
         
         #region UIForm Cache
 
-        private void RecycleUIForm(UIForm uiForm)
+        private void AddUIFormInCache(UIForm uiForm)
         {
-            uiForm.UIObject.SetActive(false);
+            // uiForm.UIObject.SetActive(false);
             if (InCacheUIForm(uiForm))
             {
                 uiFormsCacheList.Remove(uiForm);
@@ -267,7 +278,6 @@ namespace StarryFramework
                 uiGroup.Update();
             }
         }
-
         private void ShutDown()
         {   
             UIGroup[] uiGroups = uiGroupsDic.Values.ToArray();

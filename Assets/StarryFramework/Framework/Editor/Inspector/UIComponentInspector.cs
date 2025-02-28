@@ -150,8 +150,8 @@ namespace StarryFramework.Editor
                         EditorGUILayout.ObjectField("Form Logic", currentFormLogic, typeof(MonoBehaviour), true);
                     }
                     
-                    EditorGUILayout.ObjectField("UI GameObject", uiForm.UIObject, typeof(GameObject), true);
-                    EditorGUILayout.ObjectField("Object Handle", uiForm.ObjectHandle, typeof(GameObject), false);
+                    //EditorGUILayout.ObjectField("UI GameObject", uiForm.UIObject, typeof(GameObject), true);
+                    //EditorGUILayout.ObjectField("Object Handle", uiForm.ObjectHandle, typeof(GameObject), false);
                     
                     EditorGUILayout.LabelField("Release Tag", uiForm.ReleaseTag.ToString());
                 }
@@ -190,8 +190,8 @@ namespace StarryFramework.Editor
                         EditorGUILayout.ObjectField("Form Logic", currentFormLogic, typeof(MonoBehaviour), true);
                     }
                     
-                    EditorGUILayout.ObjectField("UI GameObject", uiForm.UIObject, typeof(GameObject), true);
-                    EditorGUILayout.ObjectField("Object Handle", uiForm.ObjectHandle, typeof(GameObject), false);
+                    //EditorGUILayout.ObjectField("UI GameObject", uiForm.UIObject, typeof(GameObject), true);
+                    //EditorGUILayout.ObjectField("Object Handle", uiForm.ObjectHandle, typeof(GameObject), false);
                     
                     EditorGUILayout.LabelField("Release Tag", uiForm.ReleaseTag.ToString());
                 }

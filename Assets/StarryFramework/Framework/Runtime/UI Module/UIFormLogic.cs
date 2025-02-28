@@ -12,7 +12,8 @@ namespace StarryFramework
         /// <summary>
         /// 资源加载时被调用
         /// </summary>
-        public void OnInit();
+        /// <param name="uiPrefab"></param>
+        public void OnInit(GameObject uiPrefab);
 
         /// <summary>
         /// 资源释放时被调用

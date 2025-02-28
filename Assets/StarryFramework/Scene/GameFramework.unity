@@ -170,6 +170,53 @@ MonoBehaviour:
   settings:
     ClearUnusedTriggerTimersInterval: 120
     ClearUnusedAsyncTimersInterval: 120
+--- !u!1 &311467482
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 311467483}
+  - component: {fileID: 311467484}
+  m_Layer: 0
+  m_Name: UI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &311467483
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 311467482}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1967844061}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &311467484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 311467482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd019b5e95da8f14782f19ad67fe8f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settings:
+    cacheCapacity: 10
+    startOfSerialID: 0
 --- !u!1 &491933628
 GameObject:
   m_ObjectHideFlags: 0
@@ -608,6 +655,7 @@ Transform:
   - {fileID: 491933629}
   - {fileID: 609840202}
   - {fileID: 2042942911}
+  - {fileID: 311467483}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1967844062
@@ -629,7 +677,7 @@ MonoBehaviour:
   frameworkSetting:
     debugType: 2
     InternalEventTrigger: 1
-    StartScene: 1
+    StartScene: 11
     StartSceneAnimation: 0
     modules: 0000000002000000010000000400000005000000060000000300000007000000
 --- !u!1 &2042942910

@@ -1,21 +1,21 @@
 using UnityEngine;
-using UnityEngine.Events;
-using System;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEngine.ResourceManagement.AsyncOperations;
+
 
 namespace StarryFramework
 {
     [DisallowMultipleComponent]
     public class UIComponent : BaseComponent
     {
-        private UIManager _manager = null;
-        private UIManager manager => _manager ??= FrameworkManager.GetManager<UIManager>();
+        private UIManager _manager;
+        private UIManager Manager => _manager ??= FrameworkManager.GetManager<UIManager>();
         
         [SerializeField] private UISettings settings;
         
-        public Dictionary<string, UIGroup> UIGroupsDic => manager.uiGroupsDic;
-        public LinkedList<UIForm> UIFormsCacheList => manager.uiFormsCacheList;
+        public Dictionary<string, UIGroup> UIGroupsDic => Manager.uiGroupsDic;
+        public LinkedList<UIForm> UIFormsCacheList => Manager.uiFormsCacheList;
         
 #if UNITY_EDITOR
         private void OnValidate()
@@ -37,27 +37,27 @@ namespace StarryFramework
 
         public bool HasUIGroup(string uiGroupName)
         {
-            return manager.HasUIGroup(uiGroupName);
+            return Manager.HasUIGroup(uiGroupName);
         }
         
         public UIGroup GetUIGroup(string uiGroupName)
         {
-            return manager.GetUIGroup(uiGroupName);
+            return Manager.GetUIGroup(uiGroupName);
         }
 
         public UIGroup[] GetAllUIGroups()
         {
-            return manager.GetAllUIGroups();
+            return Manager.GetAllUIGroups();
         }
         
         public void AddUIGroup(string uiGroupName)
         {
-            manager.AddUIGroup(uiGroupName);
+            Manager.AddUIGroup(uiGroupName);
         }
 
         public void RemoveUIGroup(string uiGroupName)
         {
-            manager.RemoveUIGroup(uiGroupName);
+            Manager.RemoveUIGroup(uiGroupName);
         }
         
         
@@ -65,42 +65,47 @@ namespace StarryFramework
         
         #region UIForm
 
-        public bool HasUIForm(string uiFormName)
+        public bool HasUIForm(string uiFormAssetName)
         {
-            return manager.HasUIForm(uiFormName);
+            return Manager.HasUIForm(uiFormAssetName);
         }
         
-        public UIForm GetUIForm(string uiFormName)
+        public UIForm GetUIForm(string uiFormAssetName)
         {
-            return manager.GetUIForm(uiFormName);
+            return Manager.GetUIForm(uiFormAssetName);
         }
 
-        public void OpenUIForm(string uiFormName, string uiGroupName, bool pauseCoveredUIForm)
+        public AsyncOperationHandle<UIForm> OpenUIForm(string uiFormAssetName, string uiGroupName, bool pauseCoveredUIForm)
         {
-            manager.OpenUIForm(uiFormName, uiGroupName, pauseCoveredUIForm);
+            return Manager.OpenUIForm(uiFormAssetName, uiGroupName, pauseCoveredUIForm);
         }
 
-        public void CloseUIForm(string uiFormName)
+        public void CloseUIForm(string uiFormAssetName)
         {
-            manager.CloseUIForm(uiFormName);
+            Manager.CloseUIForm(uiFormAssetName);
         }
         
         public void CloseUIForm(UIForm uiForm)
         {
-            manager.CloseUIForm(uiForm);
+            Manager.CloseUIForm(uiForm);
         }
 
-        public void RefocusUIForm(string uiFormName)
+        public void RefocusUIForm(string uiFormAssetName)
         {
-            manager.RefocusUIForm(uiFormName);
+            Manager.RefocusUIForm(uiFormAssetName);
         }
 
         public void RefocusUIForm(UIForm uiForm)
         {
-            manager.RefocusUIForm(uiForm);
+            Manager.RefocusUIForm(uiForm);
         }
         
         #endregion
+        
+        public void CloseAndReleaseAllForms()
+        {
+            Manager.CloseAndReleaseAllForms();
+        }
         
     }
 }

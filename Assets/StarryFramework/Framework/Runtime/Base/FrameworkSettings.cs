@@ -19,6 +19,9 @@ namespace StarryFramework
         [Header("Framework Internal Event")] [Tooltip("框架内部事件被触发时，是否会同时触发外部同名事件。When an internal framework event is triggered, whether an external event with the same name will also be triggered simultaneously")] [Space(5)] 
         [SerializeField] internal bool InternalEventTrigger = true;
         
+        // [Header("PlayMode Entry")] [Tooltip("编辑器进入运行状态时场景启动的方式。Way of scene starts when the editor enters playmode")] [Space(5)] 
+        // [SerializeField] internal EnterPlayModeWay enterPlayModeWay = EnterPlayModeWay.FrameworkStart;
+        
         [Header("Initial Scene Load")] [Tooltip("游戏启动加载的初始场景，如果是GameFramework则不加载。If the initial scene to load is the GameFramework, then it does nothing")] [Space(5)] 
         [SerializeField] [SceneIndex] internal int StartScene = 0;
 

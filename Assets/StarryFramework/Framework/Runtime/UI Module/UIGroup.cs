@@ -160,13 +160,14 @@ namespace StarryFramework
         #endregion
         
         #region Add, Remove, Refocus
-        internal void AddUIForm(UIForm uiForm)
+        internal void AddAndOpenUIForm(UIForm uiForm)
         {
             formCount++;
             formInfosList.AddFirst(new UIFormInfo(uiForm));
             DepthRefresh();
+            uiForm.OnOpen();
         }
-        internal void RemoveUIForm(UIForm uiForm)
+        internal void RemoveAndCloseUIForm(UIForm uiForm)
         {
             UIFormInfo uiFormInfo = GetUIFormInfo(uiForm);
             if (uiFormInfo == null)
@@ -191,6 +192,8 @@ namespace StarryFramework
             {
                 formCount--;
                 DepthRefresh();
+                
+                uiForm.OnClose(false);
                 return;
             }
             
@@ -208,6 +211,14 @@ namespace StarryFramework
             formInfosList.Remove(uiFormInfo);
             formInfosList.AddFirst(uiFormInfo);
             DepthRefresh();
+        }
+        internal void RemoveAndCloseAllUIForms(bool isShutdown)
+        {
+            foreach (UIFormInfo uiFormInfo in formInfosList)
+            {
+                uiFormInfo.UIForm.OnClose(isShutdown);
+            }
+            formInfosList.Clear();
         }
         
         #endregion
@@ -294,12 +305,7 @@ namespace StarryFramework
 
         internal void ShutDown()
         {
-            foreach (var uiFormInfo in formInfosList)
-            {
-                uiFormInfo.UIForm.OnClose(true);
-                uiFormInfo.UIForm.OnRelease();
-            }
-            formInfosList.Clear();
+            RemoveAndCloseAllUIForms(true);
         }
         
     }

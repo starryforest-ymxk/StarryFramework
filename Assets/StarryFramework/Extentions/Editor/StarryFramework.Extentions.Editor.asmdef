@@ -1,0 +1,21 @@
+{
+    "name": "StarryFramework.Extentions.Editor",
+    "rootNamespace": "StarryFramework.Extentions.Editor",
+    "references": [
+        "GUID:a389c918a09848e419d0e94cb731045c",
+        "GUID:0824785269955504b9ce09a0e0a7ad17",
+        "GUID:93c5c62b65328674498bcbad89c1990c",
+        "GUID:0c752da273b17c547ae705acf0f2adf2"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

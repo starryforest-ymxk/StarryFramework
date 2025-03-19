@@ -1,0 +1,17 @@
+{
+    "name": "StarryFramework.Extensions",
+    "rootNamespace": "StarryFramework.Extensions",
+    "references": [
+        "GUID:a389c918a09848e419d0e94cb731045c",
+        "GUID:0c752da273b17c547ae705acf0f2adf2"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/StarryFramework/Scene/GameFramework.unity
+    path: Assets/StarryFramework/Runtime/Scene/GameFramework.unity
     guid: cde0dbe3e147cb542ab8c8d376dd3248
   - enabled: 1
     path: Assets/Test/TestSave/TestSave.unity

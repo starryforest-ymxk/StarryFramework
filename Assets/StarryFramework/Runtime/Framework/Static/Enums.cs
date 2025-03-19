@@ -31,7 +31,4 @@ namespace StarryFramework
 
     [Serializable]
     public enum LoadState { Loading, Idle }
-
-    [Serializable]
-    public enum AudioState { Stop, Pause, Playing }
 }

@@ -1,11 +1,12 @@
 {
-    "name": "StarryFramework.Extensions",
-    "rootNamespace": "StarryFramework.Extensions",
+    "name": "StarryFramework.Editor",
+    "rootNamespace": "StarryFramework.Editor",
     "references": [
-        "GUID:0c752da273b17c547ae705acf0f2adf2",
-        "GUID:e6aa350bd05041648ad649c004ec57e8"
+        "GUID:a389c918a09848e419d0e94cb731045c"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

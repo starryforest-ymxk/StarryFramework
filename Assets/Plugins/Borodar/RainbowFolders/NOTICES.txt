@@ -1,0 +1,6 @@
+This software includes third-party software subject to the associated copyrights, as follows:
+
+Name: Unity-Reorderable-List
+Repo: https://github.com/cfoulston/Unity-Reorderable-List
+License: MIT (https://github.com/cfoulston/Unity-Reorderable-List/blob/master/LICENSE)
+Copyright (c) 2017 Chris Foulston

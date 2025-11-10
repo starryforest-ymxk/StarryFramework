@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "ignored_packages": [
+    "com.unity.collab-proxy",
+    "com.unity.ide.rider",
+    "com.unity.ide.vscode",
+    "com.unity.ide.visualstudio",
+    "com.unity.visualscripting"
+  ]
+}

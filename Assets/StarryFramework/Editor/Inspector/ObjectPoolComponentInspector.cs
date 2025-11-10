@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-
 namespace StarryFramework.Editor
 {
+    /// <summary>
+    /// ObjectPoolComponent的自定义Inspector面板
+    /// 运行时显示对象池的信息和配置
+    /// </summary>
     [CustomEditor(typeof(ObjectPoolComponent))]
     public class ObjectPoolComponentInspector : FrameworkInspector
     {
@@ -15,7 +18,7 @@ namespace StarryFramework.Editor
 
             if (!EditorApplication.isPlaying)
             {
-                EditorGUILayout.HelpBox("Available during runtime only.", MessageType.Info);
+                EditorGUILayout.HelpBox("仅在运行时可用", MessageType.Info);
                 return;
             }
 

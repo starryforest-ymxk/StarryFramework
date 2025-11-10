@@ -7,6 +7,10 @@ using UnityEngine.Events;
 
 namespace StarryFramework.Editor
 {
+    /// <summary>
+    /// SaveComponentçš„è‡ªå®šä¹‰Inspectoré¢æ¿
+    /// è¿è¡Œæ—¶æ˜¾ç¤ºå­˜æ¡£çŠ¶æ€ã€ç©å®¶æ•°æ®ã€æ¸¸æˆè®¾ç½®ç­‰ä¿¡æ¯
+    /// </summary>
     [CustomEditor(typeof(SaveComponent))]
     public class SaveComponentInspector : FrameworkInspector
     {
@@ -91,34 +95,34 @@ namespace StarryFramework.Editor
 
         private void DrawInfos(SaveComponent s)
         {
-            DataLoadFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(DataLoadFoldout, "´æµµ¹ÜÀí", EditorStyles.boldLabel);
+            DataLoadFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(DataLoadFoldout, "å­˜æ¡£åŠ è½½", EditorStyles.boldLabel);
             
             if(DataLoadFoldout)
             {
-                string dataState = s.CurrentLoadedDataIndex == -1 ? "Î´¼ÓÔØ" : "ÒÑ¼ÓÔØ";
-                EditorGUILayout.LabelField("´æµµ×´Ì¬", dataState);
+                string dataState = s.CurrentLoadedDataIndex == -1 ? "æœªåŠ è½½" : "å·²åŠ è½½";
+                EditorGUILayout.LabelField("å­˜æ¡£çŠ¶æ€", dataState);
                 if (s.CurrentLoadedDataIndex != -1)
                 {
                     EditorGUILayout.BeginVertical("box");
-                    EditorGUILayout.LabelField("´æµµ±àºÅ", s.CurrentLoadedDataIndex.ToString());
-                    DrawPlayerData(s);//µ±Ç°´æµµÄÚÈİ
+                    EditorGUILayout.LabelField("å­˜æ¡£ç´¢å¼•", s.CurrentLoadedDataIndex.ToString());
+                    DrawPlayerData(s);
                     EditorGUILayout.EndVertical();
                 }
 
 
-                string defaultLoad = s.DefaultDataIndex == -1 ? "½ûÖ¹" : "ÔÊĞí";
-                EditorGUILayout.LabelField("Ä¬ÈÏ¼ÓÔØ", defaultLoad);
+                string defaultLoad = s.DefaultDataIndex == -1 ? "ç¦æ­¢" : "å¯ç”¨";
+                EditorGUILayout.LabelField("é»˜è®¤åŠ è½½", defaultLoad);
                 if (s.DefaultDataIndex != -1)
                 {
                     EditorGUILayout.BeginVertical("box");
-                    EditorGUILayout.LabelField("Ä¬ÈÏ¼ÓÔØ´æµµ±àºÅ", s.DefaultDataIndex.ToString());
+                    EditorGUILayout.LabelField("é»˜è®¤åŠ è½½å­˜æ¡£ç´¢å¼•", s.DefaultDataIndex.ToString());
                     EditorGUILayout.EndVertical();
                 }
 
-                string autoSave = s.AutoSave ? "¿ªÆô" : "¹Ø±Õ";
-                EditorGUILayout.LabelField("×Ô¶¯´æµµ", autoSave);
-                EditorGUILayout.LabelField("×Ô¶¯´æµµ¼ä¸ô", s.AutoSaveDataInterval.ToString("F2") + "s");
-                EditorGUILayout.LabelField("ÉÏ´Î×Ô¶¯±£´æÊ±¼ä", s.LastAutoSaveTime.ToString("F2") + "s");
+                string autoSave = s.AutoSave ? "å¯ç”¨" : "å…³é—­";
+                EditorGUILayout.LabelField("è‡ªåŠ¨å­˜æ¡£", autoSave);
+                EditorGUILayout.LabelField("è‡ªåŠ¨å­˜æ¡£é—´éš”", s.AutoSaveDataInterval.ToString("F2") + "s");
+                EditorGUILayout.LabelField("ä¸Šæ¬¡è‡ªåŠ¨ä¿å­˜æ—¶é—´", s.LastAutoSaveTime.ToString("F2") + "s");
 
             }
 
@@ -135,18 +139,14 @@ namespace StarryFramework.Editor
                 {
                     EditorGUILayout.BeginVertical("box");
                     {
-                        // »ñÈ¡¶ÔÏóµÄÀàĞÍ
                         System.Type objectType = s.PlayerData.GetType();
 
-                        // Ê¹ÓÃ·´Éä»ñÈ¡¶ÔÏóµÄËùÓĞ×Ö¶Î
                         FieldInfo[] fields = objectType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
                         foreach (FieldInfo field in fields)
                         {
-                            // Í¨¹ıSerializedObject»ñÈ¡×Ö¶ÎµÄSerializedProperty
                             SerializedProperty serializedProperty = playerDataObject.FindProperty(field.Name);
 
-                            // ÏÔÊ¾×Ö¶ÎÃû³ÆºÍ×Ö¶ÎÖµ
                             if (serializedProperty != null)
                             {
                                 EditorGUILayout.PropertyField(serializedProperty);
@@ -165,7 +165,7 @@ namespace StarryFramework.Editor
 
         private void DrawGameSettings(SaveComponent s)
         {
-            SettingFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(SettingFoldout, "ÉèÖÃ¹ÜÀí", EditorStyles.boldLabel);
+            SettingFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(SettingFoldout, "æ¸¸æˆè®¾ç½®", EditorStyles.boldLabel);
 
             SerializeSetting(s.GameSettings);
 
@@ -173,15 +173,12 @@ namespace StarryFramework.Editor
             {
                 System.Type objectType = s.GameSettings.GetType();
 
-                // Ê¹ÓÃ·´Éä»ñÈ¡¶ÔÏóµÄËùÓĞ×Ö¶Î
                 FieldInfo[] fields = objectType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
                 foreach (FieldInfo field in fields)
                 {
-                    // Í¨¹ıSerializedObject»ñÈ¡×Ö¶ÎµÄSerializedProperty
                     SerializedProperty serializedProperty = gameSettingsObject.FindProperty(field.Name);
 
-                    // ÏÔÊ¾×Ö¶ÎÃû³ÆºÍ×Ö¶ÎÖµ
                     if (serializedProperty != null)
                     {
                         EditorGUILayout.PropertyField(serializedProperty);
@@ -196,11 +193,11 @@ namespace StarryFramework.Editor
 
         private void DrawSaveInfo(SaveComponent s)
         {
-            SaveInfoFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(SaveInfoFoldout, "´æµµ×¢ÊÍ", EditorStyles.boldLabel);
+            SaveInfoFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(SaveInfoFoldout, "å­˜æ¡£æ³¨é‡Š", EditorStyles.boldLabel);
             if(SaveInfoFoldout)
             {
-                EditorGUILayout.LabelField("µ±Ç°Ä¬ÈÏ´æµµ×¢ÊÍ", s.AutoSaveInfo);
-                saveInfoListFoldout = EditorGUILayout.Foldout(saveInfoListFoldout, "´æµµ×¢ÊÍÁĞ±í");
+                EditorGUILayout.LabelField("å½“å‰é»˜è®¤å­˜æ¡£æ³¨é‡Š", s.AutoSaveInfo);
+                saveInfoListFoldout = EditorGUILayout.Foldout(saveInfoListFoldout, "å­˜æ¡£æ³¨é‡Šåˆ—è¡¨");
                 if (saveInfoListFoldout)
                 {
                     EditorGUILayout.BeginVertical("box");
@@ -219,10 +216,10 @@ namespace StarryFramework.Editor
 
         private void DrawPlayerDataInfo(SaveComponent s)
         {
-            DataInfoFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(DataInfoFoldout, "´æµµĞÅÏ¢", EditorStyles.boldLabel);
+            DataInfoFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(DataInfoFoldout, "å­˜æ¡£ä¿¡æ¯", EditorStyles.boldLabel);
             if(DataInfoFoldout)
             {
-                EditorGUILayout.LabelField("´æµµĞÅÏ¢ÁĞ±í", s.AutoSaveInfo);
+                EditorGUILayout.LabelField("å­˜æ¡£ä¿¡æ¯åˆ—è¡¨", s.AutoSaveInfo);
                 EditorGUILayout.BeginVertical("box");
                 {
                     if (s.DataInfoDic != null && s.DataInfoDic.Count != 0)

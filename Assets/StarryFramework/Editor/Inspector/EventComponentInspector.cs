@@ -6,8 +6,10 @@ using static Codice.CM.WorkspaceServer.WorkspaceTreeDataStore;
 
 namespace StarryFramework.Editor
 {
-
-
+    /// <summary>
+    /// EventComponent的自定义Inspector面板
+    /// 运行时显示事件触发信息和已注册的事件监听器信息
+    /// </summary>
     [CustomEditor(typeof(EventComponent))]
     public class EventComponentInspector : FrameworkInspector
     {
@@ -21,7 +23,7 @@ namespace StarryFramework.Editor
 
             if (!EditorApplication.isPlaying)
             {
-                EditorGUILayout.HelpBox("Available during runtime only.", MessageType.Info);
+                EditorGUILayout.HelpBox("仅在运行时可用", MessageType.Info);
                 return;
             }
 
@@ -38,7 +40,7 @@ namespace StarryFramework.Editor
 
         private void DrawLastEventInfo(EventComponent e)
         {
-            foldoutGroupLastEvent = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutGroupLastEvent, "�ϴδ������¼���Ϣ");
+            foldoutGroupLastEvent = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutGroupLastEvent, "上次触发的事件信息");
 
             if (foldoutGroupLastEvent)
             {
@@ -52,7 +54,7 @@ namespace StarryFramework.Editor
 
         private void DrawAllEventsInfo(EventComponent e)
         {
-            foldoutGroupEventsInfo = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutGroupEventsInfo, "������ע����¼���Ϣ");
+            foldoutGroupEventsInfo = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutGroupEventsInfo, "所有已注册事件信息");
 
             if (foldoutGroupEventsInfo)
             {

@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-
 namespace StarryFramework.Editor
 {
+    /// <summary>
+    /// SceneComponent的自定义Inspector面板
+    /// 运行时显示当前场景信息和场景运行时间
+    /// </summary>
     [CustomEditor(typeof(SceneComponent))]
     public class SceneComponentInspector : FrameworkInspector
     {

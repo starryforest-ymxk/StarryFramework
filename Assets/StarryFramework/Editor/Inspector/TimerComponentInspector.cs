@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-
 namespace StarryFramework.Editor
 {
+    /// <summary>
+    /// TimerComponentçš„è‡ªå®šä¹‰Inspectoré¢æ¿
+    /// è¿è¡Œæ—¶æ˜¾ç¤ºå„ç§è®¡æ—¶å™¨çš„çŠ¶æ€å’Œä¿¡æ¯
+    /// </summary>
     [CustomEditor(typeof(TimerComponent))]
     public class TimerComponentInspector : FrameworkInspector
     {
@@ -44,7 +47,7 @@ namespace StarryFramework.Editor
 
         public void DrawTimers(TimerComponent t)
         {
-            foldoutTimers = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutTimers, "¼ÆÊ±Æ÷ĞÅÏ¢");
+            foldoutTimers = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutTimers, "è®¡æ—¶å™¨ä¿¡æ¯");
 
             if (foldoutTimers)
             {
@@ -84,7 +87,7 @@ namespace StarryFramework.Editor
 
         public void DrawTriggerTimers(TimerComponent t)
         {
-            foldoutTriggerTimers = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutTriggerTimers, "´¥·¢¼ÆÊ±Æ÷ĞÅÏ¢");
+            foldoutTriggerTimers = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutTriggerTimers, "è§¦å‘å™¨è®¡æ—¶å™¨ä¿¡æ¯");
 
             if (foldoutTriggerTimers)
             {
@@ -126,7 +129,7 @@ namespace StarryFramework.Editor
 
         public void DrawAsyncTimers(TimerComponent t)
         {
-            foldoutAsyncTimers = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutAsyncTimers, "Òì²½¼ÆÊ±Æ÷ĞÅÏ¢");
+            foldoutAsyncTimers = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutAsyncTimers, "å¼‚æ­¥è®¡æ—¶å™¨ä¿¡æ¯");
 
             if (foldoutAsyncTimers)
             {
@@ -149,7 +152,7 @@ namespace StarryFramework.Editor
 
         public void DrawAutoClear(TimerComponent t)
         {
-            foldoutClear = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutClear, "¼ÆÊ±Æ÷×Ô¶¯»ØÊÕ");
+            foldoutClear = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutClear, "è®¡æ—¶å™¨è‡ªåŠ¨æ¸…ç†");
             if(foldoutClear)
             {
                 EditorGUILayout.BeginVertical("box");

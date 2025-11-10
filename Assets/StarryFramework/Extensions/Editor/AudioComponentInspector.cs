@@ -5,6 +5,10 @@ using UnityEditor;
 
 namespace StarryFramework.Extentions.Editor
 {
+    /// <summary>
+    /// AudioComponent的自定义Inspector面板
+    /// 运行时显示背景音乐状态和播放列表信息
+    /// </summary>
     [CustomEditor(typeof(AudioComponent))]
     public class AudioComponentInspector : FrameworkInspector
     {

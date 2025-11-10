@@ -1,6 +1,8 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
-using System;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using Object = UnityEngine.Object;
 
 namespace StarryFramework
 {
@@ -20,6 +22,7 @@ namespace StarryFramework
         public Type TargetType => _targetType;
 
         private ResourceRequest latestRequest;
+        private AsyncOperationHandle latestAddressableHandle;
 
         protected override void Awake()
         {
@@ -31,35 +34,41 @@ namespace StarryFramework
         {
             if(_state == LoadState.Loading)
             {
-                _progress = latestRequest.progress;
+                if (latestRequest != null)
+                {
+                    _progress = latestRequest.progress;
+                }
+                else if (latestAddressableHandle.IsValid())
+                {
+                    _progress = latestAddressableHandle.PercentComplete;
+                }
             }
         }
 
-
         /// <summary>
-        /// Í¬²½¼ÓÔØÒ»¸ö×ÊÔ´
+        /// ä»Resourcesæ–‡ä»¶å¤¹åŒæ­¥åŠ è½½ä¸€ä¸ªèµ„æº
         /// </summary>
-        /// <typeparam path="T">×ÊÔ´µÄÀàĞÍ</typeparam>
-        /// <param path="path">×ÊÔ´ÔÚResourcesÎÄ¼ş¼ĞÏÂÍêÕûÂ·¾¶Ãû</param>
-        /// <param path="GameObjectInstantiate">Èç¹û×ÊÔ´ÊÇGameObjectÊÇ·ñÖ±½ÓÉú³É</param>
-        /// <returns>Èç¹ûÏàÓ¦×ÊÔ´ÎªGameobjet,ÔòÉú³É²¢·µ»ØÎïÌå£»Èç¹û²»ÊÇ£¬ÔòÖ±½Ó·µ»ØÎïÌå</returns>
-        public T LoadRes<T>(string path, bool GameObjectInstantiate = false) where T : UnityEngine.Object
+        /// <typeparam name="T">èµ„æºçš„ç±»å‹</typeparam>
+        /// <param name="path">èµ„æºåœ¨Resourcesæ–‡ä»¶å¤¹å†…çš„ç›¸å¯¹è·¯å¾„</param>
+        /// <param name="gameObjectInstantiate">å¦‚æœèµ„æºæ˜¯GameObjectæ˜¯å¦ç›´æ¥å®ä¾‹åŒ–</param>
+        /// <returns>å¦‚æœå¯¹åº”èµ„æºä¸ºGameObjectï¼Œæ˜¯å¦å®ä¾‹åŒ–å¯é€‰ï¼›å¦‚æœä¸æ˜¯ï¼Œåˆ™ç›´æ¥è¿”å›èµ„æº</returns>
+        public T LoadRes<T>(string path, bool gameObjectInstantiate = false) where T : Object
         {
             _targetType = typeof(T);
             _resourcePath = path;
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.BeforeLoadAsset);
-            T t =  Manager.LoadRes<T>(path, GameObjectInstantiate);
+            T t =  Manager.LoadRes<T>(path, gameObjectInstantiate);
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.AfterLoadAsset);
             return t;
         }
 
         /// <summary>
-        /// Í¬²½¼ÓÔØÂ·¾¶ÏÂËùÓĞ×ÊÔ´
+        /// ä»Resourcesæ–‡ä»¶å¤¹åŒæ­¥åŠ è½½è·¯å¾„ä¸‹æ‰€æœ‰èµ„æº
         /// </summary>
-        /// <typeparam path="T">×ÊÔ´µÄÀàĞÍ</typeparam>
-        /// <param path="path">Â·¾¶</param>
-        /// <returns>¼ÓÔØµÄ×ÊÔ´Êı×é</returns>
-        public T[] LoadAllRes<T>(string path) where T : UnityEngine.Object
+        /// <typeparam name="T">èµ„æºçš„ç±»å‹</typeparam>
+        /// <param name="path">è·¯å¾„</param>
+        /// <returns>è¿”å›çš„èµ„æºæ•°ç»„</returns>
+        public T[] LoadAllRes<T>(string path) where T : Object
         {
             _targetType = typeof(T);
             _resourcePath = path;
@@ -70,44 +79,151 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Òì²½¼ÓÔØ×ÊÔ´
+        /// ä»Resourcesæ–‡ä»¶å¤¹å¼‚æ­¥åŠ è½½èµ„æº
         /// </summary>
-        /// <typeparam path="T">×ÊÔ´ÀàĞÍ</typeparam>
-        /// <param path="path">×ÊÔ´ÔÚResourcesÎÄ¼ş¼ĞÏÂµÄÂ·¾¶£¬Ê¡ÂÔÀ©Õ¹Ãû</param>
-        /// <param path="callBack">×ÊÔ´¼ÓÔØÍêµÄ»Øµ÷£¬ÒÔ¼ÓÔØµÄ×ÊÔ´ÎïÌåÎª²ÎÊı</param>
-        /// <param path="GameObjectInstantiate">Èç¹û×ÊÔ´ÊÇGameObjectÊÇ·ñÖ±½ÓÉú³É</param> 
-        /// <returns>×ÊÔ´¼ÓÔØÇëÇó</returns>
-        public ResourceRequest LoadAsync<T>(string path, UnityAction<T> callBack, bool GameObjectInstantiate = false) where T : UnityEngine.Object
+        /// <typeparam name="T">èµ„æºç±»å‹</typeparam>
+        /// <param name="path">èµ„æºåœ¨Resourcesæ–‡ä»¶å¤¹ä¸‹çš„è·¯å¾„ï¼Œçœç•¥æ‰©å±•å</param>
+        /// <param name="callBack">èµ„æºåŠ è½½å®Œæˆçš„å›è°ƒï¼Œä»¥åŠ è½½çš„èµ„æºä½œä¸ºå‚æ•°</param>
+        /// <param name="gameObjectInstantiate">å¦‚æœèµ„æºæ˜¯GameObjectæ˜¯å¦ç›´æ¥å®ä¾‹åŒ–</param> 
+        /// <returns>èµ„æºè¯·æ±‚å¯¹è±¡</returns>
+        public ResourceRequest LoadResAsync<T>(string path, UnityAction<T> callBack, bool gameObjectInstantiate = false) where T : Object
         {
             _targetType = typeof(T);
             _resourcePath = path;
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.BeforeLoadAsset);
             _state = LoadState.Loading;
-            callBack += (a) => {
+            callBack += _ => {
                 _state = LoadState.Idle; 
                 _progress = 1f; 
                 FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.AfterLoadAsset); 
             };
-            ResourceRequest r = Manager.LoadAsync<T>(path, callBack, GameObjectInstantiate);
+            ResourceRequest r = Manager.LoadResAsync(path, callBack, gameObjectInstantiate);
             latestRequest = r;
             return r;
         }
 
         /// <summary>
-        /// Ö»ÄÜĞ¶ÔØ·ÇGameObject¶ÔÏó, GameObject¶ÔÏóÓÃDestroy¼´¿É
+        /// å¸è½½éGameObjectç±»å‹çš„èµ„æºï¼ŒGameObjectéœ€è¦ç”¨Destroyé”€æ¯
         /// </summary>
-        /// <param path="_object"></param>
-        public void Unload(UnityEngine.Object _object)
+        /// <param name="object">è¦å¸è½½çš„èµ„æºå¯¹è±¡</param>
+        public void UnloadRes(Object @object)
         {
-            Manager.Unload(_object);
+            Manager.UnloadRes(@object);
         }
 
         /// <summary>
-        /// ÊÍ·ÅËùÓĞÃ»ÔÚÊ¹ÓÃµÄ×ÊÔ´
+        /// é‡Šæ”¾æ‰€æœ‰æœªä½¿ç”¨çš„Resourcesèµ„æº
         /// </summary>
-        public void UnloadUnused()
+        public void UnloadUnusedRes()
         {
-            Manager.UnloadUnused();
+            Manager.UnloadUnusedRes();
+        }
+
+        /// <summary>
+        /// ä»AddressablesåŒæ­¥åŠ è½½èµ„æºï¼ˆä½¿ç”¨WaitForCompletionï¼Œä¼šé˜»å¡ä¸»çº¿ç¨‹ï¼‰
+        /// </summary>
+        /// <typeparam name="T">èµ„æºç±»å‹</typeparam>
+        /// <param name="address">Addressableèµ„æºåœ°å€</param>
+        /// <param name="gameObjectInstantiate">å¦‚æœèµ„æºæ˜¯GameObjectæ˜¯å¦ç›´æ¥å®ä¾‹åŒ–</param>
+        /// <returns>åŠ è½½çš„èµ„æºå¯¹è±¡</returns>
+        public T LoadAddressable<T>(string address, bool gameObjectInstantiate = false) where T : Object
+        {
+            _targetType = typeof(T);
+            _resourcePath = address;
+            FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.BeforeLoadAsset);
+            T t = Manager.LoadAddressable<T>(address, gameObjectInstantiate);
+            FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.AfterLoadAsset);
+            return t;
+        }
+
+        /// <summary>
+        /// ä»Addressableså¼‚æ­¥åŠ è½½èµ„æº
+        /// </summary>
+        /// <typeparam name="T">èµ„æºç±»å‹</typeparam>
+        /// <param name="address">Addressableèµ„æºåœ°å€</param>
+        /// <param name="callBack">èµ„æºåŠ è½½å®Œæˆçš„å›è°ƒå‡½æ•°</param>
+        /// <param name="gameObjectInstantiate">å¦‚æœèµ„æºæ˜¯GameObjectæ˜¯å¦ç›´æ¥å®ä¾‹åŒ–</param>
+        /// <returns>å¼‚æ­¥æ“ä½œå¥æŸ„</returns>
+        public AsyncOperationHandle<T> LoadAddressableAsync<T>(string address, UnityAction<T> callBack, bool gameObjectInstantiate = false) where T : Object
+        {
+            _targetType = typeof(T);
+            _resourcePath = address;
+            FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.BeforeLoadAsset);
+            _state = LoadState.Loading;
+
+            void WrappedCallback(T a)
+            {
+                _state = LoadState.Idle;
+                _progress = 1f;
+                FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.AfterLoadAsset);
+                callBack?.Invoke(a);
+            }
+
+            AsyncOperationHandle<T> handle = Manager.LoadAddressableAsync(address, (UnityAction<T>)WrappedCallback, gameObjectInstantiate);
+            latestAddressableHandle = handle;
+            return handle;
+        }
+
+        /// <summary>
+        /// ä½¿ç”¨Addressableså®ä¾‹åŒ–GameObjectï¼ˆæ¨èä½¿ç”¨æ­¤æ–¹æ³•è€ŒéLoadAddressable+Instantiateï¼‰
+        /// </summary>
+        /// <param name="address">Addressableèµ„æºåœ°å€</param>
+        /// <param name="parent">å®ä¾‹åŒ–åçš„çˆ¶èŠ‚ç‚¹ï¼ˆå¯é€‰ï¼‰</param>
+        /// <returns>å¼‚æ­¥æ“ä½œå¥æŸ„</returns>
+        public AsyncOperationHandle<GameObject> InstantiateAddressable(string address, Transform parent = null)
+        {
+            _targetType = typeof(GameObject);
+            _resourcePath = address;
+            FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.BeforeLoadAsset);
+            _state = LoadState.Loading;
+
+            AsyncOperationHandle<GameObject> handle = Manager.InstantiateAddressable(address, parent);
+            
+            handle.Completed += _ =>
+            {
+                _state = LoadState.Idle;
+                _progress = 1f;
+                FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.AfterLoadAsset);
+            };
+
+            latestAddressableHandle = handle;
+            return handle;
+        }
+
+        /// <summary>
+        /// é‡Šæ”¾Addressableå¼‚æ­¥æ“ä½œå¥æŸ„
+        /// </summary>
+        /// <param name="handle">è¦é‡Šæ”¾çš„å¥æŸ„</param>
+        public void ReleaseAddressableHandle(AsyncOperationHandle handle)
+        {
+            Manager.ReleaseAddressableHandle(handle);
+        }
+
+        /// <summary>
+        /// é‡Šæ”¾Addressableèµ„æºå¯¹è±¡
+        /// </summary>
+        /// <typeparam name="T">èµ„æºç±»å‹</typeparam>
+        /// <param name="asset">è¦é‡Šæ”¾çš„èµ„æºå¯¹è±¡</param>
+        public void ReleaseAddressableAsset<T>(T asset) where T : Object
+        {
+            Manager.ReleaseAddressableAsset(asset);
+        }
+
+        /// <summary>
+        /// é‡Šæ”¾é€šè¿‡InstantiateAddressableåˆ›å»ºçš„GameObjectå®ä¾‹
+        /// </summary>
+        /// <param name="instance">è¦é‡Šæ”¾çš„GameObjectå®ä¾‹</param>
+        public void ReleaseAddressableInstance(GameObject instance)
+        {
+            Manager.ReleaseAddressableInstance(instance);
+        }
+
+        /// <summary>
+        /// é‡Šæ”¾æ‰€æœ‰Addressableèµ„æºå¥æŸ„ï¼ˆæ¡†æ¶å…³é—­æ—¶ä¼šè‡ªåŠ¨è°ƒç”¨ï¼‰
+        /// </summary>
+        public void ReleaseAllAddressableHandles()
+        {
+            Manager.ReleaseAllAddressableHandles();
         }
 
 

@@ -18,9 +18,9 @@ namespace StarryFramework
         #region Unload
 
         /// <summary>
-        /// Ğ¶ÔØµ±Ç°»î¶¯³¡¾°
+        /// å¸è½½å½“å‰æ´»åŠ¨åœºæ™¯
         /// </summary>
-        /// <param Name="callback">Ğ¶ÔØÍê³ÉÊ±µÄ»Øµ÷º¯Êı</param>
+        /// <param Name="callback">å¸è½½å®Œæˆæ—¶çš„å›è°ƒå‡½æ•°</param>
         internal void UnloadScene(UnityAction callback = null)
         {
             Scene scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
@@ -31,10 +31,10 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Í¨¹ıË÷ÒıĞ¶ÔØ³¡¾°
+        /// é€šè¿‡ç´¢å¼•å¸è½½åœºæ™¯
         /// </summary>
-        /// <param Name="sceneIndex">ÒÑ¼ÓÔØ³¡¾°µÄbuildIndex</param>
-        /// <param Name="callback">Ğ¶ÔØÍê³ÉÊ±µÄ»Øµ÷º¯Êı</param>
+        /// <param Name="sceneIndex">å·²åŠ è½½åœºæ™¯çš„buildIndex</param>
+        /// <param Name="callback">å¸è½½å®Œæˆæ—¶çš„å›è°ƒå‡½æ•°</param>
         internal void UnloadScene(int sceneIndex, UnityAction callback = null)
         {
             AsyncOperation operation = UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(sceneIndex);
@@ -50,10 +50,10 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Í¨¹ı³¡¾°Ãû³ÆĞ¶ÔØ³¡¾°
+        /// é€šè¿‡åœºæ™¯åç§°å¸è½½åœºæ™¯
         /// </summary>
-        /// <param name="sceneName">´ıĞ¶ÔØ³¡¾°Ãû</param>
-        /// <param name="callback">Ğ¶ÔØÍê³ÉÊ±µÄ»Øµ÷º¯Êı</param>
+        /// <param name="sceneName">å¾…å¸è½½åœºæ™¯å</param>
+        /// <param name="callback">å¸è½½å®Œæˆæ—¶çš„å›è°ƒå‡½æ•°</param>
         internal void UnloadScene(string sceneName, UnityAction callback = null)
         {
             AsyncOperation operation = UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(sceneName);
@@ -73,11 +73,11 @@ namespace StarryFramework
         #region Load
 
         /// <summary>
-        /// Í¨¹ıË÷Òı¼ÓÔØ³¡¾°
+        /// é€šè¿‡ç´¢å¼•åŠ è½½åœºæ™¯
         /// </summary>
-        /// <param Name="buildIndex">³¡¾°µÄbuildIndex</param>
-        /// <param Name="callback">¼ÓÔØÍê³ÉµÄ»Øµ÷</param>
-        /// <returns>¼ÓÔØ³¡¾°AsyncOperation</returns>
+        /// <param Name="buildIndex">åœºæ™¯çš„buildIndex</param>
+        /// <param Name="callback">åŠ è½½å®Œæˆçš„å›è°ƒ</param>
+        /// <returns>åŠ è½½åœºæ™¯AsyncOperation</returns>
         internal AsyncOperation LoadScene(int buildIndex, UnityAction callback = null)
         {
             AsyncOperation operation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Additive);
@@ -97,11 +97,11 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Í¨¹ı³¡¾°Ãû³Æ¼ÓÔØ³¡¾°
+        /// é€šè¿‡åœºæ™¯åç§°åŠ è½½åœºæ™¯
         /// </summary>
-        /// <param Name="sceneName">³¡¾°Ãû³Æ</param>
-        /// <param Name="callback">¼ÓÔØÍê³ÉµÄ»Øµ÷</param>
-        /// <returns>¼ÓÔØ³¡¾°AsyncOperation</returns>
+        /// <param Name="sceneName">åœºæ™¯åç§°</param>
+        /// <param Name="callback">åŠ è½½å®Œæˆçš„å›è°ƒ</param>
+        /// <returns>åŠ è½½åœºæ™¯AsyncOperation</returns>
         internal AsyncOperation LoadScene(string sceneName, UnityAction callback = null)
         {
 
@@ -126,12 +126,12 @@ namespace StarryFramework
         #region Change
 
         /// <summary>
-        /// Í¨¹ıË÷ÒıÇĞ»»³¡¾°
+        /// é€šè¿‡ç´¢å¼•åˆ‡æ¢åœºæ™¯
         /// </summary>
-        /// <param Name="to">Ä¿µÄ³¡¾°buildIndex</param>
-        /// <param Name="from">´ıĞ¶ÔØµÄ³¡¾°buildIndex£¬Èç¹ûÎª-1£¬ÔòĞ¶ÔØµ±Ç°¼¤»î³¡¾°</param>
-        /// <param Name="callback">ÇĞ»»³¡¾°Íê³ÉµÄ»Øµ÷</param>
-        /// <returns>¼ÓÔØ³¡¾°AsyncOperation</returns>
+        /// <param Name="to">ç›®çš„åœºæ™¯buildIndex</param>
+        /// <param Name="from">å¾…å¸è½½çš„åœºæ™¯buildIndexï¼Œå¦‚æœä¸º-1ï¼Œåˆ™å¸è½½å½“å‰æ¿€æ´»åœºæ™¯</param>
+        /// <param Name="callback">åˆ‡æ¢åœºæ™¯å®Œæˆçš„å›è°ƒ</param>
+        /// <returns>åŠ è½½åœºæ™¯AsyncOperation</returns>
         internal AsyncOperation ChangeScene(int to, int from = -1, UnityAction callback = null)
         {
             if (from == -1)
@@ -147,12 +147,12 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Í¨¹ı³¡¾°Ãû³ÆÇĞ»»³¡¾°
+        /// é€šè¿‡åœºæ™¯åç§°åˆ‡æ¢åœºæ™¯
         /// </summary>
-        /// <param Name="to">Ä¿µÄ³¡¾°Ãû³Æ</param>
-        /// <param Name="from">´ıĞ¶ÔØµÄ³¡¾°Ãû³Æ£¬Èç¹ûÎª¿Õ£¬ÔòĞ¶ÔØµ±Ç°¼¤»î³¡¾°</param>
-        /// <param Name="callback">ÇĞ»»³¡¾°Íê³ÉµÄ»Øµ÷</param>
-        /// <returns>¼ÓÔØ³¡¾°AsyncOperation</returns>
+        /// <param Name="to">ç›®çš„åœºæ™¯åç§°</param>
+        /// <param Name="from">å¾…å¸è½½çš„åœºæ™¯åç§°ï¼Œå¦‚æœä¸ºç©ºï¼Œåˆ™å¸è½½å½“å‰æ¿€æ´»åœºæ™¯</param>
+        /// <param Name="callback">åˆ‡æ¢åœºæ™¯å®Œæˆçš„å›è°ƒ</param>
+        /// <returns>åŠ è½½åœºæ™¯AsyncOperation</returns>
         internal AsyncOperation ChangeScene(string to, string from = "", UnityAction callback = null)
         {
             if (from == "")

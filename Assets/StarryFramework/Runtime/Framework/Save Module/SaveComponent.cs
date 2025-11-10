@@ -24,6 +24,8 @@ namespace StarryFramework
         public string AutoSaveInfo => Manager.AutoSaveInfo;
         public List<string> SaveInfoList => Manager.SaveInfoList;
         public Dictionary<int, PlayerDataInfo> DataInfoDic => Manager.infoDic;
+        public bool PlayerDataLoaded => Manager.PlayerDataLoaded;
+        public bool GameSettingsLoaded => Manager.GameSettingsLoaded;
 
         public GameSettings GameSettings
         {
@@ -31,7 +33,7 @@ namespace StarryFramework
             {
                 if (Manager.GameSettings == null)
                 {
-                    FrameworkManager.Debugger.LogError("ÓÎÏ·ÉèÖÃÊı¾İ´íÎó/ÓÎÏ·ÉèÖÃÊı¾İÉĞÎ´¼ÓÔØ");
+                    FrameworkManager.Debugger.LogError("æ¸¸æˆè®¾ç½®æ•°æ®é”™è¯¯/æ¸¸æˆè®¾ç½®å¯¹è±¡å°šæœªåŠ è½½");
                     return null;
                 }
 
@@ -44,7 +46,7 @@ namespace StarryFramework
             {
                 if(Manager.PlayerData == null)
                 {
-                    FrameworkManager.Debugger.LogError("´æµµÊı¾İÉĞÎ´¼ÓÔØ");
+                    FrameworkManager.Debugger.LogError("å­˜æ¡£å¯¹è±¡å°šæœªåŠ è½½");
                     return null;
                 }
 
@@ -56,7 +58,9 @@ namespace StarryFramework
         private void OnValidate()
         {
             if(EditorApplication.isPlaying && _manager != null )
+            {
                 (_manager as IManager).SetSettings(settings);
+            }
         }
 #endif
 
@@ -79,11 +83,11 @@ namespace StarryFramework
         }
 
 
-        #region ÉèÖÃ´æµµ×¢ÊÍ
+        #region è®¾ç½®å­˜æ¡£æ³¨é‡Š
 
         /// <summary>
-        /// ÉèÖÃ´æµµ×¢ÊÍÎªiºÅ×¢ÊÍ
-        /// ´æµµ×¢ÊÍÎªÓë´æµµÒ»Í¬±£´æµÄĞÅÏ¢
+        /// è®¾ç½®å­˜æ¡£æ³¨é‡Šä¸ºiå·æ³¨é‡Š
+        /// å­˜æ¡£æ³¨é‡Šä¸ºä¸å­˜æ¡£ä¸€åŒä¿å­˜çš„ä¿¡æ¯
         /// </summary>
         /// <param Name="i"></param>
         public void SetSaveInfo(int i)
@@ -92,8 +96,8 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÉèÖÃ´æµµ×¢ÊÍÎªiºÅ×¢ÊÍ
-        /// ´æµµ×¢ÊÍÎªÓë´æµµÒ»Í¬±£´æµÄĞÅÏ¢
+        /// è®¾ç½®å­˜æ¡£æ³¨é‡Šä¸ºiå·æ³¨é‡Š
+        /// å­˜æ¡£æ³¨é‡Šä¸ºä¸å­˜æ¡£ä¸€åŒä¿å­˜çš„ä¿¡æ¯
         /// </summary>
         /// <param Name="info"></param>
         public void SetSaveInfo(string info)
@@ -103,64 +107,64 @@ namespace StarryFramework
 
         #endregion
 
-        #region ´æµµ²Ù×÷
+        #region å­˜æ¡£æ“ä½œ
         /// <summary>
-        /// ´´½¨ĞÂ´æµµ
+        /// åˆ›å»ºæ–°å­˜æ¡£
         /// </summary>
-        /// <param Name="isNewGame">ÊÇ·ñÊÇĞÂÓÎÏ·</param>
-        /// <param Name="note">´æµµĞÅÏ¢</param>
+        /// <param Name="isNewGame">æ˜¯å¦æ˜¯æ–°æ¸¸æˆ</param>
+        /// <param Name="note">å­˜æ¡£ä¿¡æ¯</param>
         public void CreateNewData(bool isNewGame, string note = "")
         {
             Manager.CreateNewData(isNewGame, note);
         }
         /// <summary>
-        /// ´¢´æ´æµµ,¿ìËÙ´æµµºÍ×Ô¶¯´æµµ
+        /// ä¿å­˜å­˜æ¡£ï¼Œå¿«é€Ÿå­˜æ¡£æˆ–è‡ªåŠ¨å­˜æ¡£
         /// </summary>
         public void SaveData(string note = "")
         {
             Manager.SaveData(note);
         }
         /// <summary>
-        /// ´¢´æ´æµµµ½±àºÅi£¬ÊÖ¶¯Ñ¡Ôñ
+        /// ä¿å­˜å­˜æ¡£ï¼Œç¼–å·iï¼Œæ‰‹åŠ¨é€‰æ‹©
         /// </summary>
-        /// <param Name="i">´¢´æ´æµµµÄ±àºÅ</param>
+        /// <param Name="i">ä¿å­˜å­˜æ¡£çš„ç¼–å·</param>
         public void SaveData(int i, string note = "")
         {
             Manager.SaveData(i, note);
 
         }
         /// <summary>
-        /// ×Ô¶¯¶ÁÈ¡´æµµ
+        /// è‡ªåŠ¨è¯»å–å­˜æ¡£
         /// </summary>
         public bool LoadData()
         {
             return Manager.LoadData();
         }
         /// <summary>
-        /// ¶ÁÈ¡´æµµĞÅÏ¢
+        /// è¯»å–å­˜æ¡£ä¿¡æ¯
         /// </summary>
         public PlayerDataInfo LoadDataInfo()
         {
             return Manager.LoadDataInfo();
         }
         /// <summary>
-        /// ÊÖ¶¯¶ÁÈ¡±àºÅÎªiµÄ´æµµ
+        /// æ‰‹åŠ¨è¯»å–ï¼Œç¼–å·ä¸ºiçš„å­˜æ¡£
         /// </summary>
-        /// <param Name="i">´æµµ±àºÅ</param>
+        /// <param Name="i">å­˜æ¡£ç¼–å·</param>
         public bool LoadData(int i)
         {
             return Manager.LoadData(i);
         }
         /// <summary>
-        /// »ñÈ¡±àºÅÎªiµÄ´æµµĞÅÏ¢
+        /// è¯»å–ç¼–å·ä¸ºiçš„å­˜æ¡£ä¿¡æ¯
         /// </summary>
-        /// <returns>±àºÅÎªiµÄ´æµµĞÅÏ¢</returns>
+        /// <returns>ç¼–å·ä¸ºiçš„å­˜æ¡£ä¿¡æ¯</returns>
         public PlayerDataInfo LoadDataInfo(int i)
         {
             return Manager.LoadDataInfo(i);
         }
         /// <summary>
-        /// Ğ¶ÔØµ±Ç°ÒÑ¼ÓÔØµÄ´æµµ
+        /// å¸è½½å½“å‰å·²åŠ è½½çš„å­˜æ¡£
         /// </summary>
         /// <returns></returns>
         public bool UnloadData()
@@ -168,15 +172,15 @@ namespace StarryFramework
             return Manager.UnloadData();
         }
         /// <summary>
-        /// É¾³ı´æµµ
+        /// åˆ é™¤å­˜æ¡£
         /// </summary>
-        /// <param Name="i">É¾³ıµÄ´æµµ±àºÅ</param>
+        /// <param Name="i">åˆ é™¤çš„å­˜æ¡£ç¼–å·</param>
         public bool DeleteData(int i)
         {
             return Manager.DeleteData(i);
         }
         /// <summary>
-        /// »ñÈ¡È«²¿´æµµĞÅÏ¢
+        /// è·å–å…¨éƒ¨å­˜æ¡£ä¿¡æ¯
         /// </summary>
         /// <returns></returns>
         public List<PlayerDataInfo> GetDataInfos()
@@ -187,10 +191,10 @@ namespace StarryFramework
 
         #endregion
 
-        #region ×Ô¶¯´æµµ¼ÆÊ±Æ÷ÆôÍ£
+        #region è‡ªåŠ¨å­˜æ¡£è®¡æ—¶å¯åœ
 
         /// <summary>
-        /// Æô¶¯×Ô¶¯´æµµ
+        /// å¼€å¯è‡ªåŠ¨å­˜æ¡£
         /// </summary>
         public void StartAutoSaveTimer()
         {
@@ -198,7 +202,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ¹Ø±Õ×Ô¶¯´æµµ
+        /// å…³é—­è‡ªåŠ¨å­˜æ¡£
         /// </summary>
         public void StopAutoSaveTimer()
         {
@@ -208,4 +212,5 @@ namespace StarryFramework
         #endregion
 
     }
+    
 }

@@ -41,38 +41,38 @@ namespace StarryFramework
         #region Timer
 
         /// <summary>
-        /// ×¢²áÄäÃû¼ÆÊ±Æ÷£¬ÔÚÓÃÍêÊ±Ò»¶¨ÒªÍ¨¹ıDeleteTimer·½·¨»ØÊÕ¼ÆÊ±Æ÷
+        /// æ³¨å†ŒåŒ¿åè®¡æ—¶å™¨ï¼Œåœ¨ç”¨å®Œæ—¶ä¸€å®šè¦é€šè¿‡DeleteTimeræ–¹æ³•å›æ”¶è®¡æ—¶å™¨
         /// </summary>
-        /// <param Name="ignoreTimeScale">ÊÇ·ñºöÂÔÊ±¼äËõ·Å£¨Ê¹ÓÃÕæÊµÊ±¼ä£©</param>
-        /// <param Name="startValue">¼ÆÊ±ÆğÊ¼Öµ</param>
-        /// <param Name="bindUpdateAction">°ó¶¨ÔÚ¼ÆÊ±Æ÷ÉÏÃ¿Ö¡µ÷ÓÃµÄº¯Êı</param>
-        /// <returns>¼ÆÊ±Æ÷¶ÔÏó</returns>
+        /// <param Name="ignoreTimeScale">æ˜¯å¦å¿½ç•¥æ—¶é—´ç¼©æ”¾ï¼ˆä½¿ç”¨çœŸå®æ—¶é—´ï¼‰</param>
+        /// <param Name="startValue">è®¡æ—¶èµ·å§‹å€¼</param>
+        /// <param Name="bindUpdateAction">ç»‘å®šåœ¨è®¡æ—¶å™¨ä¸Šæ¯å¸§è°ƒç”¨çš„å‡½æ•°</param>
+        /// <returns>è®¡æ—¶å™¨å¯¹è±¡</returns>
         public ITimer RegisterTimer(bool ignoreTimeScale = false, float startValue = 0f, UnityAction bindUpdateAction = null)
         {
             return Manager.RegisterTimer(ignoreTimeScale, startValue, bindUpdateAction);
         }
 
         /// <summary>
-        /// »ØÊÕÄäÃû¼ÆÊ±Æ÷
+        /// å›æ”¶åŒ¿åè®¡æ—¶å™¨
         /// </summary>
-        /// <param Name="timer">ĞèÒª»ØÊÕµÄÄäÃû¼ÆÊ±Æ÷</param>
+        /// <param Name="timer">éœ€è¦å›æ”¶çš„åŒ¿åè®¡æ—¶å™¨</param>
         public void DeleteTimer(ITimer timer)
         {
             Manager.DeleteTimer(timer as Timer);
         }
 
         /// <summary>
-        /// ×¢²á·ÇÄäÃû¼ÆÊ±Æ÷
+        /// æ³¨å†ŒéåŒ¿åè®¡æ—¶å™¨
         /// </summary>
-        /// <param Name="name">¼ÆÊ±Æ÷Ãû³Æ</param>
-        /// <param Name="ignoreTimeScale">ÊÇ·ñºöÂÔÊ±¼äËõ·Å</param>
-        /// <param Name="startValue">¼ÆÊ±ÆğÊ¼Öµ</param>
+        /// <param Name="name">è®¡æ—¶å™¨åç§°</param>
+        /// <param Name="ignoreTimeScale">æ˜¯å¦å¿½ç•¥æ—¶é—´ç¼©æ”¾</param>
+        /// <param Name="startValue">è®¡æ—¶èµ·å§‹å€¼</param>
         public void RegisterTimer(string name, bool ignoreTimeScale = false, float startValue = 0f)
         {
             Manager.RegisterTimer(name, ignoreTimeScale, startValue);
         }
         /// <summary>
-        /// »ØÊÕ·ÇÄäÃû¼ÆÊ±Æ÷
+        /// å›æ”¶éåŒ¿åè®¡æ—¶å™¨
         /// </summary>
         /// <param Name="name"></param>
         public void DeleteTimer(string name)
@@ -81,16 +81,16 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ¸ø·ÇÄäÃû¼ÆÊ±Æ÷°ó¶¨UpdateÊÂ¼ş
+        /// ç»™éåŒ¿åè®¡æ—¶å™¨ç»‘å®šUpdateäº‹ä»¶
         /// </summary>
         /// <param Name="name"></param>
-        /// <param Name="action">UpdateÊÂ¼ş£¬Ã¿Ö¡µ÷ÓÃÒ»´Î</param>
+        /// <param Name="action">Updateäº‹ä»¶ï¼Œæ¯å¸§è°ƒç”¨ä¸€æ¬¡</param>
         public void BindUpdateAction(string name, UnityAction action)
         {
             Manager.BindUpdateAction(name, action);
         }
         /// <summary>
-        /// ²é¿´·ÇÄäÃû¼ÆÊ±Æ÷×´Ì¬
+        /// æŸ¥çœ‹éåŒ¿åè®¡æ—¶å™¨çŠ¶æ€
         /// </summary>
         /// <param Name="name"></param>
         /// <returns></returns>
@@ -99,7 +99,7 @@ namespace StarryFramework
             return Manager.GetTimerState(name);
         }
         /// <summary>
-        /// ²é¿´·ÇÄäÃû¼ÆÊ±Æ÷Ê±¼ä
+        /// æŸ¥çœ‹éåŒ¿åè®¡æ—¶å™¨æ—¶é—´
         /// </summary>
         /// <param Name="name"></param>
         /// <returns></returns>
@@ -108,7 +108,7 @@ namespace StarryFramework
             return Manager.GetTimerTime(name);
         }
         /// <summary>
-        /// ÔİÍ£·ÇÄäÃû¼ÆÊ±Æ÷
+        /// æš‚åœéåŒ¿åè®¡æ—¶å™¨
         /// </summary>
         /// <param Name="name"></param>
         public void PauseTimer(string name)
@@ -116,7 +116,7 @@ namespace StarryFramework
             Manager.PauseTimer(name);
         }
         /// <summary>
-        /// Í£Ö¹¼ÆÊ±Æ÷£¨»Ö¸´³õÊ¼Öµ£©
+        /// åœæ­¢è®¡æ—¶å™¨ï¼ˆæ¢å¤åˆå§‹å€¼ï¼‰
         /// </summary>
         /// <param Name="name"></param>
         public void StopTimer(string name)
@@ -124,7 +124,7 @@ namespace StarryFramework
             Manager.StopTimer(name);
         }
         /// <summary>
-        /// »Ö¸´¼ÆÊ±Æ÷
+        /// æ¢å¤è®¡æ—¶å™¨
         /// </summary>
         /// <param Name="name"></param>
         public void ResumeTimer(string name)
@@ -132,7 +132,7 @@ namespace StarryFramework
             Manager.ActivateTimer(name);
         }
         /// <summary>
-        /// Æô¶¯¼ÆÊ±Æ÷
+        /// å¯åŠ¨è®¡æ—¶å™¨
         /// </summary>
         /// <param Name="name"></param>
         public void StartTimer(string name)
@@ -140,7 +140,7 @@ namespace StarryFramework
             Manager.StartTimer(name);
         }
         /// <summary>
-        /// ÖØÖÃ¼ÆÊ±Æ÷µ½³õÊ¼Öµ
+        /// é‡ç½®è®¡æ—¶å™¨åˆ°åˆå§‹å€¼
         /// </summary>
         /// <param Name="name"></param>
         public void ResetTimer(string name)
@@ -153,24 +153,24 @@ namespace StarryFramework
         #region TriggerTimer
 
         /// <summary>
-        /// ×¢²á´¥·¢¼ÆÊ±Æ÷
-        /// ¼ÆÊ±Æ÷·ÖÎªÄäÃûÓë·ÇÄäÃûÁ½ÖÖ£¬
-        /// Èô×¢²áÄäÃû¼ÆÊ±Æ÷£¬Ôò¼ÆÊ±Æ÷»á×Ô¶¯Æô¶¯£»
-        /// Èç¹ûÄäÃû¼ÆÊ±Æ÷·ÇÑ­»·´¥·¢£¬¿ò¼ÜÔò»á×Ô¶¯»ØÊÕ£»Èç¹ûÄäÃû¼ÆÊ±Æ÷Ñ­»·´¥·¢£¬ÔòÊ¹ÓÃÍêÒªÓÃClearUnnamedTriggerTimers()»ØÊÕ
-        /// Èô×¢²á·ÇÄäÃû¼ÆÊ±Æ÷£¬Ôò¼ÆÊ±Æ÷ĞèÒªÓÃStartTriggerTimer()ÊÖ¶¯Æô¶¯£¬ÓÃDeleteTriggerTimer()ÊÖ¶¯»ØÊÕ
+        /// æ³¨å†Œè§¦å‘è®¡æ—¶å™¨
+        /// è®¡æ—¶å™¨åˆ†ä¸ºåŒ¿åä¸éåŒ¿åä¸¤ç§ï¼Œ
+        /// è‹¥æ³¨å†ŒåŒ¿åè®¡æ—¶å™¨ï¼Œåˆ™è®¡æ—¶å™¨ä¼šè‡ªåŠ¨å¯åŠ¨ï¼›
+        /// å¦‚æœåŒ¿åè®¡æ—¶å™¨éå¾ªç¯è§¦å‘ï¼Œæ¡†æ¶åˆ™ä¼šè‡ªåŠ¨å›æ”¶ï¼›å¦‚æœåŒ¿åè®¡æ—¶å™¨å¾ªç¯è§¦å‘ï¼Œåˆ™ä½¿ç”¨å®Œè¦ç”¨ClearUnnamedTriggerTimers()å›æ”¶
+        /// è‹¥æ³¨å†ŒéåŒ¿åè®¡æ—¶å™¨ï¼Œåˆ™è®¡æ—¶å™¨éœ€è¦ç”¨StartTriggerTimer()æ‰‹åŠ¨å¯åŠ¨ï¼Œç”¨DeleteTriggerTimer()æ‰‹åŠ¨å›æ”¶
         /// </summary>
-        /// <param Name="timeDelta">¼ÆÊ±Æ÷´¥·¢ÊÂ¼şµÄÊ±¼ä</param>
-        /// <param Name="action">°ó¶¨µÄ´¥·¢ÊÂ¼ş</param>
-        /// <param Name="repeat">ÊÇ·ñÎªÑ­»·´¥·¢£¬¼´Ã¿¸ôtimeDelta´¥·¢Ò»´ÎÊÂ¼ş</param>
-        /// <param Name="name">ÈôÁôÎª¡°¡±ÔòÎªÄäÃû¼ÆÊ±Æ÷</param>
-        /// <param Name="ignoreTimeScale">ÊÇ·ñºöÂÔÊ±¼äËõ·Å</param>
+        /// <param Name="timeDelta">è®¡æ—¶å™¨è§¦å‘äº‹ä»¶çš„æ—¶é—´</param>
+        /// <param Name="action">ç»‘å®šçš„è§¦å‘äº‹ä»¶</param>
+        /// <param Name="repeat">æ˜¯å¦ä¸ºå¾ªç¯è§¦å‘ï¼Œå³æ¯éš”timeDeltaè§¦å‘ä¸€æ¬¡äº‹ä»¶</param>
+        /// <param Name="name">è‹¥ç•™ä¸ºâ€œâ€åˆ™ä¸ºåŒ¿åè®¡æ—¶å™¨</param>
+        /// <param Name="ignoreTimeScale">æ˜¯å¦å¿½ç•¥æ—¶é—´ç¼©æ”¾</param>
         public void RegisterTriggerTimer(float timeDelta, UnityAction action, bool repeat = false, string name = "", bool ignoreTimeScale = false)
         {
             Manager.RegisterTriggerTimer(timeDelta, action, ignoreTimeScale, repeat, name);
         }
 
         /// <summary>
-        /// É¾³ı·ÇÄäÃû´¥·¢¼ÆÊ±Æ÷
+        /// åˆ é™¤éåŒ¿åè§¦å‘è®¡æ—¶å™¨
         /// </summary>
         /// <param Name="name"></param>
         public void DeleteTriggerTimer(string name)
@@ -179,7 +179,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// »ñµÃ´¥·¢¼ÆÊ±Æ÷×´Ì¬
+        /// è·å¾—è§¦å‘è®¡æ—¶å™¨çŠ¶æ€
         /// </summary>
         /// <param Name="name"></param>
         /// <returns></returns>
@@ -189,7 +189,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÔİÍ£´¥·¢¼ÆÊ±Æ÷
+        /// æš‚åœè§¦å‘è®¡æ—¶å™¨
         /// </summary>
         /// <param Name="name"></param>
         public void PauseTriggerTimer(string name)
@@ -198,7 +198,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// »Ö¸´´¥·¢¼ÆÊ±Æ÷
+        /// æ¢å¤è§¦å‘è®¡æ—¶å™¨
         /// </summary>
         /// <param Name="name"></param>
         public void ResumeTriggerTimer(string name)
@@ -207,7 +207,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Í£Ö¹´¥·¢¼ÆÊ±Æ÷£¨²¢»Ö¸´³õÊ¼Öµ£©
+        /// åœæ­¢è§¦å‘è®¡æ—¶å™¨ï¼ˆå¹¶æ¢å¤åˆå§‹å€¼ï¼‰
         /// </summary>
         /// <param Name="name"></param>
         public void StopTriggerTimer(string name)
@@ -216,7 +216,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Æô¶¯´¥·¢¼ÆÊ±Æ÷
+        /// å¯åŠ¨è§¦å‘è®¡æ—¶å™¨
         /// </summary>
         /// <param Name="name"></param>
         public void StartTriggerTimer(string name)
@@ -225,7 +225,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Çå³şËùÓĞÄäÃû´¥·¢¼ÆÊ±Æ÷
+        /// æ¸…æ¥šæ‰€æœ‰åŒ¿åè§¦å‘è®¡æ—¶å™¨
         /// </summary>
         public void ClearUnnamedTriggerTimers()
         {
@@ -237,23 +237,23 @@ namespace StarryFramework
 
         #region AsyncTimer
         /// <summary>
-        /// ×¢²áÒì²½´¥·¢¼ÆÊ±Æ÷
-        /// ¼ÆÊ±Æ÷·ÖÎªÄäÃûÓë·ÇÄäÃûÁ½ÖÖ£¬
-        /// Èô×¢²áÄäÃû¼ÆÊ±Æ÷£¬Ôò¼ÆÊ±Æ÷»á×Ô¶¯Æô¶¯£»
-        /// Èç¹ûÄäÃû¼ÆÊ±Æ÷·ÇÑ­»·´¥·¢£¬¿ò¼ÜÔò»á×Ô¶¯»ØÊÕ£»Èç¹ûÄäÃû¼ÆÊ±Æ÷Ñ­»·´¥·¢£¬ÔòÊ¹ÓÃÍêÒªÓÃClearUnnamedAsyncTimers()»ØÊÕ
-        /// Èô×¢²á·ÇÄäÃû¼ÆÊ±Æ÷£¬Ôò¼ÆÊ±Æ÷ĞèÒªÓÃStartAsyncTimer()ÊÖ¶¯Æô¶¯£¬ÓÃDeleteAsyncTimer()ÊÖ¶¯»ØÊÕ
+        /// æ³¨å†Œå¼‚æ­¥è§¦å‘è®¡æ—¶å™¨
+        /// è®¡æ—¶å™¨åˆ†ä¸ºåŒ¿åä¸éåŒ¿åä¸¤ç§ï¼Œ
+        /// è‹¥æ³¨å†ŒåŒ¿åè®¡æ—¶å™¨ï¼Œåˆ™è®¡æ—¶å™¨ä¼šè‡ªåŠ¨å¯åŠ¨ï¼›
+        /// å¦‚æœåŒ¿åè®¡æ—¶å™¨éå¾ªç¯è§¦å‘ï¼Œæ¡†æ¶åˆ™ä¼šè‡ªåŠ¨å›æ”¶ï¼›å¦‚æœåŒ¿åè®¡æ—¶å™¨å¾ªç¯è§¦å‘ï¼Œåˆ™ä½¿ç”¨å®Œè¦ç”¨ClearUnnamedAsyncTimers()å›æ”¶
+        /// è‹¥æ³¨å†ŒéåŒ¿åè®¡æ—¶å™¨ï¼Œåˆ™è®¡æ—¶å™¨éœ€è¦ç”¨StartAsyncTimer()æ‰‹åŠ¨å¯åŠ¨ï¼Œç”¨DeleteAsyncTimer()æ‰‹åŠ¨å›æ”¶
         /// </summary>
-        /// <param Name="timeDelta">¼ÆÊ±Æ÷´¥·¢ÊÂ¼şµÄÊ±¼ä</param>
-        /// <param Name="action">°ó¶¨µÄ´¥·¢ÊÂ¼ş</param>
-        /// <param Name="repeat">ÊÇ·ñÎªÑ­»·´¥·¢£¬¼´Ã¿¸ôtimeDelta´¥·¢Ò»´ÎÊÂ¼ş</param>
-        /// <param Name="name">ÈôÁôÎª¡°¡±ÔòÎªÄäÃû¼ÆÊ±Æ÷</param>
+        /// <param Name="timeDelta">è®¡æ—¶å™¨è§¦å‘äº‹ä»¶çš„æ—¶é—´</param>
+        /// <param Name="action">ç»‘å®šçš„è§¦å‘äº‹ä»¶</param>
+        /// <param Name="repeat">æ˜¯å¦ä¸ºå¾ªç¯è§¦å‘ï¼Œå³æ¯éš”timeDeltaè§¦å‘ä¸€æ¬¡äº‹ä»¶</param>
+        /// <param Name="name">è‹¥ç•™ä¸ºâ€œâ€åˆ™ä¸ºåŒ¿åè®¡æ—¶å™¨</param>
         public void RegisterAsyncTimer(float timeDelta, UnityAction action, bool repeat = false, string name = "")
         {
             Manager.RegisterAsyncTimer(timeDelta,action,repeat,name);
         }
 
         /// <summary>
-        /// É¾³ı·ÇÄäÃûÒì²½´¥·¢¼ÆÊ±Æ÷
+        /// åˆ é™¤éåŒ¿åå¼‚æ­¥è§¦å‘è®¡æ—¶å™¨
         /// </summary>
         /// <param Name="name"></param>
         internal void DeleteAsyncTimer(string name)
@@ -262,7 +262,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// »ñµÃÒì²½´¥·¢¼ÆÊ±Æ÷×´Ì¬
+        /// è·å¾—å¼‚æ­¥è§¦å‘è®¡æ—¶å™¨çŠ¶æ€
         /// </summary>
         /// <param Name="name"></param>
         /// <returns></returns>
@@ -272,7 +272,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Æô¶¯Òì²½´¥·¢¼ÆÊ±Æ÷
+        /// å¯åŠ¨å¼‚æ­¥è§¦å‘è®¡æ—¶å™¨
         /// </summary>
         /// <param Name="name"></param>
         public void StartAsyncTimer(string name)
@@ -281,7 +281,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Í£Ö¹Òì²½´¥·¢¼ÆÊ±Æ÷
+        /// åœæ­¢å¼‚æ­¥è§¦å‘è®¡æ—¶å™¨
         /// </summary>
         /// <param Name="name"></param>
         public void StopAsyncTimer(string name)
@@ -290,7 +290,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Çå³ıËùÓĞÄäÃûÒì²½´¥·¢¼ÆÊ±Æ÷
+        /// æ¸…é™¤æ‰€æœ‰åŒ¿åå¼‚æ­¥è§¦å‘è®¡æ—¶å™¨
         /// </summary>
         public void ClearUnnamedAsyncTimers()
         {

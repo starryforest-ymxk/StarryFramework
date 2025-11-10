@@ -34,7 +34,7 @@ namespace StarryFramework
 
 
 
-        #region ×é¼şÁ÷³Ì
+        #region ç»„ä»¶æµç¨‹
 
         private void Awake()
         {
@@ -72,12 +72,12 @@ namespace StarryFramework
 
         private void SceneUnload()
         {
-            // »ñÈ¡³¡¾°ÊıÁ¿
+            // è·å–åœºæ™¯æ•°é‡
             int sceneCount = UnityEngine.SceneManagement.SceneManager.sceneCount;
 
             bool hasDontDestroy = false;
 
-            // ÄæĞòĞ¶ÔØ³¡¾°
+            // é€†åºå¸è½½åœºæ™¯
             for (int i = sceneCount - 1; i >= 0; i--)
             {
                 Scene scene = UnityEngine.SceneManagement.SceneManager.GetSceneAt(i);
@@ -112,7 +112,7 @@ namespace StarryFramework
         #endregion
 
         /// <summary>
-        /// Unity±à¼­Æ÷ÉèÖÃ
+        /// Unityç¼–è¾‘å™¨è®¾ç½®
         /// </summary>
         private void UnitySetup()
         {
@@ -123,7 +123,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÆôÓÃ×é¼ş
+        /// å¯ç”¨ç»„ä»¶
         /// </summary>
         private void SetComponentsActive()
         {

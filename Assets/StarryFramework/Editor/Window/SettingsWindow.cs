@@ -19,7 +19,7 @@ namespace StarryFramework.Editor
             window.Show();
         }
         
-        // 窗口启用时加载保存的设置
+        // 绐楀彛鍚敤鏃跺姞杞戒繚瀛樼殑璁剧疆
         private void OnEnable()
         {
             _enterPlayModeWay = (EnterPlayModeWay)EditorPrefs.GetInt("EnterPlayModeWay", 0);

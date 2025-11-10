@@ -59,7 +59,7 @@ namespace StarryFramework
             }
             else
             {
-                FrameworkManager.Debugger.LogWarning($"Framework Event Manager : 尝试删除不存在的事件[{eventName}]");
+                FrameworkManager.Debugger.LogWarning($"Framework Event Manager : 灏濊瘯鍒犻櫎涓嶅瓨鍦ㄧ殑浜嬩欢[{eventName}]");
             }
         }
 
@@ -71,7 +71,7 @@ namespace StarryFramework
             }
             else
             {
-                FrameworkManager.Debugger.LogWarning($"Framework Event Manager : 尝试删除不存在的事件[{eventName}]");
+                FrameworkManager.Debugger.LogWarning($"Framework Event Manager : 灏濊瘯鍒犻櫎涓嶅瓨鍦ㄧ殑浜嬩欢[{eventName}]");
             }
         }
 
@@ -83,7 +83,7 @@ namespace StarryFramework
             }
             else
             {
-                FrameworkManager.Debugger.Log($"Framework Event Manager : 尝试触发不存在的事件[{eventName}]");
+                FrameworkManager.Debugger.Log($"Framework Event Manager : 灏濊瘯瑙﹀彂涓嶅瓨鍦ㄧ殑浜嬩欢[{eventName}]");
             }
 
             if(FrameworkManager.Setting.ModuleInUse(ModuleType.Event) && FrameworkManager.Setting.InternalEventTrigger)
@@ -101,7 +101,7 @@ namespace StarryFramework
             }
             else
             {
-                FrameworkManager.Debugger.Log($"Framework Event Manager : 尝试触发不存在的事件[{eventName}]");
+                FrameworkManager.Debugger.Log($"Framework Event Manager : 灏濊瘯瑙﹀彂涓嶅瓨鍦ㄧ殑浜嬩欢[{eventName}]");
             }
 
             if (FrameworkManager.Setting.ModuleInUse(ModuleType.Event) && FrameworkManager.Setting.InternalEventTrigger)
@@ -119,7 +119,7 @@ namespace StarryFramework
             }
             else
             {
-                FrameworkManager.Debugger.LogWarning($"Framework Event Manager : 尝试清空不存在的事件[{eventName}]");
+                FrameworkManager.Debugger.LogWarning($"Framework Event Manager : 灏濊瘯娓呯┖涓嶅瓨鍦ㄧ殑浜嬩欢[{eventName}]");
             }
         }
 

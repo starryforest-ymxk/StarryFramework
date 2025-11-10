@@ -8,11 +8,11 @@ namespace StarryFramework
     [Serializable]
     public class TimerSettings :IManagerSettings
     {
-        [Tooltip("Çå³ı·ÇÊ¹ÓÃµÄ´¥·¢¼ÆÊ±Æ÷µÄÊ±¼ä¼ä¸ô(Ãë)")]
+        [Tooltip("æ¸…é™¤éä½¿ç”¨çš„è§¦å‘è®¡æ—¶å™¨çš„æ—¶é—´é—´éš”(ç§’)")]
         [SerializeField]
         public float ClearUnusedTriggerTimersInterval = 120f;
 
-        [Tooltip("Çå³ı·ÇÊ¹ÓÃµÄÒì²½¼ÆÊ±Æ÷µÄÊ±¼ä¼ä¸ô(Ãë)")]
+        [Tooltip("æ¸…é™¤éä½¿ç”¨çš„å¼‚æ­¥è®¡æ—¶å™¨çš„æ—¶é—´é—´éš”(ç§’)")]
         [Min(10)]
         [SerializeField]
         public float ClearUnusedAsyncTimersInterval = 120f;

@@ -8,96 +8,96 @@ namespace StarryFramework
     public interface IFSM<T> where T : class
     {
         /// <summary>
-        /// »ñÈ¡×´Ì¬»úÃû³Æ
+        /// è·å–çŠ¶æ€æœºåç§°
         /// </summary>
         /// <returns></returns>
         public string GetName();
 
         /// <summary>
-        /// »ñÈ¡×´Ì¬»úÈ«³Ì£¨×´Ì¬»úÓµÓĞÕßÀàĞÍ+×´Ì¬»úÃû³Æ£©
+        /// è·å–çŠ¶æ€æœºå…¨ç¨‹ï¼ˆçŠ¶æ€æœºæ‹¥æœ‰è€…ç±»å‹+çŠ¶æ€æœºåç§°ï¼‰
         /// </summary>
         /// <returns></returns>
         public string GetFullName();
 
         /// <summary>
-        /// »ñµÃ×´Ì¬»úÓµÓĞÕß
+        /// è·å¾—çŠ¶æ€æœºæ‹¥æœ‰è€…
         /// </summary>
         /// <returns></returns>
         public T GetOwner();
 
         /// <summary>
-        /// »ñÈ¡×´Ì¬ÊıÁ¿
+        /// è·å–çŠ¶æ€æ•°é‡
         /// </summary>
         /// <returns></returns>
         public int GetStateCount();
 
         /// <summary>
-        /// ×´Ì¬»úÊÇ·ñÔËĞĞÖĞ
+        /// çŠ¶æ€æœºæ˜¯å¦è¿è¡Œä¸­
         /// </summary>
         /// <returns></returns>
         public bool IsRunning();
 
         /// <summary>
-        /// ×´Ì¬»úÊÇ·ñ±»´İ»Ù
+        /// çŠ¶æ€æœºæ˜¯å¦è¢«æ‘§æ¯
         /// </summary>
         /// <returns></returns>
         public bool IsDestroyed();
 
         /// <summary>
-        /// »ñÈ¡µ±Ç°ÔËĞĞµÄ×´Ì¬
+        /// è·å–å½“å‰è¿è¡Œçš„çŠ¶æ€
         /// </summary>
         /// <returns></returns>
         public FSMState<T> GetCurrentState();
 
         /// <summary>
-        /// »ñÈ¡µ±Ç°×´Ì¬ÒÑ¾­ÔËĞĞÊ±³¤£¨Ãë£©
+        /// è·å–å½“å‰çŠ¶æ€å·²ç»è¿è¡Œæ—¶é•¿ï¼ˆç§’ï¼‰
         /// </summary>
         /// <returns></returns>
         public float GetCurrentStateTime();
 
         /// <summary>
-        /// ²éÑ¯ÊÇ·ñÓµÓĞÄ³×´Ì¬
+        /// æŸ¥è¯¢æ˜¯å¦æ‹¥æœ‰æŸçŠ¶æ€
         /// </summary>
         /// <param Name="stateType"></param>
         /// <returns></returns>
         public bool HasState(Type stateType);
 
         /// <summary>
-        /// ²éÑ¯ÊÇ·ñÓµÓĞÄ³×´Ì¬
+        /// æŸ¥è¯¢æ˜¯å¦æ‹¥æœ‰æŸçŠ¶æ€
         /// </summary>
         /// <typeparam Name="S"></typeparam>
         /// <returns></returns>
         public bool HasState<S>() where S : FSMState<T>;
 
         /// <summary>
-        /// »ñÈ¡Ä³×´Ì¬
+        /// è·å–æŸçŠ¶æ€
         /// </summary>
         /// <param Name="stateType"></param>
         /// <returns></returns>
         public FSMState<T> GetState(Type stateType);
 
         /// <summary>
-        /// »ñÈ¡Ä³×´Ì¬
+        /// è·å–æŸçŠ¶æ€
         /// </summary>
         /// <typeparam Name="S"></typeparam>
         /// <returns></returns>
         public S GetState<S>() where S : FSMState<T>;
 
         /// <summary>
-        /// »ñÈ¡ËùÓĞ×´Ì¬
+        /// è·å–æ‰€æœ‰çŠ¶æ€
         /// </summary>
         /// <returns></returns>
         public List<FSMState<T>> GetAllStates();
 
         /// <summary>
-        /// ²éÑ¯ÊÇ·ñÓĞÄ³Êı¾İ
+        /// æŸ¥è¯¢æ˜¯å¦æœ‰æŸæ•°æ®
         /// </summary>
         /// <param Name="key"></param>
         /// <returns></returns>
         public bool HasData(string key);
 
         /// <summary>
-        /// »ñÈ¡Ä³Êı¾İ
+        /// è·å–æŸæ•°æ®
         /// </summary>
         /// <typeparam Name="D"></typeparam>
         /// <param Name="key"></param>
@@ -105,29 +105,29 @@ namespace StarryFramework
         public D GetData<D>(string key);
 
         /// <summary>
-        /// ÉèÖÃÄ³Êı¾İ
+        /// è®¾ç½®æŸæ•°æ®
         /// </summary>
-        /// <typeparam Name="D">Êı¾İÀàĞÍ</typeparam>
-        /// <param Name="key">¼ü</param>
-        /// <param Name="value">Öµ</param>
+        /// <typeparam Name="D">æ•°æ®ç±»å‹</typeparam>
+        /// <param Name="key">é”®</param>
+        /// <param Name="value">å€¼</param>
         public void SetData<D>(string key, D value);
 
         /// <summary>
-        /// ÒÆ³ıÄ³Êı¾İ
+        /// ç§»é™¤æŸæ•°æ®
         /// </summary>
         /// <param Name="key"></param>
         public void RemoveData(string key);
 
         /// <summary>
-        /// ¿ªÊ¼ÔËĞĞ×´Ì¬»ú
+        /// å¼€å§‹è¿è¡ŒçŠ¶æ€æœº
         /// </summary>
-        /// <typeparam Name="S">³õÊ¼×´Ì¬ÀàĞÍ</typeparam>
+        /// <typeparam Name="S">åˆå§‹çŠ¶æ€ç±»å‹</typeparam>
         public void Start<S>() where S : FSMState<T>;
 
         /// <summary>
-        /// ¿ªÊ¼ÔËĞĞ×´Ì¬»ú
+        /// å¼€å§‹è¿è¡ŒçŠ¶æ€æœº
         /// </summary>
-        /// <param Name="stateType">³õÊ¼×´Ì¬ÀàĞÍ</param>
+        /// <param Name="stateType">åˆå§‹çŠ¶æ€ç±»å‹</param>
         public void Start(Type stateType);
 
     }

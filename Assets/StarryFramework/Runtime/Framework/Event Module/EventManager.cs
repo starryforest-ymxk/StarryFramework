@@ -97,7 +97,7 @@ namespace StarryFramework
             return new Dictionary<string, Dictionary<string, int>>(eventInfoDic);
         }
 
-        #region 添加事件监听
+        #region 娣诲姞浜嬩欢鐩戝惉
 
         internal void AddEventListener(string eventName, UnityAction action)
         {
@@ -201,7 +201,7 @@ namespace StarryFramework
 
         #endregion
 
-        #region 删除事件监听
+        #region 鍒犻櫎浜嬩欢鐩戝惉
 
         internal void RemoveEventListener(string eventName, UnityAction action)
         {
@@ -209,7 +209,7 @@ namespace StarryFramework
 
             if (!eventDic.ContainsKey(eventFullName))
             {
-                FrameworkManager.Debugger.Log("尝试删除不存在的事件");
+                FrameworkManager.Debugger.Log("灏濊瘯鍒犻櫎涓嶅瓨鍦ㄧ殑浜嬩欢");
                 return;
             }
 
@@ -235,7 +235,7 @@ namespace StarryFramework
 
             if (!eventDic.ContainsKey(eventFullName))
             {
-                FrameworkManager.Debugger.LogError("尝试删除不存在的事件");
+                FrameworkManager.Debugger.LogError("灏濊瘯鍒犻櫎涓嶅瓨鍦ㄧ殑浜嬩欢");
                 return;
             }
 
@@ -261,7 +261,7 @@ namespace StarryFramework
 
             if (!eventDic.ContainsKey(eventFullName))
             {
-                FrameworkManager.Debugger.LogError("尝试删除不存在的事件");
+                FrameworkManager.Debugger.LogError("灏濊瘯鍒犻櫎涓嶅瓨鍦ㄧ殑浜嬩欢");
                 return;
             }
 
@@ -287,7 +287,7 @@ namespace StarryFramework
 
             if (!eventDic.ContainsKey(eventFullName))
             {
-                FrameworkManager.Debugger.LogError("尝试删除不存在的事件");
+                FrameworkManager.Debugger.LogError("灏濊瘯鍒犻櫎涓嶅瓨鍦ㄧ殑浜嬩欢");
                 return;
             }
 
@@ -313,7 +313,7 @@ namespace StarryFramework
 
             if (!eventDic.ContainsKey(eventFullName))
             {
-                FrameworkManager.Debugger.LogError("尝试删除不存在的事件");
+                FrameworkManager.Debugger.LogError("灏濊瘯鍒犻櫎涓嶅瓨鍦ㄧ殑浜嬩欢");
                 return;
             }
 
@@ -336,7 +336,7 @@ namespace StarryFramework
 
         #endregion
 
-        #region 触发事件
+        #region 瑙﹀彂浜嬩欢
         internal void InvokeEvent(string eventName)
         {
             string eventFullName = GetFullName(eventName);
@@ -347,7 +347,7 @@ namespace StarryFramework
             }
             else
             {
-                FrameworkManager.Debugger.Log($"尝试触发不存在的事件[{eventFullName}]");
+                FrameworkManager.Debugger.Log($"灏濊瘯瑙﹀彂涓嶅瓨鍦ㄧ殑浜嬩欢[{eventFullName}]");
             }
         }
 
@@ -361,7 +361,7 @@ namespace StarryFramework
             }
             else
             {
-                FrameworkManager.Debugger.Log($"尝试触发不存在的事件[{eventFullName}]");
+                FrameworkManager.Debugger.Log($"灏濊瘯瑙﹀彂涓嶅瓨鍦ㄧ殑浜嬩欢[{eventFullName}]");
             }
         }
 
@@ -375,7 +375,7 @@ namespace StarryFramework
             }
             else
             {
-                FrameworkManager.Debugger.Log($"尝试触发不存在的事件[{eventFullName}]");
+                FrameworkManager.Debugger.Log($"灏濊瘯瑙﹀彂涓嶅瓨鍦ㄧ殑浜嬩欢[{eventFullName}]");
             }
         }
 
@@ -389,7 +389,7 @@ namespace StarryFramework
             }
             else
             {
-                FrameworkManager.Debugger.Log($"尝试触发不存在的事件[{eventFullName}]");
+                FrameworkManager.Debugger.Log($"灏濊瘯瑙﹀彂涓嶅瓨鍦ㄧ殑浜嬩欢[{eventFullName}]");
             }
         }
 
@@ -403,13 +403,13 @@ namespace StarryFramework
             }
             else
             {
-                FrameworkManager.Debugger.Log($"尝试触发不存在的事件[{eventFullName}]");
+                FrameworkManager.Debugger.Log($"灏濊瘯瑙﹀彂涓嶅瓨鍦ㄧ殑浜嬩欢[{eventFullName}]");
             }
         }
 
         #endregion
 
-        #region 清除事件
+        #region 娓呴櫎浜嬩欢
 
         internal void ClearAllEventLinsteners(string eventName)
         {
@@ -424,7 +424,7 @@ namespace StarryFramework
             }
             else
             {
-                FrameworkManager.Debugger.LogWarning($"尝试清空不存在的事件[{eventName}]");
+                FrameworkManager.Debugger.LogWarning($"灏濊瘯娓呯┖涓嶅瓨鍦ㄧ殑浜嬩欢[{eventName}]");
             }
         }
 
@@ -447,7 +447,7 @@ namespace StarryFramework
             }
             else
             {
-                FrameworkManager.Debugger.LogWarning($"尝试清空不存在的事件[{eventFullName}]");
+                FrameworkManager.Debugger.LogWarning($"灏濊瘯娓呯┖涓嶅瓨鍦ㄧ殑浜嬩欢[{eventFullName}]");
             }
         }
 
@@ -470,7 +470,7 @@ namespace StarryFramework
             }
             else
             {
-                FrameworkManager.Debugger.LogWarning($"尝试清空不存在的事件[{eventFullName}]");
+                FrameworkManager.Debugger.LogWarning($"灏濊瘯娓呯┖涓嶅瓨鍦ㄧ殑浜嬩欢[{eventFullName}]");
             }
         }
 
@@ -493,7 +493,7 @@ namespace StarryFramework
             }
             else
             {
-                FrameworkManager.Debugger.LogWarning($"尝试清空不存在的事件[{eventFullName}]");
+                FrameworkManager.Debugger.LogWarning($"灏濊瘯娓呯┖涓嶅瓨鍦ㄧ殑浜嬩欢[{eventFullName}]");
             }
         }
 
@@ -516,7 +516,7 @@ namespace StarryFramework
             }
             else
             {
-                FrameworkManager.Debugger.LogWarning($"尝试清空不存在的事件[{eventFullName}]");
+                FrameworkManager.Debugger.LogWarning($"灏濊瘯娓呯┖涓嶅瓨鍦ㄧ殑浜嬩欢[{eventFullName}]");
             }
         }
 
@@ -539,7 +539,7 @@ namespace StarryFramework
             }
             else
             {
-                FrameworkManager.Debugger.LogWarning($"尝试清空不存在的事件[{eventFullName}]");
+                FrameworkManager.Debugger.LogWarning($"灏濊瘯娓呯┖涓嶅瓨鍦ㄧ殑浜嬩欢[{eventFullName}]");
             }
         }
 

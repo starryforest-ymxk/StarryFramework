@@ -9,12 +9,12 @@ namespace StarryFramework
     [Serializable]
     public class SceneSettings :IManagerSettings
     {
-        [Tooltip("Ä¬ÈÏ³¡¾°ÇĞ»»¶¯»­µÄµ­ÈëÊ±¼ä")]
+        [Tooltip("é»˜è®¤åœºæ™¯åˆ‡æ¢åŠ¨ç”»çš„æ·¡å…¥æ—¶é—´")]
         [Min(0)]
         [SerializeField]
         internal float defaultAnimationFadeInTime = 0.5f;
         
-        [Tooltip("Ä¬ÈÏ³¡¾°ÇĞ»»¶¯»­µÄµ­³öÊ±¼ä")]
+        [Tooltip("é»˜è®¤åœºæ™¯åˆ‡æ¢åŠ¨ç”»çš„æ·¡å‡ºæ—¶é—´")]
         [Min(0)]
         [SerializeField]
         internal float defaultAnimationFadeOutTime = 0.5f;

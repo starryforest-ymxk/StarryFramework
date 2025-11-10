@@ -48,7 +48,7 @@ namespace StarryFramework.Extentions
             this.settings = settings as AudioSettings;
         }
 
-        #region eventDic ÄÚ²¿²Ù×÷
+        #region eventDic å†…éƒ¨æ“ä½œ
 
         #region unnamed
         private EventInstance GetUnnamedEvent(GUID guid)

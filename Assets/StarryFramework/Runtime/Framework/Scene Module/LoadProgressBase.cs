@@ -8,25 +8,25 @@ namespace StarryFramework
     public abstract class LoadProgressBase: MonoBehaviour
     {
         /// <summary>
-        /// ½ø¶ÈÌõ×î¿ìµÄËÙ¶È£¨Ã¿Ö¡×î¿ìÔö¼ÓµÄÖµ£©
+        /// è¿›åº¦æ¡æœ€å¿«çš„é€Ÿåº¦ï¼ˆæ¯å¸§æœ€å¿«å¢åŠ çš„å€¼ï¼‰
         /// </summary>
         [Range(0, 0.1f)]
         public float speed = 0.05f;
 
         /// <summary>
-        /// ½«½ø¶ÈÖµÉèÖÃÔÚUI×é¼şÉÏ
+        /// å°†è¿›åº¦å€¼è®¾ç½®åœ¨UIç»„ä»¶ä¸Š
         /// </summary>
         /// <param Name="value"></param>
         public abstract void SetProgressValue(float value);
 
         /// <summary>
-        /// ¶ÔÓÚ¼ÓÔØÍê³ÉºóµÄ»Øµ÷²Ù×÷£¬ÔÚ¼ÓÔØ³¡¾°ÕâÒ»Òì²½ÊÂ¼şÖĞ£¬ĞèÒªÔÚ´Ë´¦ÉèÖÃºÏÊÊµÄÌõ¼ş²¢µ÷ÓÃAllowSceneActivate()
+        /// å¯¹äºåŠ è½½å®Œæˆåçš„å›è°ƒæ“ä½œï¼Œåœ¨åŠ è½½åœºæ™¯è¿™ä¸€å¼‚æ­¥äº‹ä»¶ä¸­ï¼Œéœ€è¦åœ¨æ­¤å¤„è®¾ç½®åˆé€‚çš„æ¡ä»¶å¹¶è°ƒç”¨AllowSceneActivate()
         /// </summary>
         /// <param Name="asyncOperation"></param>
         public abstract void BeforeSetActive(AsyncOperation asyncOperation);
 
         /// <summary>
-        /// ÔÊĞí³¡¾°¼ÓÔØºó¼¤»î
+        /// å…è®¸åœºæ™¯åŠ è½½åæ¿€æ´»
         /// </summary>
         /// <param Name="asyncOperation"></param>
         protected void AllowSceneActivate(AsyncOperation asyncOperation)

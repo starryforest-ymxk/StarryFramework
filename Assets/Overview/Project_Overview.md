@@ -8,7 +8,7 @@
 **框架版本**: 开源游戏开发框架  
 **框架许可**: MIT License  
 **渲染管线**: Built-in Render Pipeline  
-**项目类型**: 2D游戏开发框架
+**项目类型**: 游戏开发框架
 
 ---
 
@@ -180,7 +180,8 @@ Framework.EventComponent.ClearAllEventLinsteners(string eventName)
 - 自动存档和手动存档
 - 多存档管理（创建、删除、覆盖）
 - 存档注释和信息管理
-- JSON格式存储玩家数据
+- **JSON序列化**: 使用 Newtonsoft.Json 进行序列化（支持 Dictionary、多态、Nullable、自定义转换器）
+- **UTF-8编码**: 所有文件读写使用 UTF-8 编码
 - PlayerPrefs存储游戏设置
 
 **主要API**:
@@ -195,9 +196,15 @@ Framework.SaveComponent.GameSettings
 ```
 
 **数据结构**:
-- **PlayerData**: ScriptableObject，存储玩家游戏数据
-- **GameSettings**: ScriptableObject，存储游戏设置（音量等）
+- **PlayerData**: 可序列化类，存储玩家游戏数据（用户自定义）
+- **GameSettings**: 可序列化类，存储游戏设置（用户自定义）
 - **PlayerDataInfo**: 存档元信息（时间、注释等）
+
+**Inspector功能**:
+- 运行时通过反射动态显示和编辑 `PlayerData` 和 `GameSettings` 的所有字段
+- 支持基础类型（int、float、bool、string等）
+- 支持Unity类型（Vector2/3/4、Color等）
+- 支持枚举、列表、数组和自定义可序列化类
 
 **使用场景**:
 - RPG游戏存档系统
@@ -367,18 +374,6 @@ Framework.ResourceComponent.Unload(UnityEngine.Object obj)
 Framework.ResourceComponent.UnloadUnused()
 ```
 
-**使用示例**:
-```csharp
-GameObject prefab = Framework.ResourceComponent.LoadRes<GameObject>("Prefabs/Player");
-GameObject instance = Framework.ResourceComponent.LoadRes<GameObject>("Prefabs/Enemy", true);
-Sprite[] sprites = Framework.ResourceComponent.LoadAllRes<Sprite>("Sprites/UI");
-
-Framework.ResourceComponent.LoadAsync<AudioClip>("Audio/BGM", (clip) => 
-{
-    if (clip != null) Debug.Log($"Loaded: {clip.name}");
-});
-```
-
 #### Addressables加载API
 
 用于加载通过Addressables系统管理的资源：
@@ -393,19 +388,6 @@ Framework.ResourceComponent.ReleaseAddressableInstance(GameObject instance)
 Framework.ResourceComponent.ReleaseAllAddressableHandles()
 ```
 
-**使用示例**:
-```csharp
-GameObject prefab = Framework.ResourceComponent.LoadAddressable<GameObject>("Player");
-
-var handle = Framework.ResourceComponent.LoadAddressableAsync<AudioClip>("BGM_Main", (clip) => 
-{
-    if (clip != null) Debug.Log($"Loaded: {clip.name}");
-});
-
-var instanceHandle = Framework.ResourceComponent.InstantiateAddressable("Enemy", transform);
-
-Framework.ResourceComponent.ReleaseAddressableHandle(handle);
-```
 
 **重要说明**:
 - **Resources加载**: 适用于小型项目或原型开发，资源打包在应用中，无法动态更新
@@ -673,6 +655,7 @@ public static class GameEvents
 - **TestSave**: 存档系统测试
 - **TestFSM**: 状态机测试
 - **TestObjectPool**: 对象池测试
+- **TestResource**: 资源加载测试
 - **TestTimer**: 计时器测试
 - **TestScene**: 场景管理测试
 - **TestUI**: UI系统测试

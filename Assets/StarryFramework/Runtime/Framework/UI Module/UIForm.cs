@@ -33,7 +33,7 @@ namespace StarryFramework
         
         
         
-        #region ÉúÃüÖÜÆÚ
+        #region ç”Ÿå‘½å‘¨æœŸ
 
         public void OnInit(
             int serialId, string assetName, UIGroup group, bool pauseCoveredUIForm, 

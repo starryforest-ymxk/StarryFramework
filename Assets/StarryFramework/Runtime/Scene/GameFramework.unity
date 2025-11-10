@@ -677,7 +677,7 @@ MonoBehaviour:
   frameworkSetting:
     debugType: 2
     InternalEventTrigger: 1
-    StartScene: 11
+    StartScene: 1
     StartSceneAnimation: 0
     modules: 0000000002000000010000000400000005000000060000000300000007000000
 --- !u!1 &2042942910

@@ -1,16 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using StarryFramework;
-using FMOD.Studio;
-using FMODUnity;
-using System;
-using EventHandler = FMODUnity.EventHandler;
 using UnityEngine.Events;
 
 public class TestSave : MonoBehaviour
 {
-    readonly UnityAction action = new UnityAction(() => Debug.Log("SaveData!!!"));
+    readonly UnityAction action = new(() => Debug.Log("SaveData!!!"));
 
     private void OnEnable()
     {

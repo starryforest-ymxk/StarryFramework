@@ -41,7 +41,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Ö»ÓĞÆôÓÃSaveÄ£¿é²Å»á±»µ÷ÓÃ£¬ÓÃÓÚ½«PlayerDataÊı¾İÓëSaveÄ£¿éÍ¬²½
+        /// åªæœ‰å¯ç”¨Saveæ¨¡å—æ‰ä¼šè¢«è°ƒç”¨ï¼Œç”¨äºå°†PlayerDataæ•°æ®ä¸Saveæ¨¡å—åŒæ­¥
         /// </summary>
         private void LoadPlayerData()
         {
@@ -94,10 +94,10 @@ namespace StarryFramework
         }
 
 
-        #region Ìí¼ÓÊÂ¼ş¼àÌı
+        #region æ·»åŠ äº‹ä»¶ç›‘å¬
 
         /// <summary>
-        /// Ìí¼ÓÊÂ¼ş¼àÌı£¬actionÇëÎğ´«ÈëÄäÃûº¯Êı»òLambda±í´ïÊ½
+        /// æ·»åŠ äº‹ä»¶ç›‘å¬ï¼Œactionè¯·å‹¿ä¼ å…¥åŒ¿åå‡½æ•°æˆ–Lambdaè¡¨è¾¾å¼
         /// </summary>
         public void AddEventListener(string eventName, UnityAction action)
         {
@@ -105,7 +105,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Ìí¼ÓÒ»¸ö²ÎÊıµÄÊÂ¼ş¼àÌı£¬actionÇëÎğ´«ÈëÄäÃûº¯Êı»òLambda±í´ïÊ½
+        /// æ·»åŠ ä¸€ä¸ªå‚æ•°çš„äº‹ä»¶ç›‘å¬ï¼Œactionè¯·å‹¿ä¼ å…¥åŒ¿åå‡½æ•°æˆ–Lambdaè¡¨è¾¾å¼
         /// </summary>
         public void AddEventListener<T>(string eventName, UnityAction<T> action)
         {
@@ -113,7 +113,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Ìí¼ÓÁ½¸ö²ÎÊıµÄÊÂ¼ş¼àÌı£¬actionÇëÎğ´«ÈëÄäÃûº¯Êı»òLambda±í´ïÊ½
+        /// æ·»åŠ ä¸¤ä¸ªå‚æ•°çš„äº‹ä»¶ç›‘å¬ï¼Œactionè¯·å‹¿ä¼ å…¥åŒ¿åå‡½æ•°æˆ–Lambdaè¡¨è¾¾å¼
         /// </summary>
         public void AddEventListener<T1, T2>(string eventName, UnityAction<T1, T2> action)
         {
@@ -121,7 +121,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Ìí¼ÓÈı¸ö²ÎÊıµÄÊÂ¼ş¼àÌı£¬actionÇëÎğ´«ÈëÄäÃûº¯Êı»òLambda±í´ïÊ½
+        /// æ·»åŠ ä¸‰ä¸ªå‚æ•°çš„äº‹ä»¶ç›‘å¬ï¼Œactionè¯·å‹¿ä¼ å…¥åŒ¿åå‡½æ•°æˆ–Lambdaè¡¨è¾¾å¼
         /// </summary>
         public void AddEventListener<T1, T2, T3>(string eventName, UnityAction<T1, T2, T3> action)
         {
@@ -129,7 +129,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Ìí¼ÓËÄ¸ö²ÎÊıµÄÊÂ¼ş¼àÌı£¬actionÇëÎğ´«ÈëÄäÃûº¯Êı»òLambda±í´ïÊ½
+        /// æ·»åŠ å››ä¸ªå‚æ•°çš„äº‹ä»¶ç›‘å¬ï¼Œactionè¯·å‹¿ä¼ å…¥åŒ¿åå‡½æ•°æˆ–Lambdaè¡¨è¾¾å¼
         /// </summary>
         public void AddEventListener<T1, T2, T3, T4>(string eventName, UnityAction<T1, T2, T3, T4> action)
         {
@@ -138,10 +138,10 @@ namespace StarryFramework
 
         #endregion
 
-        #region É¾³ıÊÂ¼ş¼àÌı
+        #region åˆ é™¤äº‹ä»¶ç›‘å¬
 
         /// <summary>
-        /// É¾³ıÊÂ¼ş¼àÌı
+        /// åˆ é™¤äº‹ä»¶ç›‘å¬
         /// </summary>
         public void RemoveEventListener(string eventName, UnityAction action)
         {
@@ -151,7 +151,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// É¾³ıÒ»¸ö²ÎÊıµÄÊÂ¼ş¼àÌı
+        /// åˆ é™¤ä¸€ä¸ªå‚æ•°çš„äº‹ä»¶ç›‘å¬
         /// </summary>
         public void RemoveEventListener<T>(string eventName, UnityAction<T> action)
         {
@@ -161,7 +161,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// É¾³ıÁ½¸ö²ÎÊıµÄÊÂ¼ş¼àÌı
+        /// åˆ é™¤ä¸¤ä¸ªå‚æ•°çš„äº‹ä»¶ç›‘å¬
         /// </summary>
         public void RemoveEventListener<T1, T2>(string eventName, UnityAction<T1, T2> action)
         {
@@ -171,7 +171,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// É¾³ıÈı¸ö²ÎÊıµÄÊÂ¼ş¼àÌı
+        /// åˆ é™¤ä¸‰ä¸ªå‚æ•°çš„äº‹ä»¶ç›‘å¬
         /// </summary>
         public void RemoveEventListener<T1, T2, T3>(string eventName, UnityAction<T1, T2, T3> action)
         {
@@ -181,7 +181,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// É¾³ıËÄ¸ö²ÎÊıµÄÊÂ¼ş¼àÌı
+        /// åˆ é™¤å››ä¸ªå‚æ•°çš„äº‹ä»¶ç›‘å¬
         /// </summary>
         public void RemoveEventListener<T1, T2, T3, T4>(string eventName, UnityAction<T1, T2, T3, T4> action)
         {
@@ -193,10 +193,10 @@ namespace StarryFramework
 
         #endregion
          
-        #region ´¥·¢ÊÂ¼ş
+        #region è§¦å‘äº‹ä»¶
 
         /// <summary>
-        /// ´¥·¢ÊÂ¼ş
+        /// è§¦å‘äº‹ä»¶
         /// </summary>
         public void InvokeEvent(string eventName)
         {
@@ -206,7 +206,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ´¥·¢Ò»¸ö²ÎÊıµÄÊÂ¼ş
+        /// è§¦å‘ä¸€ä¸ªå‚æ•°çš„äº‹ä»¶
         /// </summary>
         public void InvokeEvent<T>(string eventName, T t)
         {
@@ -216,7 +216,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ´¥·¢Á½¸ö²ÎÊıµÄÊÂ¼ş
+        /// è§¦å‘ä¸¤ä¸ªå‚æ•°çš„äº‹ä»¶
         /// </summary>
         public void InvokeEvent<T1, T2>(string eventName, T1 t1, T2 t2)
         {
@@ -226,7 +226,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ´¥·¢Èı¸ö²ÎÊıµÄÊÂ¼ş
+        /// è§¦å‘ä¸‰ä¸ªå‚æ•°çš„äº‹ä»¶
         /// </summary>
         public void InvokeEvent<T1, T2, T3>(string eventName, T1 t1, T2 t2, T3 t3)
         {
@@ -236,7 +236,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ´¥·¢ËÄ¸ö²ÎÊıµÄÊÂ¼ş
+        /// è§¦å‘å››ä¸ªå‚æ•°çš„äº‹ä»¶
         /// </summary>
         public void InvokeEvent<T1, T2, T3, T4>(string eventName, T1 t1, T2 t2, T3 t3, T4 t4)
         {
@@ -247,13 +247,13 @@ namespace StarryFramework
 
         #endregion
 
-        #region ´¥·¢ÑÓÊ±ÊÂ¼ş
+        #region è§¦å‘å»¶æ—¶äº‹ä»¶
 
         /// <summary>
-        /// ÑÓÊ±´¥·¢ÊÂ¼ş
+        /// å»¶æ—¶è§¦å‘äº‹ä»¶
         /// </summary>
-        /// <param Name="delayTime">ÑÓÊ±Ê±¼ä£¬ÃëÎªµ¥Î»</param>
-        /// <param Name="realtime">ÊÇ·ñ²ÉÓÃÕæÊµÊ±¼ä£¨unscaledTime£©</param>
+        /// <param Name="delayTime">å»¶æ—¶æ—¶é—´ï¼Œç§’ä¸ºå•ä½</param>
+        /// <param Name="realtime">æ˜¯å¦é‡‡ç”¨çœŸå®æ—¶é—´ï¼ˆunscaledTimeï¼‰</param>
         public void InvokeDelayedEvent(string eventName, float delayTime, bool realtime = false)
         {
             lastEventName = eventName;
@@ -272,10 +272,10 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÑÓÊ±´¥·¢Ò»¸ö²ÎÊıµÄÊÂ¼ş
+        /// å»¶æ—¶è§¦å‘ä¸€ä¸ªå‚æ•°çš„äº‹ä»¶
         /// </summary>
-        /// <param Name="delayTime">ÑÓÊ±Ê±¼ä£¬ÃëÎªµ¥Î»</param>
-        /// <param Name="realtime">ÊÇ·ñ²ÉÓÃÕæÊµÊ±¼ä£¨unscaledTime£©</param>
+        /// <param Name="delayTime">å»¶æ—¶æ—¶é—´ï¼Œç§’ä¸ºå•ä½</param>
+        /// <param Name="realtime">æ˜¯å¦é‡‡ç”¨çœŸå®æ—¶é—´ï¼ˆunscaledTimeï¼‰</param>
         public void InvokeDelayedEvent<T>(string eventName, T t, float delayTime, bool realtime = false)
         {
             lastEventName = eventName;
@@ -293,10 +293,10 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÑÓÊ±´¥·¢Á½¸ö²ÎÊıÊÂ¼ş
+        /// å»¶æ—¶è§¦å‘ä¸¤ä¸ªå‚æ•°äº‹ä»¶
         /// </summary>
-        /// <param Name="delayTime">ÑÓÊ±Ê±¼ä£¬ÃëÎªµ¥Î»</param>
-        /// <param Name="realtime">ÊÇ·ñ²ÉÓÃÕæÊµÊ±¼ä£¨unscaledTime£©</param>
+        /// <param Name="delayTime">å»¶æ—¶æ—¶é—´ï¼Œç§’ä¸ºå•ä½</param>
+        /// <param Name="realtime">æ˜¯å¦é‡‡ç”¨çœŸå®æ—¶é—´ï¼ˆunscaledTimeï¼‰</param>
         public void InvokeDelayedEvent<T1, T2>(string eventName, T1 t1, T2 t2, float delayTime, bool realtime = false)
         {
             lastEventName = eventName;
@@ -315,10 +315,10 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÑÓÊ±´¥·¢Èı¸ö²ÎÊıµÄÊÂ¼ş
+        /// å»¶æ—¶è§¦å‘ä¸‰ä¸ªå‚æ•°çš„äº‹ä»¶
         /// </summary>
-        /// <param Name="delayTime">ÑÓÊ±Ê±¼ä£¬ÃëÎªµ¥Î»</param>
-        /// <param Name="realtime">ÊÇ·ñ²ÉÓÃÕæÊµÊ±¼ä£¨unscaledTime£©</param>
+        /// <param Name="delayTime">å»¶æ—¶æ—¶é—´ï¼Œç§’ä¸ºå•ä½</param>
+        /// <param Name="realtime">æ˜¯å¦é‡‡ç”¨çœŸå®æ—¶é—´ï¼ˆunscaledTimeï¼‰</param>
         public void InvokeDelayedEvent<T1, T2, T3>(string eventName, T1 t1, T2 t2, T3 t3, float delayTime, bool realtime = false)
         {
             lastEventName = eventName;
@@ -336,10 +336,10 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÑÓÊ±´¥·¢ËÄ¸ö²ÎÊıµÄÊÂ¼ş
+        /// å»¶æ—¶è§¦å‘å››ä¸ªå‚æ•°çš„äº‹ä»¶
         /// </summary>
-        /// <param Name="delayTime">ÑÓÊ±Ê±¼ä£¬ÃëÎªµ¥Î»</param>
-        /// <param Name="realtime">ÊÇ·ñ²ÉÓÃÕæÊµÊ±¼ä£¨unscaledTime£©</param>
+        /// <param Name="delayTime">å»¶æ—¶æ—¶é—´ï¼Œç§’ä¸ºå•ä½</param>
+        /// <param Name="realtime">æ˜¯å¦é‡‡ç”¨çœŸå®æ—¶é—´ï¼ˆunscaledTimeï¼‰</param>
         public void InvokeDelayedEvent<T1, T2, T3, T4>(string eventName, T1 t1, T2 t2, T3 t3, T4 t4, float delayTime, bool realtime = false)
         {
             lastEventName = eventName;
@@ -358,10 +358,10 @@ namespace StarryFramework
 
         #endregion
 
-        #region Çå³ıÊÂ¼ş¼àÌı
+        #region æ¸…é™¤äº‹ä»¶ç›‘å¬
 
         /// <summary>
-        /// Çå³ıÄ³¸öÊÂ¼şµÄËùÓĞ¼àÌı
+        /// æ¸…é™¤æŸä¸ªäº‹ä»¶çš„æ‰€æœ‰ç›‘å¬
         /// </summary>
         public void ClearAllEventLinsteners(string eventName)
         {
@@ -369,7 +369,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Çå³ıÄ³¸öÊÂ¼şµÄËùÓĞÁã²ÎÊı¼àÌı
+        /// æ¸…é™¤æŸä¸ªäº‹ä»¶çš„æ‰€æœ‰é›¶å‚æ•°ç›‘å¬
         /// </summary>
         public void ClearEventListeners(string eventName)
         {
@@ -377,7 +377,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Çå³ıÄ³¸öÊÂ¼şµÄËùÓĞµ¥²ÎÊı¼àÌı
+        /// æ¸…é™¤æŸä¸ªäº‹ä»¶çš„æ‰€æœ‰å•å‚æ•°ç›‘å¬
         /// </summary>
         public void ClearEventListeners<T>(string eventName)
         {
@@ -385,7 +385,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Çå³ıÄ³¸öÊÂ¼şµÄËùÓĞË«²ÎÊı¼àÌı
+        /// æ¸…é™¤æŸä¸ªäº‹ä»¶çš„æ‰€æœ‰åŒå‚æ•°ç›‘å¬
         /// </summary>
         public void ClearEventListeners<T1, T2>(string eventName)
         {
@@ -393,7 +393,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Çå³ıÄ³¸öÊÂ¼şµÄËùÓĞÈı²ÎÊı¼àÌı
+        /// æ¸…é™¤æŸä¸ªäº‹ä»¶çš„æ‰€æœ‰ä¸‰å‚æ•°ç›‘å¬
         /// </summary>
         public void ClearEventListeners<T1, T2, T3>(string eventName)
         {
@@ -401,7 +401,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Çå³ıÄ³¸öÊÂ¼şµÄËùÓĞËÄ²ÎÊı¼àÌı
+        /// æ¸…é™¤æŸä¸ªäº‹ä»¶çš„æ‰€æœ‰å››å‚æ•°ç›‘å¬
         /// </summary>
         public void ClearEventListeners<T1, T2, T3, T4>(string eventName)
         {

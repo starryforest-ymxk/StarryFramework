@@ -16,20 +16,20 @@ namespace StarryFramework
         [Header("Log Level")] [Space(5)] 
         [SerializeField] internal FrameworkDebugType debugType = FrameworkDebugType.Normal;
         
-        [Header("Framework Internal Event")] [Tooltip("¿ò¼ÜÄÚ²¿ÊÂ¼ş±»´¥·¢Ê±£¬ÊÇ·ñ»áÍ¬Ê±´¥·¢Íâ²¿Í¬ÃûÊÂ¼ş¡£When an internal framework event is triggered, whether an external event with the same name will also be triggered simultaneously")] [Space(5)] 
+        [Header("Framework Internal Event")] [Tooltip("æ¡†æ¶å†…éƒ¨äº‹ä»¶è¢«è§¦å‘æ—¶ï¼Œæ˜¯å¦ä¼šåŒæ—¶è§¦å‘å¤–éƒ¨åŒåäº‹ä»¶ã€‚When an internal framework event is triggered, whether an external event with the same name will also be triggered simultaneously")] [Space(5)] 
         [SerializeField] internal bool InternalEventTrigger = true;
         
-        // [Header("PlayMode Entry")] [Tooltip("±à¼­Æ÷½øÈëÔËĞĞ×´Ì¬Ê±³¡¾°Æô¶¯µÄ·½Ê½¡£Way of scene starts when the editor enters playmode")] [Space(5)] 
+        // [Header("PlayMode Entry")] [Tooltip("ç¼–è¾‘å™¨è¿›å…¥è¿è¡ŒçŠ¶æ€æ—¶åœºæ™¯å¯åŠ¨çš„æ–¹å¼ã€‚Way of scene starts when the editor enters playmode")] [Space(5)] 
         // [SerializeField] internal EnterPlayModeWay enterPlayModeWay = EnterPlayModeWay.FrameworkStart;
         
-        [Header("Initial Scene Load")] [Tooltip("ÓÎÏ·Æô¶¯¼ÓÔØµÄ³õÊ¼³¡¾°£¬Èç¹ûÊÇGameFrameworkÔò²»¼ÓÔØ¡£If the initial scene to load is the GameFramework, then it does nothing")] [Space(5)] 
+        [Header("Initial Scene Load")] [Tooltip("æ¸¸æˆå¯åŠ¨åŠ è½½çš„åˆå§‹åœºæ™¯ï¼Œå¦‚æœæ˜¯GameFrameworkåˆ™ä¸åŠ è½½ã€‚If the initial scene to load is the GameFramework, then it does nothing")] [Space(5)] 
         [SerializeField] [SceneIndex] internal int StartScene = 0;
 
-        [Tooltip("³õÊ¼³¡¾°¼ÓÔØÊÇ·ñÆôÓÃÄ¬ÈÏ¶¯»­¡£Whether the initial scene loading enable the default animation")]
+        [Tooltip("åˆå§‹åœºæ™¯åŠ è½½æ˜¯å¦å¯ç”¨é»˜è®¤åŠ¨ç”»ã€‚Whether the initial scene loading enable the default animation")]
         [SerializeField] internal bool StartSceneAnimation = false;
         
         [Header("Modules Enabled")] [Space(5)]
-        [Tooltip("ÓÎÏ·¿ò¼Ü¸÷Ä£¿éÊÇ·ñÆôÓÃÒÔ¼°ÓÅÏÈ¼¶£¬Ô½¿¿½üÁĞ±íÇ°¶ËÓÅÏÈ¼¶Ô½¸ß¡£Whether each module of the game framework is enabled and its priority, with higher priority given to those closer to the top of the list.")]
+        [Tooltip("æ¸¸æˆæ¡†æ¶å„æ¨¡å—æ˜¯å¦å¯ç”¨ä»¥åŠä¼˜å…ˆçº§ï¼Œè¶Šé è¿‘åˆ—è¡¨å‰ç«¯ä¼˜å…ˆçº§è¶Šé«˜ã€‚Whether each module of the game framework is enabled and its priority, with higher priority given to those closer to the top of the list.")]
         [SerializeField] internal List<ModuleType> modules= new List<ModuleType>();
 
         internal bool ModuleInUse(ModuleType type)
@@ -38,7 +38,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ³õÊ¼»¯
+        /// åˆå§‹åŒ–
         /// </summary>
         internal void Init()
         {
@@ -68,7 +68,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÉèÖÃºÏÀíĞÔ¼ì²é
+        /// è®¾ç½®åˆç†æ€§æ£€æŸ¥
         /// </summary>
         internal void SettingCheck()
         {

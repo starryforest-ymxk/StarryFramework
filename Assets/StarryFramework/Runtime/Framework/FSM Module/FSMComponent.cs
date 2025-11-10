@@ -21,62 +21,62 @@ namespace StarryFramework
 
 
         /// <summary>
-        /// »ñÈ¡ÓĞÏŞ×´Ì¬»úÊıÁ¿
+        /// è·å–æœ‰é™çŠ¶æ€æœºæ•°é‡
         /// </summary>
         /// <returns></returns>
         public int GetFSMCount() => Manager.FSMCount;
 
         /// <summary>
-        /// ´´½¨ÓĞÏŞ×´Ì¬»ú£¬²»ÄÜÓĞÓµÓĞÕßÀàĞÍºÍÃû³ÆÍêÈ«ÏàÍ¬µÄ×´Ì¬»ú
+        /// åˆ›å»ºæœ‰é™çŠ¶æ€æœºï¼Œä¸èƒ½æœ‰æ‹¥æœ‰è€…ç±»å‹å’Œåç§°å®Œå…¨ç›¸åŒçš„çŠ¶æ€æœº
         /// </summary>
-        /// <typeparam Name="T">ÓµÓĞÕßÀàĞÍ</typeparam>
-        /// <param Name="name">×´Ì¬»úÃû³Æ</param>
-        /// <param Name="owner">ÓµÓĞÕß</param>
-        /// <param Name="states">×´Ì¬ÁĞ±í</param>
-        /// <returns>×´Ì¬»ú</returns>
+        /// <typeparam Name="T">æ‹¥æœ‰è€…ç±»å‹</typeparam>
+        /// <param Name="name">çŠ¶æ€æœºåç§°</param>
+        /// <param Name="owner">æ‹¥æœ‰è€…</param>
+        /// <param Name="states">çŠ¶æ€åˆ—è¡¨</param>
+        /// <returns>çŠ¶æ€æœº</returns>
         public IFSM<T> CreateFSM<T>(string name, T owner, List<FSMState<T>> states) where T : class
         {
             return Manager.CreateFSM<T>(name, owner, states);
         }
 
         /// <summary>
-        /// ´´½¨ÓĞÏŞ×´Ì¬»ú£¬²»ÄÜÓĞÓµÓĞÕßÀàĞÍºÍÃû³ÆÍêÈ«ÏàÍ¬µÄ×´Ì¬»ú
+        /// åˆ›å»ºæœ‰é™çŠ¶æ€æœºï¼Œä¸èƒ½æœ‰æ‹¥æœ‰è€…ç±»å‹å’Œåç§°å®Œå…¨ç›¸åŒçš„çŠ¶æ€æœº
         /// </summary>
-        /// <typeparam Name="T">ÓµÓĞÕßÀàĞÍ</typeparam>
-        /// <param Name="name">×´Ì¬»úÃû³Æ</param>
-        /// <param Name="owner">ÓµÓĞÕß</param>
-        /// <param Name="states">×´Ì¬Êı×é</param>
-        /// <returns>×´Ì¬»ú</returns>
+        /// <typeparam Name="T">æ‹¥æœ‰è€…ç±»å‹</typeparam>
+        /// <param Name="name">çŠ¶æ€æœºåç§°</param>
+        /// <param Name="owner">æ‹¥æœ‰è€…</param>
+        /// <param Name="states">çŠ¶æ€æ•°ç»„</param>
+        /// <returns>çŠ¶æ€æœº</returns>
         public IFSM<T> CreateFSM<T>(string name, T owner, FSMState<T>[] states) where T : class
         {
             return Manager.CreateFSM(name, owner, states);
         }
 
         /// <summary>
-        /// ×¢ÏúÓĞÏŞ×´Ì¬»ú
+        /// æ³¨é”€æœ‰é™çŠ¶æ€æœº
         /// </summary>
-        /// <typeparam Name="T">ÓµÓĞÕßÀàĞÍ</typeparam>
-        /// <param Name="name">×´Ì¬»úÃû³Æ</param>
+        /// <typeparam Name="T">æ‹¥æœ‰è€…ç±»å‹</typeparam>
+        /// <param Name="name">çŠ¶æ€æœºåç§°</param>
         public void DestroyFSM<T>(string name) where T : class
         {
             Manager.DestroyFSM<T>(name);
         }
 
         /// <summary>
-        /// ×¢ÏúÓĞÏŞ×´Ì¬»ú
+        /// æ³¨é”€æœ‰é™çŠ¶æ€æœº
         /// </summary>
-        /// <typeparam Name="T">ÓµÓĞÕßÀàĞÍ</typeparam>
-        /// <param Name="_fsm">×´Ì¬»ú</param>
+        /// <typeparam Name="T">æ‹¥æœ‰è€…ç±»å‹</typeparam>
+        /// <param Name="_fsm">çŠ¶æ€æœº</param>
         public void DestroyFSM<T>(IFSM<T> _fsm) where T : class
         {
             Manager.DestroyFSM<T>(_fsm);
         }
 
         /// <summary>
-        /// ²éÑ¯ÊÇ·ñÓµÓĞÄ³×´Ì¬»ú
+        /// æŸ¥è¯¢æ˜¯å¦æ‹¥æœ‰æŸçŠ¶æ€æœº
         /// </summary>
-        /// <typeparam Name="T">ÓµÓĞÕßÀàĞÍ</typeparam>
-        /// <param Name="name">×´Ì¬»úÃû³Æ</param>
+        /// <typeparam Name="T">æ‹¥æœ‰è€…ç±»å‹</typeparam>
+        /// <param Name="name">çŠ¶æ€æœºåç§°</param>
         /// <returns></returns>
         public bool HasFSM<T>(string name) where T : class
         {
@@ -84,10 +84,10 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// »ñµÃÄ³×´Ì¬»ú
+        /// è·å¾—æŸçŠ¶æ€æœº
         /// </summary>
-        /// <typeparam Name="T">ÓµÓĞÕßÀàĞÍ</typeparam>
-        /// <param Name="name">×´Ì¬»úÃû³Æ</param>
+        /// <typeparam Name="T">æ‹¥æœ‰è€…ç±»å‹</typeparam>
+        /// <param Name="name">çŠ¶æ€æœºåç§°</param>
         /// <returns></returns>
         public IFSM<T> GetFSM<T>(string name) where T : class
         {
@@ -95,7 +95,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// »ñÈ¡ËùÓĞ×´Ì¬»ú
+        /// è·å–æ‰€æœ‰çŠ¶æ€æœº
         /// </summary>
         /// <returns></returns>
         public FSMBase[] GetAllFSMs()

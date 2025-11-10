@@ -7,7 +7,7 @@ namespace StarryFramework.Editor
         private bool m_IsCompiling = false;
 
         /// <summary>
-        /// »æÖÆÊÂ¼ş¡£
+        /// ç»˜åˆ¶äº‹ä»¶ã€‚
         /// </summary>
         public override void OnInspectorGUI()
         {   
@@ -24,14 +24,14 @@ namespace StarryFramework.Editor
         }
 
         /// <summary>
-        /// ±àÒë¿ªÊ¼ÊÂ¼ş¡£
+        /// ç¼–è¯‘å¼€å§‹äº‹ä»¶ã€‚
         /// </summary>
         protected virtual void OnCompileStart()
         {
         }
 
         /// <summary>
-        /// ±àÒëÍê³ÉÊÂ¼ş¡£
+        /// ç¼–è¯‘å®Œæˆäº‹ä»¶ã€‚
         /// </summary>
         protected virtual void OnCompileComplete()
         {

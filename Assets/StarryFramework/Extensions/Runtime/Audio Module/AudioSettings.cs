@@ -13,16 +13,16 @@ namespace StarryFramework.Extentions
     {
         [BankRef]
         [SerializeField]
-        [Tooltip("È«¾ÖÒôÆµ¿â£¬¿âÀïµÄÒôÆµ×ÊÔ´»áÔÚ¿ªÆôÓÎÏ·Ê±¼ÓÔØ")]
+        [Tooltip("å…¨å±€éŸ³é¢‘åº“ï¼Œåº“é‡Œçš„éŸ³é¢‘èµ„æºä¼šåœ¨å¼€å¯æ¸¸æˆæ—¶åŠ è½½")]
         internal List<string> globalBanks = new List<string>();
 
         [SerializeField]
         [Min(10)]
-        [Tooltip("×Ô¶¯Çå³ı·ÇÊ¹ÓÃ×´Ì¬ÏÂµÄ·Ç±êÇ©ÒôÆµµÄÊÂ¼ş¼ä¸ô")]
+        [Tooltip("è‡ªåŠ¨æ¸…é™¤éä½¿ç”¨çŠ¶æ€ä¸‹çš„éæ ‡ç­¾éŸ³é¢‘çš„äº‹ä»¶é—´éš”")]
         internal float clearUnusedAudioInterval = 120f;
 
         [SerializeField]
-        [Tooltip("²»Í¬³¡¾°µÄÒôÆµÉèÖÃ")]
+        [Tooltip("ä¸åŒåœºæ™¯çš„éŸ³é¢‘è®¾ç½®")]
         internal List<SceneAudioSettings> sceneAudioSettings = new List<SceneAudioSettings>();
     }
 
@@ -30,20 +30,20 @@ namespace StarryFramework.Extentions
     internal class SceneAudioSettings
     {
         [SerializeField]
-        [Tooltip("³¡¾°")]
+        [Tooltip("åœºæ™¯")]
         [SceneIndex]
         internal int scene;
         [SerializeField]
-        [Tooltip("×Ô¶¯²¥·ÅBGM£¨Ä¬ÈÏ²¥·ÅµÚÒ»Ê×£©")]
+        [Tooltip("è‡ªåŠ¨æ’­æ”¾BGMï¼ˆé»˜è®¤æ’­æ”¾ç¬¬ä¸€é¦–ï¼‰")]
         internal bool autoPlayBGM;
         [SerializeField]
-        [Tooltip("³¡¾°µÄBGMÁĞ±í")]
+        [Tooltip("åœºæ™¯çš„BGMåˆ—è¡¨")]
         internal List<EventReference> BGMList = new List<EventReference>();
         [SerializeField]
-        [Tooltip("Ëæ³¡¾°¼ÓÔØÒ»ÆğÔ¤ÏÈ¼ÓÔØµÄÒôÆµ×ÊÔ´")]
+        [Tooltip("éšåœºæ™¯åŠ è½½ä¸€èµ·é¢„å…ˆåŠ è½½çš„éŸ³é¢‘èµ„æº")]
         internal List<EventReference> preloadedAudios = new List<EventReference>();
         [SerializeField]
-        [Tooltip("³¡¾°¼ÓÔØºÃÒÔºó³ıBGMÒÔÍâ×Ô¶¯²¥·ÅµÄÒôÆµÁĞ±í")]
+        [Tooltip("åœºæ™¯åŠ è½½å¥½ä»¥åé™¤BGMä»¥å¤–è‡ªåŠ¨æ’­æ”¾çš„éŸ³é¢‘åˆ—è¡¨")]
         internal List<AutoPlayAudio> autoPlayAudios = new List<AutoPlayAudio>();
     }
 
@@ -52,11 +52,11 @@ namespace StarryFramework.Extentions
     internal class AutoPlayAudio
     {
         [SerializeField]
-        [Tooltip("×Ô¶¯²¥·ÅµÄÒôÆµ")]
+        [Tooltip("è‡ªåŠ¨æ’­æ”¾çš„éŸ³é¢‘")]
         internal EventReference eventReference;
 
         [SerializeField]
-        [Tooltip("ÒôÆµ±êÇ©£¬Èç¹ûÎª¿ÕÔòÃ»ÓĞ±êÇ©")]
+        [Tooltip("éŸ³é¢‘æ ‡ç­¾ï¼Œå¦‚æœä¸ºç©ºåˆ™æ²¡æœ‰æ ‡ç­¾")]
         internal string tag = "";
     }
 

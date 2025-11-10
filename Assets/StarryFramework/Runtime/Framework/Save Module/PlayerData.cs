@@ -2,32 +2,49 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace StarryFramework
 {
-    
-    public sealed class PlayerData : ScriptableObject
+    [Serializable]
+    public sealed class PlayerData
     {
-        #region 角色
+        #region 瑙掕壊
         public int test = 0;
         #endregion
-        #region 事件
+        #region 浜嬩欢
         public bool event1;
         public bool event2;
         public bool event3;
         public bool event4;
         #endregion
-        #region 流程
+        #region 閬撳叿
+        public List<string> inventoryList = new(new[] { "test1", "test2" });
+        public string[] inventoryArrow = new[] { "test1", "test2" };
+        #endregion
+        #region 鎴愬氨
 
         #endregion
-        #region 成就
+        #region 璁板綍
 
         #endregion
-        #region 记录
+        #region 鍏朵粬
+
+        public CustomData customData = new()
+        {
+            experience = 0f,
+            inventory = new List<string>(new[] { "test1", "test2" }),
+            achievements = new Dictionary<string, int>(new KeyValuePair<string, int>[] { new("test3", 3) })
+        };
 
         #endregion
-        #region 其它
+    }
 
-        #endregion
+    [Serializable]
+    public sealed class CustomData
+    {
+        public float experience = 0f;
+        public List<string> inventory = new();
+        public Dictionary<string, int> achievements = new(); // 浼氭樉绀轰负鍙
     }
 }

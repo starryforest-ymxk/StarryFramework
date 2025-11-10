@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace StarryFramework
 {
-
-    public sealed class GameSettings : ScriptableObject
+    [Serializable]
+    public sealed class GameSettings
     {
         public float bgmVolume = 1f;
         public float soundVolume = 1f;

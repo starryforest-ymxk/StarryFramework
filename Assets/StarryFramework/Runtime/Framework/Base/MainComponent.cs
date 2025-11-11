@@ -26,8 +26,21 @@ namespace StarryFramework
 
         [Header("Framework Setting")]
         [Space(10)]
+        [Tooltip("框架设置资源文件。如果为空，将自动从Resources文件夹加载。Framework settings asset. If null, will auto-load from Resources folder.")]
         [SerializeField]
-        private FrameworkSettings frameworkSetting = new FrameworkSettings();
+        private FrameworkSettings frameworkSettings;
+
+        private FrameworkSettings FrameworkSetting
+        {
+            get
+            {
+                if (frameworkSettings == null)
+                {
+                    frameworkSettings = FrameworkSettings.Instance;
+                }
+                return frameworkSettings;
+            }
+        }
 
 
 
@@ -40,13 +53,18 @@ namespace StarryFramework
         {
             FrameworkManager.BeforeAwake();
 
-            frameworkSetting.Init();
+            if (FrameworkSetting == null)
+            {
+                Debug.LogError("FrameworkSettings is null! Please create a FrameworkSettings asset.");
+                return;
+            }
 
-            frameworkSetting.SettingCheck();
+            FrameworkSetting.Init();
+            FrameworkSetting.SettingCheck();
 
             UnitySetup();
             
-            FrameworkManager.RegisterSetting(frameworkSetting);
+            FrameworkManager.RegisterSetting(FrameworkSetting);
 
             SetComponentsActive();
 
@@ -134,7 +152,7 @@ namespace StarryFramework
                 {
                     ModuleType type = (ModuleType)Enum.Parse(typeof(ModuleType), component.gameObject.name);
 
-                    if (!frameworkSetting.modules.Contains(type))
+                    if (!FrameworkSetting.modules.Contains(type))
                     {
                         FrameworkManager.Debugger.Log($"Unused module: {type}");
                         component.gameObject.SetActive(false);

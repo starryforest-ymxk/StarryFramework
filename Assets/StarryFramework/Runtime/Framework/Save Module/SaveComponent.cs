@@ -96,7 +96,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// 设置存档注释为i号注释
+        /// 设置存档注释字符串
         /// 存档注释为与存档一同保存的信息
         /// </summary>
         /// <param Name="info"></param>

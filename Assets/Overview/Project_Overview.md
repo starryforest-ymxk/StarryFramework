@@ -16,6 +16,8 @@
 
 StarryFramework 是一个轻量化的Unity开发框架，提供了一系列开箱即用的方法和模块，旨在加快游戏开发速度、提高代码质量并保证项目的可维护性。框架采用MOM（Manager-Of-Managers）架构组织各个模块，实现模块间的零耦合设计，支持灵活的模块组合和扩展。
 
+**API文档**: 查看 `/Assets/Overview/API_QUICK_REFERENCE.md` 获取完整API速查手册
+
 ### 核心设计理念
 
 1. **模块化设计**: 所有功能以独立模块形式存在，可根据项目需求自由组合
@@ -43,6 +45,8 @@ StarryFramework 是一个轻量化的Unity开发框架，提供了一系列开�
 │   └── /Borodar/RainbowFolders # 编辑器工具
 ├── /Test                      # 模块测试示例
 ├── /Overview                  # 项目文档目录
+│   ├── PROJECT_OVERVIEW.md    # 项目概览文档（当前文档）
+│   └── API_QUICK_REFERENCE.md # API 速查手册
 └── /Scenes                    # 游戏场景
 
 ```
@@ -530,7 +534,65 @@ Utilities.ScenePathToName(string scenePath)
 
 **位置**: `/Editor/Window/SettingsWindow.cs`
 
-提供框架全局设置的编辑器窗口
+**功能**: 提供框架全局设置的编辑器窗口
+
+**特性**:
+- 所有设置统一存储在FrameworkSettings ScriptableObject中
+- 编辑器设置：配置进入Play模式的方式、GameFramework场景路径
+- 框架设置编辑：直接编辑FrameworkSettings ScriptableObject资源，包括：
+  - 日志等级（Debug Type）
+  - 框架内部事件触发设置
+  - 初始场景加载配置
+  - 模块启用列表和优先级（默认启用Scene、Event、Timer、Resource、ObjectPool、FSM、Save、UI）
+- 独立于场景的配置管理，不依赖MainComponent
+- 自动保存设置到ScriptableObject资源文件
+- 提供快速定位设置资源的功能
+- 实时验证功能：
+  - 检测模块列表中的重复组件
+  - 检测Internal Event Trigger启用但Event模块未启用的情况
+  - 检测设置了初始场景但Scene模块未启用的情况
+
+**使用方法**: 
+- 通过菜单 `Window > StarryFramework > Settings Panel` 打开设置窗口
+- 通过菜单 `Window > StarryFramework > Create Settings Asset` 创建设置资源
+- 通过菜单 `Window > StarryFramework > Select Settings Asset` 快速选择设置资源
+
+### 框架设置（FrameworkSettings）
+
+**位置**: `/Runtime/Framework/Base/FrameworkSettings.cs`
+
+**类型**: ScriptableObject
+
+**存储位置**: `Assets/StarryFramework/Resources/FrameworkSettings.asset`
+
+**访问方式**:
+- 静态单例：`FrameworkSettings.Instance`
+- MainComponent引用：可选，如未设置会自动从Resources加载
+
+**配置项**:
+- **编辑器设置**: Enter PlayMode Way、GameFramework场景路径
+- **日志等级**: Debug Type（Normal/Warning/Error/None）
+- **内部事件触发**: 是否将框架内部事件同时触发为外部事件
+- **初始场景加载**: 启动时加载的场景和是否启用加载动画
+- **模块列表**: 启用的模块及其优先级顺序
+
+**默认模块配置**:
+创建新的FrameworkSettings时，默认启用以下模块（按优先级排序）：
+1. Scene（场景管理）
+2. Event（事件系统）
+3. Timer（计时器）
+4. Resource（资源管理）
+5. ObjectPool（对象池）
+6. FSM（有限状态机）
+7. Save（存档系统）
+8. UI（UI管理）
+
+**优势**:
+- 独立于场景，不会因场景变化而丢失
+- 支持版本控制和团队协作
+- 可创建多套配置用于不同环境
+- 全局访问，运行时和编辑器均可使用
+- 包含编辑器设置，统一管理所有框架配置
 
 ### 编辑器逻辑
 

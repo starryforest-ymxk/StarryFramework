@@ -674,12 +674,7 @@ MonoBehaviour:
   gameSpeed: 1
   runInBackground: 1
   neverSleep: 1
-  frameworkSetting:
-    debugType: 2
-    InternalEventTrigger: 1
-    StartScene: 1
-    StartSceneAnimation: 0
-    modules: 0000000002000000010000000400000005000000060000000300000007000000
+  frameworkSettings: {fileID: 0}
 --- !u!1 &2042942910
 GameObject:
   m_ObjectHideFlags: 0

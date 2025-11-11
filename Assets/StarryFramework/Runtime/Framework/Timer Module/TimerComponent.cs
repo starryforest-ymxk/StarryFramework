@@ -256,7 +256,7 @@ namespace StarryFramework
         /// 删除非匿名异步触发计时器
         /// </summary>
         /// <param Name="name"></param>
-        internal void DeleteAsyncTimer(string name)
+        public void DeleteAsyncTimer(string name)
         {
             Manager.DeleteAsyncTimer(name);
         }

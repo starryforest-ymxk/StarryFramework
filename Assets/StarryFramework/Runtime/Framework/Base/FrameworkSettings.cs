@@ -1,54 +1,89 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace StarryFramework
 {
-    [Serializable]
-    internal class FrameworkSettings
+    [CreateAssetMenu(fileName = "FrameworkSettings", menuName = "StarryFramework/Framework Settings", order = 0)]
+    public class FrameworkSettings : ScriptableObject
     {
+        private const string SETTINGS_PATH = "FrameworkSettings";
+        private static FrameworkSettings _instance;
 
-        internal int FrameworkSceneID = -1;
+        public static FrameworkSettings Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = Resources.Load<FrameworkSettings>(SETTINGS_PATH);
+                    
+#if UNITY_EDITOR
+                    if (_instance == null)
+                    {
+                        Debug.LogWarning($"FrameworkSettings not found in Resources folder. Creating default settings at 'Assets/StarryFramework/Resources/{SETTINGS_PATH}.asset'");
+                        _instance = CreateDefaultSettings();
+                    }
+#else
+                    if (_instance == null)
+                    {
+                        Debug.LogError($"FrameworkSettings not found! Please ensure there is a FrameworkSettings asset in 'Resources/{SETTINGS_PATH}'");
+                    }
+#endif
+                }
+                return _instance;
+            }
+        }
 
-        [Header("Log Level")] [Space(5)] 
-        [SerializeField] internal FrameworkDebugType debugType = FrameworkDebugType.Normal;
-        
-        [Header("Framework Internal Event")] [Tooltip("框架内部事件被触发时，是否会同时触发外部同名事件。When an internal framework event is triggered, whether an external event with the same name will also be triggered simultaneously")] [Space(5)] 
-        [SerializeField] internal bool InternalEventTrigger = true;
-        
-        // [Header("PlayMode Entry")] [Tooltip("编辑器进入运行状态时场景启动的方式。Way of scene starts when the editor enters playmode")] [Space(5)] 
-        // [SerializeField] internal EnterPlayModeWay enterPlayModeWay = EnterPlayModeWay.FrameworkStart;
-        
-        [Header("Initial Scene Load")] [Tooltip("游戏启动加载的初始场景，如果是GameFramework则不加载。If the initial scene to load is the GameFramework, then it does nothing")] [Space(5)] 
-        [SerializeField] [SceneIndex] internal int StartScene = 0;
+        [HideInInspector]
+        public int FrameworkSceneID = -1;
 
-        [Tooltip("初始场景加载是否启用默认动画。Whether the initial scene loading enable the default animation")]
-        [SerializeField] internal bool StartSceneAnimation = false;
+        [Header("编辑器设置/Editor Settings")]
+        [Space(5)]
+        [Tooltip("进入Play模式的方式。Enter Play Mode behavior.")]
+        public EnterPlayModeWay enterPlayModeWay = EnterPlayModeWay.NormalStart;
+
+        [Tooltip("GameFramework场景路径。Path to GameFramework scene.")]
+        public string frameworkScenePath = "";
+
+        [Header("日志等级/Log Level")] 
+        [Space(5)] 
+        public FrameworkDebugType debugType = FrameworkDebugType.Normal;
         
-        [Header("Modules Enabled")] [Space(5)]
+        [Header("框架内部事件/Framework Internal Event")] 
+        [Tooltip("框架内部事件被触发时，是否会同时触发外部同名事件。When an internal framework event is triggered, whether an external event with the same name will also be triggered simultaneously.")] 
+        [Space(5)] 
+        public bool InternalEventTrigger = true;
+        
+        [Header("初始场景加载/Initial Scene Load")] 
+        [Tooltip("游戏启动加载的初始场景，如果是GameFramework则不加载。If the initial scene to load is the GameFramework, then it does nothing.")] 
+        [Space(5)] 
+        [SceneIndex] 
+        public int StartScene = 0;
+
+        [Tooltip("初始场景加载是否启用默认动画。Whether the initial scene loading enable the default animation.")]
+        public bool StartSceneAnimation = false;
+        
+        [Header("启用的模块/Modules Enabled")] 
+        [Space(5)]
         [Tooltip("游戏框架各模块是否启用以及优先级，越靠近列表前端优先级越高。Whether each module of the game framework is enabled and its priority, with higher priority given to those closer to the top of the list.")]
-        [SerializeField] internal List<ModuleType> modules= new List<ModuleType>();
+        public List<ModuleType> modules = new List<ModuleType>();
 
-        internal bool ModuleInUse(ModuleType type)
+        public bool ModuleInUse(ModuleType type)
         {
             return modules.Contains(type);
         }
 
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        internal void Init()
+        public void Init()
         {
 #if UNITY_EDITOR
-
             var scenes = EditorBuildSettings.scenes;
 
             for (int i = 0; i < scenes.Length; i++)
             {
-
                 string sceneName = Utilities.ScenePathToName(scenes[i].path);
 
                 if (sceneName == "GameFramework")
@@ -62,15 +97,11 @@ namespace StarryFramework
                 Debug.LogError("Check Your Build Settings: You need to add the scene \"GameFramework\".");
             }
 #else
-
             FrameworkSceneID = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
 #endif
         }
 
-        /// <summary>
-        /// 设置合理性检查
-        /// </summary>
-        internal void SettingCheck()
+        public void SettingCheck()
         {
             List<ModuleType> check = new List<ModuleType>();
             foreach (ModuleType type in modules)
@@ -87,5 +118,97 @@ namespace StarryFramework
             check.Clear();
         }
 
+#if UNITY_EDITOR
+        private static FrameworkSettings CreateDefaultSettings()
+        {
+            FrameworkSettings settings = CreateInstance<FrameworkSettings>();
+            
+            settings.modules = new List<ModuleType>
+            {
+                ModuleType.Scene,
+                ModuleType.Event,
+                ModuleType.Timer,
+                ModuleType.Resource,
+                ModuleType.ObjectPool,
+                ModuleType.FSM,
+                ModuleType.Save,
+                ModuleType.UI
+            };
+            
+            string folderPath = "Assets/StarryFramework/Resources";
+            if (!AssetDatabase.IsValidFolder(folderPath))
+            {
+                string parentFolder = "Assets/StarryFramework";
+                if (!AssetDatabase.IsValidFolder(parentFolder))
+                {
+                    AssetDatabase.CreateFolder("Assets", "StarryFramework");
+                }
+                AssetDatabase.CreateFolder(parentFolder, "Resources");
+            }
+            
+            string assetPath = $"{folderPath}/{SETTINGS_PATH}.asset";
+            AssetDatabase.CreateAsset(settings, assetPath);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            
+            Debug.Log($"Created default FrameworkSettings at: {assetPath}");
+            return settings;
+        }
+
+        [MenuItem("Window/StarryFramework/Create Settings Asset")]
+        private static void CreateSettingsAsset()
+        {
+            string folderPath = "Assets/StarryFramework/Resources";
+            if (!AssetDatabase.IsValidFolder(folderPath))
+            {
+                string parentFolder = "Assets/StarryFramework";
+                if (!AssetDatabase.IsValidFolder(parentFolder))
+                {
+                    AssetDatabase.CreateFolder("Assets", "StarryFramework");
+                }
+                AssetDatabase.CreateFolder(parentFolder, "Resources");
+            }
+            
+            string assetPath = $"{folderPath}/{SETTINGS_PATH}.asset";
+            
+            if (AssetDatabase.LoadAssetAtPath<FrameworkSettings>(assetPath) != null)
+            {
+                EditorUtility.DisplayDialog("Warning", $"FrameworkSettings already exists at: {assetPath}", "OK");
+                Selection.activeObject = AssetDatabase.LoadAssetAtPath<FrameworkSettings>(assetPath);
+                return;
+            }
+            
+            FrameworkSettings settings = CreateInstance<FrameworkSettings>();
+            settings.modules = new List<ModuleType>
+            {
+                ModuleType.Scene,
+                ModuleType.Event,
+                ModuleType.Timer,
+                ModuleType.Resource,
+                ModuleType.ObjectPool,
+                ModuleType.FSM,
+                ModuleType.Save,
+                ModuleType.UI
+            };
+            
+            AssetDatabase.CreateAsset(settings, assetPath);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            
+            Selection.activeObject = settings;
+            EditorUtility.DisplayDialog("Success", $"Created FrameworkSettings at: {assetPath}", "OK");
+        }
+
+        [MenuItem("Window/StarryFramework/Select Settings Asset")]
+        private static void SelectSettingsAsset()
+        {
+            FrameworkSettings settings = Instance;
+            if (settings != null)
+            {
+                Selection.activeObject = settings;
+                EditorGUIUtility.PingObject(settings);
+            }
+        }
+#endif
     }
 }

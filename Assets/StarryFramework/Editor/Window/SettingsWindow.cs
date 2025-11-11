@@ -15,7 +15,8 @@ namespace StarryFramework.Editor
         private Texture2D _logoTexture;
         
         private const string LOGO_PATH = "Assets/StarryFramework/Info/images/StarryFramework-Logo.png";
-        private const string GITHUB_URL = "https://github.com/starryforest-ymxk/StarryFramework";
+        private const string QuickStart_URL = "https://github.com/starryforest-ymxk/StarryFramework/blob/master/Assets/StarryFramework/Info/README.md#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B";
+        private const string APIReference_URL = "https://github.com/starryforest-ymxk/StarryFramework/blob/master/Assets/StarryFramework/Info/API%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C.md";
     
         [MenuItem("Window/StarryFramework/Settings Panel")] 
         private static void ShowSettingWindow()
@@ -135,16 +136,16 @@ namespace StarryFramework.Editor
             
             if (GUILayout.Button("📖 快速开始 / Quick Start", linkStyle, GUILayout.ExpandWidth(false)))
             {
-                Application.OpenURL(GITHUB_URL);
+                Application.OpenURL(QuickStart_URL);
             }
             
             EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
             
             GUILayout.Label("   | ", GUILayout.ExpandWidth(false));
             
-            if (GUILayout.Button("📚 帮助文档 / Documentation", linkStyle, GUILayout.ExpandWidth(false)))
+            if (GUILayout.Button("📚 API 速查手册 / API Quick Reference", linkStyle, GUILayout.ExpandWidth(false)))
             {
-                Application.OpenURL(GITHUB_URL);
+                Application.OpenURL(APIReference_URL);
             }
             
             EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);

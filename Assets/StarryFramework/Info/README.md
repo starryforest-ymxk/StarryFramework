@@ -115,10 +115,13 @@ StarryFramework 依赖以下 Unity Package Manager (UPM) 包和第三方插件�
 
 ### 基础配置
 
-1. 导入框架
-   - 将下载的`StarryFramework.unitypackage`导入到项目中。
+1. 导入框架依赖
+   - 将框架的依赖包导入到项目中：`Newtonsoft.Json`、`Addressables`
 
-2. 配置启动场景
+2. 导入框架
+   - 将下载的`StarryFramework.unitypackage`导入到项目中
+
+3. 配置启动场景
 
    - 打开 `StarryFramework/Runtime/Scene/GameFramework.unity` 场景
 

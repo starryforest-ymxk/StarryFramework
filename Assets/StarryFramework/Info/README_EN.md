@@ -115,10 +115,14 @@ StarryFramework depends on the following Unity Package Manager (UPM) packages an
 
 ### Basic Configuration
 
-1. Import the framework
-   - Import the downloaded `StarryFramework.unitypackage` into your project.
+1. Import framework dependencies
 
-2. Configure the startup scene
+   - Import the framework's dependency packages into your project: `Newtonsoft.Json`, `Addressables`
+
+2. Import the framework
+   - Import the downloaded `StarryFramework.unitypackage` into your project
+
+3. Configure the startup scene
 
    - Open the `StarryFramework/Runtime/Scene/GameFramework.unity` scene
 

@@ -6,7 +6,7 @@
 
 ## 📖 Documentation Navigation
 
-**For framework configuration and quick start, please refer to**: `README_EN.md`
+**For framework configuration and quick start, please refer to**: [README_EN.md](README_EN.md)
 
 **Module Quick Jump**:
 [Core](#core) | [Event](#event) | [Save](#save) | [Scene](#scene) | [Timer](#timer) | [FSM](#fsm) | [ObjectPool](#pool) | [Resource](#resource) | [UI](#ui) | [Audio](#audio) | [Utils](#utils)

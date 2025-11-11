@@ -6,7 +6,7 @@
 
 ## 📖 文档导航
 
-**框架配置和快速开始请参阅**: `README.md`
+**框架配置和快速开始请参阅**: [README.md](README.md)
 
 **模块快速跳转**：
 [Core](#core) | [Event](#event) | [Save](#save) | [Scene](#scene) | [Timer](#timer) | [FSM](#fsm) | [ObjectPool](#pool) | [Resource](#resource) | [UI](#ui) | [Audio](#audio) | [Utils](#utils)

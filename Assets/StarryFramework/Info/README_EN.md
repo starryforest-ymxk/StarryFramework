@@ -4,10 +4,21 @@
 	<a href="https://github.com/starryforest-ymxk/StarryFramework/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-blue.svg" title="license-mit" /></a>
     <a href="https://github.com/starryforest-ymxk/StarryFramework/releases"><img src="https://img.shields.io/github/v/release/starryforest-ymxk/StarryFramework?color=green"/></a>
 </p>
-
 |[中文](README.md)|[English](README_EN.md)|
 
-[toc]
+- [About StarryFramework](#about-starryframework)
+  - [Core Features](#core-features)
+  - [Folder Structure](#folder-structure)
+  - [Basic Modules Introduction](#basic-modules-introduction)
+  - [Extension Modules Introduction](#extension-modules-introduction)
+  - [Framework Dependencies](#framework-dependencies)
+- [Framework Download](#framework-download)
+- [Quick Start](#quick-start)
+  - [Basic Configuration](#basic-configuration)
+  - [Extension Module Configuration](#extension-module-configuration)
+  - [Simple Usage](#simple-usage)
+- [Copyright and Acknowledgments](#copyright-and-acknowledgments)
+- [Support](#support)
 
 ---
 
@@ -286,7 +297,7 @@ Also, thanks to my friend [NoSLoofah](https://github.com/NoSLoofah) for the help
 
 **Documentation and Tutorials**
 
-- API Quick Reference Manual 
+- [API Quick Reference Manual](API_QUICK_REFERENCE.md)
 
 
 

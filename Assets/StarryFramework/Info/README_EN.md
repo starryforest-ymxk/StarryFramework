@@ -162,7 +162,7 @@ The audio module is an optional extension module based on the FMOD audio middlew
 **Prerequisites**
 
 1. Install FMOD for Unity
-   - Go to the [FMOD official website](https://www.fmod.com/) to download the FMOD for Unity plugin
+   - Go to the [FMOD official website](https://www.fmod.com/) to download the FMOD for Unity plugin (Version 2.02.11 or later)
    - Import the FMOD plugin into your Unity project
    - Ensure FMOD is correctly configured and working properly
 

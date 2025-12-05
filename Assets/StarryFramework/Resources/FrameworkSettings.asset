@@ -15,8 +15,8 @@ MonoBehaviour:
   FrameworkSceneID: 0
   enterPlayModeWay: 1
   frameworkScenePath: Assets/StarryFramework/Runtime/Scene/GameFramework.unity
-  debugType: 3
+  debugType: 1
   InternalEventTrigger: 1
-  StartScene: 1
+  StartScene: 12
   StartSceneAnimation: 0
   modules: 0000000002000000010000000400000005000000060000000300000007000000

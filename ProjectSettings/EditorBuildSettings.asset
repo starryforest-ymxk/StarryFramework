@@ -41,5 +41,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Test/TestUI/TestUI.unity
     guid: c6fbdb6d5ffa5d34d80a075cd3ba64a4
+  - enabled: 1
+    path: Assets/Test/TestResource/TestResource.unity
+    guid: 05e794cd53d7df440ae8c29579132875
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 20f678719e65e8f4a8e3efc4abee7003, type: 2}

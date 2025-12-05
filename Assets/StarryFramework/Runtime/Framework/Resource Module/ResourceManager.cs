@@ -80,6 +80,7 @@ namespace StarryFramework
         private readonly List<AsyncOperationHandle> activeHandles = new();
         private readonly Dictionary<string, ResourceRefInfo> resourceCache = new();
         private readonly Dictionary<string, AsyncLoadOperation> activeOperations = new();
+        private readonly Dictionary<int, string> handleToAddress = new();
 
         void IManager.Awake() { }
         void IManager.Init() { }
@@ -88,6 +89,7 @@ namespace StarryFramework
             ReleaseAllAddressableHandles();
             resourceCache.Clear();
             activeOperations.Clear();
+            handleToAddress.Clear();
         }
         void IManager.Update() 
         {
@@ -340,14 +342,17 @@ namespace StarryFramework
 
         #region Addressables Load
         
+        private int GetHandleId(AsyncOperationHandle handle)
+        {
+            return handle.GetHashCode();
+        }
+        
         private string FindAddressByHandle(AsyncOperationHandle handle)
         {
-            foreach (var kvp in resourceCache)
+            int handleId = GetHandleId(handle);
+            if (handleToAddress.TryGetValue(handleId, out string address))
             {
-                if (kvp.Value.Handle is AsyncOperationHandle cachedHandle && cachedHandle.Equals(handle))
-                {
-                    return kvp.Key;
-                }
+                return address;
             }
             return null;
         }
@@ -403,6 +408,7 @@ namespace StarryFramework
             };
             resourceCache[address] = refInfo;
             activeHandles.Add(handle);
+            handleToAddress[GetHandleId(handle)] = address;
 
             if (res is GameObject && gameObjectInstantiate)
             {
@@ -474,6 +480,7 @@ namespace StarryFramework
                             AssetType = typeof(T)
                         };
                         resourceCache[address] = refInfo;
+                        handleToAddress[GetHandleId(handle)] = address;
                     }
                     
                     FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.OnLoadAssetSucceeded, address);
@@ -497,6 +504,7 @@ namespace StarryFramework
                     FrameworkManager.Debugger.LogError(operation.ErrorMessage);
                     FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.OnLoadAssetFailed, address);
                     activeOperations.Remove(address);
+                    handleToAddress.Remove(GetHandleId(handle));
                     callBack?.Invoke(null);
                 }
             };
@@ -524,6 +532,7 @@ namespace StarryFramework
             AsyncOperationHandle<GameObject> handle = Addressables.InstantiateAsync(address, parent);
             operation.Handle = handle;
             activeOperations[address + "_instantiate"] = operation;
+            handleToAddress[GetHandleId(handle)] = address;
             
             handle.Completed += op =>
             {
@@ -542,6 +551,7 @@ namespace StarryFramework
                     FrameworkManager.Debugger.LogError(operation.ErrorMessage);
                     FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.OnLoadAssetFailed, address);
                     activeOperations.Remove(address + "_instantiate");
+                    handleToAddress.Remove(GetHandleId(handle));
                 }
             };
 
@@ -565,6 +575,7 @@ namespace StarryFramework
                         Addressables.Release(handle);
                         resourceCache.Remove(address);
                         activeHandles.Remove(handle);
+                        handleToAddress.Remove(GetHandleId(handle));
                         FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.OnReleaseAsset, address);
                     }
                 }
@@ -572,6 +583,7 @@ namespace StarryFramework
                 {
                     Addressables.Release(handle);
                     activeHandles.Remove(handle);
+                    handleToAddress.Remove(GetHandleId(handle));
                 }
             }
         }
@@ -591,6 +603,7 @@ namespace StarryFramework
                     if (refInfo.Handle is AsyncOperationHandle handle && handle.IsValid())
                     {
                         activeHandles.Remove(handle);
+                        handleToAddress.Remove(GetHandleId(handle));
                     }
                     resourceCache.Remove(address);
                     FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.OnReleaseAsset, address);
@@ -674,6 +687,7 @@ namespace StarryFramework
 
             operation.Handle = handle;
             activeHandles.Add(handle);
+            handleToAddress[GetHandleId(handle)] = batchId;
             
             handle.Completed += op =>
             {
@@ -803,6 +817,7 @@ namespace StarryFramework
                             AsyncOperationHandle<T> assetHandle = Addressables.LoadAssetAsync<T>(location);
                             loadHandles.Add(assetHandle);
                             activeHandles.Add(assetHandle);
+                            handleToAddress[GetHandleId(assetHandle)] = address;
                             
                             assetHandle.Completed += assetOp =>
                             {
@@ -901,6 +916,7 @@ namespace StarryFramework
             }
             activeHandles.Clear();
             resourceCache.Clear();
+            handleToAddress.Clear();
         }
 
         internal int GetLoadedAssetCount()

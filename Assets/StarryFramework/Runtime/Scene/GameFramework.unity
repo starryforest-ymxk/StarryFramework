@@ -674,7 +674,7 @@ MonoBehaviour:
   gameSpeed: 1
   runInBackground: 1
   neverSleep: 1
-  frameworkSettings: {fileID: 0}
+  frameworkSettings: {fileID: 11400000, guid: e97ebc2be5a2aed478142b4fc7cba4ae, type: 2}
 --- !u!1 &2042942910
 GameObject:
   m_ObjectHideFlags: 0

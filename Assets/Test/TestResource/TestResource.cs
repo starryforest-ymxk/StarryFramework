@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using StarryFramework;
@@ -13,11 +14,13 @@ public class TestResource : MonoBehaviour
 
     void Start()
     {
-        // 演示Resources加载方式
-        ResourcesLoadingExamples();
+        // // 演示Resources加载方式
+        // ResourcesLoadingExamples();
+        //
+        // // 演示Addressables加载方式
+        // AddressablesLoadingExamples();
         
-        // 演示Addressables加载方式
-        AddressablesLoadingExamples();
+        StartCoroutine(AddressablesMultiLoadExample());
     }
 
     /// <summary>
@@ -118,6 +121,54 @@ public class TestResource : MonoBehaviour
         // 释放所有Addressable句柄
         Framework.ResourceComponent.ReleaseAllAddressableHandles();
     }
+    
+    IEnumerator AddressablesMultiLoadExample()
+    {
+        Debug.Log("=== 开始第一次加载 ===");
+        AsyncOperationHandle<GameObject> firstHandle = Framework.ResourceComponent.LoadAddressableAsync<GameObject>("TestPrefab", (asset) =>
+        {
+            Debug.Log($"第一次加载回调: {asset?.name}");
+        });
+    
+        Debug.Log($"第一次加载句柄创建: IsValid={firstHandle.IsValid()}, HashCode={firstHandle.GetHashCode()}");
+    
+        yield return firstHandle;
+    
+        Debug.Log($"第一次加载完成: Status={firstHandle.Status}, IsValid={firstHandle.IsValid()}");
+    
+        Debug.Log("=== 释放第一次句柄 ===");
+        Framework.ResourceComponent.ReleaseAddressableHandle(firstHandle);
+    
+        Debug.Log($"释放后句柄状态: IsValid={firstHandle.IsValid()}");
+    
+        yield return new WaitForSeconds(0.1f);
+    
+        Debug.Log("=== 开始第二次加载 ===");
+        AsyncOperationHandle<GameObject> secondHandle = Framework.ResourceComponent.LoadAddressableAsync<GameObject>("TestPrefab", (asset) =>
+        {
+            Debug.Log($"第二次加载回调: {asset?.name}");
+        });
+    
+        Debug.Log($"第二次加载句柄创建: IsValid={secondHandle.IsValid()}, HashCode={secondHandle.GetHashCode()}");
+    
+        yield return secondHandle;
+    
+        Debug.Log($"第二次加载完成前检查: IsValid={secondHandle.IsValid()}");
+    
+        if (secondHandle.IsValid())
+        {
+            Debug.Log($"✅ 第二次加载状态: {secondHandle.Status}");
+            Debug.Log($"✅ 测试成功！第二次加载的句柄有效");
+        }
+        else
+        {
+            Debug.LogError("❌ 第二次句柄无效！");
+        }
+        
+        Framework.ResourceComponent.ReleaseAddressableHandle(secondHandle);
+    }
+
+
 
     void OnDestroy()
     {

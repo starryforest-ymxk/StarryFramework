@@ -18,7 +18,7 @@ namespace StarryFramework.Editor
         private const string QuickStart_URL = "https://github.com/starryforest-ymxk/StarryFramework/blob/master/Assets/StarryFramework/Info/README.md#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B";
         private const string APIReference_URL = "https://github.com/starryforest-ymxk/StarryFramework/blob/master/Assets/StarryFramework/Info/API%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C.md";
     
-        [MenuItem("Window/StarryFramework/Settings Panel")] 
+        [MenuItem("Tools/StarryFramework/Settings Panel", priority = 0)] 
         private static void ShowSettingWindow()
         {
             window = EditorWindow.GetWindow<SettingsWindow>("StarryFramework");

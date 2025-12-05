@@ -21,7 +21,12 @@ namespace StarryFramework
         public const string SetNewActiveScene = "SetNewActiveScene";
 
         public const string BeforeLoadAsset = "BeforeLoadAsset";
+        public const string OnLoadAssetStart = "OnLoadAssetStart";
+        public const string OnLoadAssetProgress = "OnLoadAssetProgress";
+        public const string OnLoadAssetSucceeded = "OnLoadAssetSucceeded";
+        public const string OnLoadAssetFailed = "OnLoadAssetFailed";
         public const string AfterLoadAsset = "AfterLoadAsset";
+        public const string OnReleaseAsset = "OnReleaseAsset";
 
         public const string OnSaveData = "OnSaveData";
         public const string OnLoadData = "OnLoadData";

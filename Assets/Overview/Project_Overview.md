@@ -356,7 +356,7 @@ Framework.TimerComponent.RegisterAsyncTimer(float timeDelta, UnityAction action,
 
 ### 7. Resource Module（资源管理模块）
 
-**核心文件**: `ResourceComponent.cs`, `ResourceManager.cs`
+**核心文件**: `ResourceComponent.cs`, `ResourceManager.cs`, `ResourceRefInfo.cs`, `AsyncLoadOperation.cs`
 
 **功能特性**:
 - 同步/异步加载Resources资源
@@ -365,6 +365,14 @@ Framework.TimerComponent.RegisterAsyncTimer(float timeDelta, UnityAction action,
 - 资源卸载管理
 - 加载进度追踪
 - Addressable资源句柄管理
+- **统一资源缓存系统**（支持Resources和Addressables）
+- **资源引用计数系统**（Phase 1 新增）
+- **完善的错误处理**（Phase 1 新增）
+- **加载状态管理**（支持Idle/Loading/Completed/Failed）
+- **异步操作追踪系统**（Phase 1.5 新增）
+- **完整的资源生命周期事件**（Phase 1.5 新增）
+- **同步加载性能警告**（Phase 1.5 新增）
+- **增强的Inspector调试功能**（Phase 2 新增）
 
 #### Resources加载API
 
@@ -372,16 +380,17 @@ Framework.TimerComponent.RegisterAsyncTimer(float timeDelta, UnityAction action,
 
 ```csharp
 Framework.ResourceComponent.LoadRes<T>(string path, bool instantiate)
-Framework.ResourceComponent.LoadAsync<T>(string path, UnityAction<T> callback, bool instantiate)
+Framework.ResourceComponent.LoadResAsync<T>(string path, UnityAction<T> callback, bool instantiate)
 Framework.ResourceComponent.LoadAllRes<T>(string path)
-Framework.ResourceComponent.Unload(UnityEngine.Object obj)
-Framework.ResourceComponent.UnloadUnused()
+Framework.ResourceComponent.UnloadRes(UnityEngine.Object obj)
+Framework.ResourceComponent.UnloadUnusedRes()
 ```
 
 #### Addressables加载API
 
 用于加载通过Addressables系统管理的资源：
 
+**单个资源加载**:
 ```csharp
 Framework.ResourceComponent.LoadAddressable<T>(string address, bool instantiate)
 Framework.ResourceComponent.LoadAddressableAsync<T>(string address, UnityAction<T> callback, bool instantiate)
@@ -392,12 +401,154 @@ Framework.ResourceComponent.ReleaseAddressableInstance(GameObject instance)
 Framework.ResourceComponent.ReleaseAllAddressableHandles()
 ```
 
+**批量加载API** (Phase 3 新增):
+```csharp
+// 按标签批量加载（如加载所有标记为"Characters"的预制体）
+AsyncOperationHandle<IList<GameObject>> handle = Framework.ResourceComponent.LoadAddressablesByLabel<GameObject>(
+    "Characters",
+    onEachLoaded: character => Debug.Log($"Loaded: {character.name}"),
+    onCompleted: result => Debug.Log($"Total loaded: {result.SuccessCount}")
+);
+
+// 按多个标签批量加载（支持Union/Intersection/UseFirst模式）
+var keys = new List<object> { "Characters", "Enemies" };
+Framework.ResourceComponent.LoadAddressablesBatch<GameObject>(
+    keys,
+    Addressables.MergeMode.Union,  // 加载匹配任一标签的资源
+    onEachLoaded: obj => Instantiate(obj),
+    onCompleted: result => {
+        Debug.Log($"成功: {result.SuccessCount}, 失败: {result.FailedCount}");
+        Debug.Log($"总资源数: {result.Assets.Count}");
+    }
+);
+
+// 按地址列表批量加载（可关联地址和资源）
+var addresses = new List<string> { "Player", "Enemy1", "Enemy2" };
+Framework.ResourceComponent.LoadAddressablesByAddresses<GameObject>(
+    addresses,
+    onEachLoaded: (address, obj) => Debug.Log($"{address} -> {obj.name}"),
+    onCompleted: result => {
+        // result.AssetDictionary 包含地址到资源的映射
+        if (result.AssetDictionary.TryGetValue("Player", out var player))
+        {
+            Instantiate(player);
+        }
+    }
+);
+```
+
+**批量加载结果 (BatchLoadResult)**:
+```csharp
+public class BatchLoadResult<T>
+{
+    public List<T> Assets;                      // 所有成功加载的资源列表
+    public List<string> Addresses;              // 对应的地址列表
+    public Dictionary<string, T> AssetDictionary;  // 地址到资源的映射
+    public int SuccessCount;                    // 成功加载的数量
+    public int FailedCount;                     // 失败的数量
+    public List<string> FailedAddresses;        // 失败的地址列表
+}
+```
+
+#### 统一资源管理API
+
+```csharp
+// 统计信息
+int count = Framework.ResourceComponent.GetLoadedAssetCount();
+long memory = Framework.ResourceComponent.GetTotalMemorySize();
+Dictionary<string, ResourceRefInfo> all = Framework.ResourceComponent.GetAllLoadedAssets();
+Dictionary<string, ResourceRefInfo> resources = Framework.ResourceComponent.GetResourcesByType(ResourceSourceType.Resources);
+Dictionary<string, ResourceRefInfo> addressables = Framework.ResourceComponent.GetResourcesByType(ResourceSourceType.Addressables);
+
+// 异步操作追踪
+int activeCount = Framework.ResourceComponent.GetActiveOperationCount();
+Dictionary<string, AsyncLoadOperation> ops = Framework.ResourceComponent.GetAllActiveOperations();
+
+// 释放资源（支持Resources和Addressables）
+Framework.ResourceComponent.ReleaseResource(string address);
+```
+
+#### 加载状态和错误处理
+
+```csharp
+LoadState state = Framework.ResourceComponent.State;
+float progress = Framework.ResourceComponent.Progress;
+string error = Framework.ResourceComponent.LastError;
+
+// 监听加载失败
+Framework.EventComponent.AddEventListener<string>(FrameworkEvent.OnLoadAssetFailed, 
+    address => Debug.LogError($"加载失败: {address}"));
+```
+
+#### 完整的资源生命周期事件
+
+```csharp
+// 加载开始
+Framework.EventComponent.AddEventListener<string>(FrameworkEvent.OnLoadAssetStart, 
+    address => Debug.Log($"开始加载: {address}"));
+
+// 加载进度更新
+Framework.EventComponent.AddEventListener<string, float>(FrameworkEvent.OnLoadAssetProgress, 
+    (address, progress) => Debug.Log($"加载进度 {address}: {progress * 100}%"));
+
+// 加载成功
+Framework.EventComponent.AddEventListener<string>(FrameworkEvent.OnLoadAssetSucceeded, 
+    address => Debug.Log($"加载成功: {address}"));
+
+// 加载失败
+Framework.EventComponent.AddEventListener<string>(FrameworkEvent.OnLoadAssetFailed, 
+    address => Debug.LogError($"加载失败: {address}"));
+
+// 资源释放
+Framework.EventComponent.AddEventListener<string>(FrameworkEvent.OnReleaseAsset, 
+    address => Debug.Log($"资源已释放: {address}"));
+```
 
 **重要说明**:
-- **Resources加载**: 适用于小型项目或原型开发，资源打包在应用中，无法动态更新
-- **Addressables加载**: 适用于大型项目，支持资源热更新、按需加载、远程资源等高级功能
-- 使用Addressables时，记得在不需要资源时调用Release方法释放资源，避免内存泄漏
-- 框架会在ShutDown时自动释放所有未释放的Addressable句柄
+- **统一缓存**: Resources和Addressables资源都使用统一的缓存系统进行管理
+- **引用计数**: 同一资源多次加载时会自动使用缓存，只在引用计数归零时释放
+- **自动追踪**: 所有加载的资源都会被追踪，包括类型、来源、内存占用等信息
+- **性能警告**: `LoadAddressable`同步方法会阻塞主线程并输出警告，推荐使用异步方法
+- 框架会在ShutDown时自动释放所有未释放的资源
+
+**Phase 1 改进**:
+- ✅ 实现资源引用计数，避免重复加载和过早释放
+- ✅ 添加Addressables资源缓存机制，提升性能
+- ✅ 完善异步加载错误处理，支持Failed状态
+- ✅ 新增资源加载失败事件（OnLoadAssetFailed）
+- ✅ 新增资源释放事件（OnReleaseAsset）
+- ✅ Inspector面板增强，显示引用计数和缓存信息
+
+**Phase 1.5 改进**:
+- ✅ 实现异步操作状态追踪（AsyncLoadOperation类）
+- ✅ 添加完整的资源生命周期事件（Start/Progress/Succeeded/Failed/Release）
+- ✅ 同步加载性能警告（LogWarning提示性能问题）
+- ✅ Inspector显示活动异步操作列表（地址、状态、进度、耗时）
+- ✅ 自动更新异步操作进度并触发进度事件
+
+**Phase 2 改进**:
+- ✅ Resources资源缓存支持（统一缓存机制）
+- ✅ Resources资源引用计数管理
+- ✅ 资源来源类型标识（Resources/Addressables）
+- ✅ 资源类型信息追踪
+- ✅ 内存占用统计（实时计算资源内存大小）
+- ✅ Inspector高级过滤功能（来源类型、搜索）
+- ✅ Inspector排序功能（名称、引用计数、加载时间、内存大小、类型）
+- ✅ Inspector单个资源释放按钮
+- ✅ 分类批量释放（Resources/Addressables）
+- ✅ 资源详细信息显示（来源、类型、引用、时间、内存）
+
+**Phase 3 改进**:
+- ✅ Addressables批量加载API（按标签）
+- ✅ Addressables批量加载API（按多个键/标签）
+- ✅ Addressables批量加载API（按地址列表）
+- ✅ 批量加载进度追踪和回调
+- ✅ 批量加载结果详细信息（成功/失败统计）
+- ✅ 批量加载资源自动缓存和引用计数
+- ✅ 批量加载地址到资源的映射（AssetDictionary）
+- ✅ 支持多种合并模式（Union/Intersection/UseFirst）
+- ✅ 批量加载异步操作追踪（Inspector显示）
+- ✅ 批量加载生命周期事件触发
 
 **使用场景**:
 - 预制体加载
@@ -406,6 +557,9 @@ Framework.ResourceComponent.ReleaseAllAddressableHandles()
 - 纹理和材质加载
 - 远程资源下载（Addressables）
 - 资源热更新（Addressables）
+- **批量资源预加载**（Phase 3 新增）
+- **按标签批量加载关卡资源**（Phase 3 新增）
+- **批量加载角色/敌人预制体**（Phase 3 新增）
 
 ---
 

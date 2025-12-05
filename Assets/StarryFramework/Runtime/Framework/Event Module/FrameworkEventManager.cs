@@ -14,12 +14,16 @@ namespace StarryFramework
     {
         public UnityEvent<T> Event = new UnityEvent<T>();
     }
+    public class FrameworkEventInfo<T1, T2> : IFrameworkEvemtInfo
+    {
+        public UnityEvent<T1, T2> Event = new UnityEvent<T1, T2>();
+    }
+    
     internal class FrameworkEventManager 
     {
 
-        private Dictionary<string, IFrameworkEvemtInfo> eventDic = new Dictionary<string, IFrameworkEvemtInfo>();
-
-
+        private Dictionary<string, IFrameworkEvemtInfo> eventDic = new();
+        
         internal void ShutDown()
         {
             eventDic.Clear();
@@ -48,6 +52,19 @@ namespace StarryFramework
             {
                 eventDic.Add(eventName, new FrameworkEventInfo<T>());
                 (eventDic[eventName] as FrameworkEventInfo<T>).Event.AddListener(action);
+            }
+        }
+        
+        internal void AddEventListener<T1, T2>(string eventName, UnityAction<T1, T2> action)
+        {
+            if (eventDic.ContainsKey(eventName))
+            {
+                (eventDic[eventName] as FrameworkEventInfo<T1, T2>).Event.AddListener(action);
+            }
+            else
+            {
+                eventDic.Add(eventName, new FrameworkEventInfo<T1, T2>());
+                (eventDic[eventName] as FrameworkEventInfo<T1, T2>).Event.AddListener(action);
             }
         }
 
@@ -107,6 +124,24 @@ namespace StarryFramework
             if (FrameworkManager.Setting.ModuleInUse(ModuleType.Event) && FrameworkManager.Setting.InternalEventTrigger)
             {
                 FrameworkComponent.GetComponent<EventComponent>().InvokeEvent<T>(eventName,t);
+            }
+
+        }
+        
+        internal void InvokeEvent<T1, T2>(string eventName ,T1 t1, T2 t2)
+        {
+            if (eventDic.ContainsKey(eventName))
+            {
+                (eventDic[eventName] as FrameworkEventInfo<T1, T2>).Event?.Invoke(t1, t2);
+            }
+            else
+            {
+                FrameworkManager.Debugger.Log($"Framework Event Manager : 尝试触发不存在的事件[{eventName}]");
+            }
+
+            if (FrameworkManager.Setting.ModuleInUse(ModuleType.Event) && FrameworkManager.Setting.InternalEventTrigger)
+            {
+                FrameworkComponent.GetComponent<EventComponent>().InvokeEvent<T1, T2>(eventName,t1,t2);
             }
 
         }

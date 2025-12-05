@@ -155,7 +155,7 @@ namespace StarryFramework
             return settings;
         }
 
-        [MenuItem("Window/StarryFramework/Create Settings Asset")]
+        [MenuItem("Tools/StarryFramework/Create Settings Asset", priority = 2)]
         private static void CreateSettingsAsset()
         {
             string folderPath = "Assets/StarryFramework/Resources";
@@ -199,7 +199,7 @@ namespace StarryFramework
             EditorUtility.DisplayDialog("Success", $"Created FrameworkSettings at: {assetPath}", "OK");
         }
 
-        [MenuItem("Window/StarryFramework/Select Settings Asset")]
+        [MenuItem("Tools/StarryFramework/Select Settings Asset", priority = 1)]
         private static void SelectSettingsAsset()
         {
             FrameworkSettings settings = Instance;

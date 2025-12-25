@@ -691,7 +691,10 @@ Utilities.ScenePathToName(string scenePath)
 **功能**: 提供框架全局设置的编辑器窗口
 
 **特性**:
-- 所有设置统一存储在FrameworkSettings ScriptableObject中
+- 支持切换和编辑不同的FrameworkSettings资产
+- 实时同步检测：显示当前编辑的设置是否与MainComponent中的设置一致
+- 快速同步功能：一键将当前设置同步到MainComponent
+- 快速切换功能：一键切换到MainComponent正在使用的设置
 - 编辑器设置：配置进入Play模式的方式、GameFramework场景路径
 - 框架设置编辑：直接编辑FrameworkSettings ScriptableObject资源，包括：
   - 日志等级（Debug Type）
@@ -705,11 +708,13 @@ Utilities.ScenePathToName(string scenePath)
   - 检测模块列表中的重复组件
   - 检测Internal Event Trigger启用但Event模块未启用的情况
   - 检测设置了初始场景但Scene模块未启用的情况
+- Logo和文档快速链接
 
 **使用方法**: 
-- 通过菜单 `Window > StarryFramework > Settings Panel` 打开设置窗口
-- 通过菜单 `Window > StarryFramework > Create Settings Asset` 创建设置资源
-- 通过菜单 `Window > StarryFramework > Select Settings Asset` 快速选择设置资源
+- 通过菜单 `Tools > StarryFramework > Settings Panel` 打开设置窗口
+- 通过菜单 `Tools > StarryFramework > Create Settings Asset` 创建设置资源
+- 通过菜单 `Tools > StarryFramework > Select Settings Asset` 快速选择设置资源
+- 在Settings Panel中拖拽不同的FrameworkSettings文件到"Settings Asset"字段即可切换编辑
 
 ### 框架设置（FrameworkSettings）
 
@@ -720,8 +725,15 @@ Utilities.ScenePathToName(string scenePath)
 **存储位置**: `Assets/StarryFramework/Resources/FrameworkSettings.asset`
 
 **访问方式**:
-- 静态单例：`FrameworkSettings.Instance`
-- MainComponent引用：可选，如未设置会自动从Resources加载
+- 静态单例：`FrameworkSettings.Instance` - 全局唯一的框架设置
+- 运行时和编辑器：框架始终使用`FrameworkSettings.Instance`
+- 编辑器切换：在MainComponent Inspector或Settings Panel中拖拽新的FrameworkSettings文件即可全局切换
+
+**自动同步机制**:
+- MainComponent Inspector和Settings Panel共享同一个`FrameworkSettings.Instance`
+- 在任意一处切换或修改设置，所有地方自动同步
+- 无需手动同步或担心配置不一致的问题
+- 切换后立即在所有编辑器窗口和运行时生效
 
 **配置项**:
 - **编辑器设置**: Enter PlayMode Way、GameFramework场景路径
@@ -944,6 +956,49 @@ Player:
 ---
 
 ## 版本历史
+
+### 最新更新 (2024年12月)
+
+#### FrameworkSettings 自动同步架构重构 ⭐
+
+**核心架构改进**
+- ✅ **统一全局设置**：移除MainComponent的frameworkSettings序列化字段
+- ✅ **真正的自动同步**：MainComponent和Settings Panel都直接操作`FrameworkSettings.Instance`
+- ✅ **零配置同步**：无需手动同步，天然保证一致性
+- ✅ **实时响应**：Settings Panel在获得焦点时自动刷新，确保显示最新设置
+
+**MainComponent Inspector优化**
+- ✅ 直接显示和编辑`FrameworkSettings.Instance`
+- ✅ 支持拖拽切换全局FrameworkSettings
+- ✅ 自动更新Instance缓存
+- ✅ 提供"在Settings Panel中编辑"快捷按钮
+- ✅ 显示当前使用的设置文件路径和同步提示
+
+**FrameworkSettings核心功能**
+- ✅ `SetInstance()`方法：手动更新全局Instance
+- ✅ `ClearCache()`方法：清除Instance缓存
+- ✅ 全局单例模式：确保整个项目使用同一配置
+
+**SettingsWindow功能增强**
+- ✅ 支持拖拽切换FrameworkSettings
+- ✅ `OnFocus()`自动刷新：切换窗口时自动同步到最新Instance
+- ✅ 移除冗余的同步检测逻辑（不再需要）
+- ✅ 简化UI，突出全局设置概念
+- ✅ 添加清晰的同步说明提示
+
+**用户体验提升**
+- ✅ 在MainComponent或Settings Panel任意一处更改设置，另一处自动同步
+- ✅ 切换FrameworkSettings文件后，所有面板立即更新
+- ✅ 不再需要担心"设置不同步"的问题
+- ✅ 彩色日志反馈，清晰提示操作结果
+
+**Bug修复**
+- 🐛 修复了MainComponent和Settings Panel设置不同步的问题
+- 🐛 修复了拖拽新设置文件后需要手动同步的问题
+- 🐛 修复了多面板编辑时可能出现的配置冲突
+- 🐛 简化了配置管理流程，降低用户操作复杂度
+
+### 历史版本
 
 当前使用版本的主要特性：
 - MOM架构，模块化设计

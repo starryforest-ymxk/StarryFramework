@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace StarryFramework.Editor
 {
@@ -21,6 +20,11 @@ namespace StarryFramework.Editor
         [MenuItem("Tools/StarryFramework/Settings Panel", priority = 0)] 
         private static void ShowSettingWindow()
         {
+            ShowWindow();
+        }
+        
+        public static void ShowWindow()
+        {
             window = EditorWindow.GetWindow<SettingsWindow>("StarryFramework");
             window.Show();
         }
@@ -29,6 +33,24 @@ namespace StarryFramework.Editor
         {
             LoadFrameworkSettings();
             LoadLogo();
+        }
+        
+        private void OnFocus()
+        {
+            RefreshFrameworkSettings();
+        }
+        
+        private void RefreshFrameworkSettings()
+        {
+            FrameworkSettings currentInstance = FrameworkSettings.Instance;
+            if (_frameworkSettings != currentInstance)
+            {
+                _frameworkSettings = currentInstance;
+                if (_frameworkSettings != null)
+                {
+                    _settingsSerializedObject = new SerializedObject(_frameworkSettings);
+                }
+            }
         }
         
         private void LoadLogo()
@@ -71,13 +93,37 @@ namespace StarryFramework.Editor
             else
             {
                 EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.ObjectField("Settings Asset", _frameworkSettings, typeof(FrameworkSettings), false);
+                
+                EditorGUI.BeginChangeCheck();
+                FrameworkSettings newSettings = EditorGUILayout.ObjectField("Settings Asset", _frameworkSettings, typeof(FrameworkSettings), false) as FrameworkSettings;
+                
+                if (EditorGUI.EndChangeCheck() && newSettings != _frameworkSettings)
+                {
+                    if (newSettings != null)
+                    {
+                        _frameworkSettings = newSettings;
+                        _settingsSerializedObject = new SerializedObject(_frameworkSettings);
+                        FrameworkSettings.SetInstance(newSettings);
+                        FrameworkManager.Debugger.Log($"Framework Setting has been updated: {AssetDatabase.GetAssetPath(newSettings)}");
+                    }
+                    else
+                    {
+                        FrameworkManager.Debugger.LogWarning("Framework Setting can not be null. Keep the current setting.");
+                    }
+                }
+                
                 if (GUILayout.Button("Ping", GUILayout.Width(50)))
                 {
                     EditorGUIUtility.PingObject(_frameworkSettings);
                     Selection.activeObject = _frameworkSettings;
                 }
                 EditorGUILayout.EndHorizontal();
+                
+                EditorGUILayout.BeginVertical("box");
+                EditorGUILayout.LabelField("全局框架设置 / Global Framework Settings", EditorStyles.miniBoldLabel);
+                string assetPath = AssetDatabase.GetAssetPath(_frameworkSettings);
+                EditorGUILayout.LabelField("路径 / Path:", assetPath, EditorStyles.wordWrappedLabel);
+                EditorGUILayout.EndVertical();
                 
                 EditorGUILayout.Space(10);
                 

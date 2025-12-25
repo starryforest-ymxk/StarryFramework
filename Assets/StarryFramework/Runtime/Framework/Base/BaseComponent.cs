@@ -1,7 +1,6 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-[assembly: InternalsVisibleTo("StarryFramework.Extensions")]
 
 namespace StarryFramework
 {

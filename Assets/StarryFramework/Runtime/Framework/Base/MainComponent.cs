@@ -24,21 +24,11 @@ namespace StarryFramework
         [SerializeField]
         private bool neverSleep = true;
 
-        [Header("Framework Setting")]
-        [Space(10)]
-        [Tooltip("框架设置资源文件。如果为空，将自动从Resources文件夹加载。Framework settings asset. If null, will auto-load from Resources folder.")]
-        [SerializeField]
-        private FrameworkSettings frameworkSettings;
-
         private FrameworkSettings FrameworkSetting
         {
             get
             {
-                if (frameworkSettings == null)
-                {
-                    frameworkSettings = FrameworkSettings.Instance;
-                }
-                return frameworkSettings;
+                return FrameworkSettings.Instance;
             }
         }
 

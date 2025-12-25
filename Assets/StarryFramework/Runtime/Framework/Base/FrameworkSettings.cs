@@ -38,6 +38,18 @@ namespace StarryFramework
             }
         }
 
+#if UNITY_EDITOR
+        public static void SetInstance(FrameworkSettings settings)
+        {
+            _instance = settings;
+        }
+        
+        public static void ClearCache()
+        {
+            _instance = null;
+        }
+#endif
+
         [HideInInspector]
         public int FrameworkSceneID = -1;
 

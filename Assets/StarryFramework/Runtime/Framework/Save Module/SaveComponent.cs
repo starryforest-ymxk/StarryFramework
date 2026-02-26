@@ -57,6 +57,7 @@ namespace StarryFramework
 #if UNITY_EDITOR
         private void OnValidate()
         {
+            SaveManager.ApplyEditorSaveDataPathOverride(settings);
             HotApplyConfigurableSettingsInPlayMode(_manager, ref settings);
         }
 #endif
@@ -64,6 +65,7 @@ namespace StarryFramework
 
         protected override void Awake()
         {
+            SaveManager.ApplyEditorSaveDataPathOverride(settings);
             base.Awake();
             ResolveAndApplyConfigurableSettings(ref _manager, ref settings, FrameworkManager.GetManager<SaveManager>);
             

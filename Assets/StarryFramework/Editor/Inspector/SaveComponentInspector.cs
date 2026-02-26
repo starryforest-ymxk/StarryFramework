@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
+using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,6 +12,7 @@ namespace StarryFramework.Editor
     [CustomEditor(typeof(SaveComponent))]
     public class SaveComponentInspector : FrameworkInspector
     {
+        private const string DefaultEditorSaveDataDirectoryPath = "Assets/SaveData";
         private bool dataLoadFoldout = true;
         private bool saveInfoFoldout = true;
         private bool dataInfoFoldout = true;
@@ -26,9 +29,12 @@ namespace StarryFramework.Editor
             serializedObject.Update();
             
             SerializedProperty settingsProperty = serializedObject.FindProperty("settings");
-            EditorGUILayout.PropertyField(settingsProperty, true);
+            DrawSaveSettings(settingsProperty);
             
             serializedObject.ApplyModifiedProperties();
+
+            EditorGUILayout.Space(8);
+            DrawPlayerDataInfo();
 
             if (EditorApplication.isPlaying)
             {
@@ -45,12 +51,178 @@ namespace StarryFramework.Editor
 
                 DrawSaveInfo(s);
                 EditorGUILayout.Space(5);
-
-                DrawPlayerDataInfo(s); 
-                EditorGUILayout.Space(5);
             }
             
             Repaint();
+        }
+
+        private void DrawSaveSettings(SerializedProperty settingsProperty)
+        {
+            if (settingsProperty == null)
+            {
+                EditorGUILayout.HelpBox("Save settings property was not found.", MessageType.Error);
+                return;
+            }
+
+            EditorGUILayout.PropertyField(settingsProperty, false);
+            if (!settingsProperty.isExpanded)
+            {
+                return;
+            }
+
+            EditorGUI.indentLevel++;
+
+            DrawSettingsChildProperty(settingsProperty, "AutoSave");
+            DrawSettingsChildProperty(settingsProperty, "AutoSaveDataInterval");
+            DrawEditorSaveDataDirectoryPathField(settingsProperty.FindPropertyRelative("EditorSaveDataDirectoryPath"));
+            DrawSettingsChildProperty(settingsProperty, "SaveInfoList", includeChildren: true);
+
+            EditorGUI.indentLevel--;
+        }
+
+        private static void DrawSettingsChildProperty(SerializedProperty settingsProperty, string propertyName, bool includeChildren = false)
+        {
+            SerializedProperty property = settingsProperty.FindPropertyRelative(propertyName);
+            if (property != null)
+            {
+                EditorGUILayout.PropertyField(property, includeChildren);
+            }
+        }
+
+        private void DrawEditorSaveDataDirectoryPathField(SerializedProperty pathProperty)
+        {
+            if (pathProperty == null)
+            {
+                return;
+            }
+
+            GUIContent label = new GUIContent(pathProperty.displayName, pathProperty.tooltip);
+            string currentValue = pathProperty.stringValue ?? string.Empty;
+            const float buttonWidth = 70f;
+            const float spacing = 4f;
+
+            Rect rowRect = EditorGUILayout.GetControlRect();
+            Rect fieldRect = rowRect;
+            fieldRect.width -= buttonWidth + spacing;
+
+            Rect buttonRect = rowRect;
+            buttonRect.x = fieldRect.xMax + spacing;
+            buttonRect.width = buttonWidth;
+
+            string newValue = EditorGUI.TextField(fieldRect, label, currentValue);
+            if (GUI.Button(buttonRect, "Select..."))
+            {
+                SelectEditorSaveDataDirectory(pathProperty);
+            }
+
+            if (!string.Equals(newValue, currentValue, StringComparison.Ordinal))
+            {
+                pathProperty.stringValue = NormalizeAssetsRelativePath(newValue);
+            }
+
+            if (!IsValidAssetsRelativePath(pathProperty.stringValue))
+            {
+                EditorGUILayout.HelpBox("Use a path under Assets (for example: Assets/SaveData).", MessageType.Warning);
+            }
+        }
+
+        private void SelectEditorSaveDataDirectory(SerializedProperty pathProperty)
+        {
+            string startPath = GetFolderPickerStartPath(pathProperty.stringValue);
+            string selectedFolder = EditorUtility.OpenFolderPanel("Select Editor Save Data Directory", startPath, string.Empty);
+            if (string.IsNullOrEmpty(selectedFolder))
+            {
+                return;
+            }
+
+            if (!TryConvertAbsolutePathToAssetsRelative(selectedFolder, out string assetsRelativePath))
+            {
+                EditorUtility.DisplayDialog("Invalid Folder", "Please select a folder under this project's Assets folder.", "OK");
+                return;
+            }
+
+            pathProperty.stringValue = assetsRelativePath;
+        }
+
+        private static string GetFolderPickerStartPath(string assetsRelativePath)
+        {
+            if (TryConvertAssetsRelativeToAbsolutePath(assetsRelativePath, out string absolutePath) && System.IO.Directory.Exists(absolutePath))
+            {
+                return absolutePath;
+            }
+
+            return Application.dataPath;
+        }
+
+        private static string NormalizeAssetsRelativePath(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return string.Empty;
+            }
+
+            return path.Trim().Replace('\\', '/');
+        }
+
+        private static bool IsValidAssetsRelativePath(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return true;
+            }
+
+            string normalizedPath = NormalizeAssetsRelativePath(path);
+            return normalizedPath.Equals("Assets", StringComparison.OrdinalIgnoreCase) ||
+                   normalizedPath.StartsWith("Assets/", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool TryConvertAssetsRelativeToAbsolutePath(string assetsRelativePath, out string absolutePath)
+        {
+            absolutePath = null;
+            if (!IsValidAssetsRelativePath(assetsRelativePath))
+            {
+                return false;
+            }
+
+            string normalizedPath = NormalizeAssetsRelativePath(assetsRelativePath);
+            if (string.IsNullOrEmpty(normalizedPath) || normalizedPath.Equals("Assets", StringComparison.OrdinalIgnoreCase))
+            {
+                absolutePath = Application.dataPath;
+                return true;
+            }
+
+            string subPath = normalizedPath.Substring("Assets/".Length).Replace('/', System.IO.Path.DirectorySeparatorChar);
+            absolutePath = System.IO.Path.Combine(Application.dataPath, subPath);
+            return true;
+        }
+
+        private static bool TryConvertAbsolutePathToAssetsRelative(string absolutePath, out string assetsRelativePath)
+        {
+            assetsRelativePath = null;
+            if (string.IsNullOrWhiteSpace(absolutePath))
+            {
+                return false;
+            }
+
+            string normalizedSelectedPath = System.IO.Path.GetFullPath(absolutePath).Replace('\\', '/').TrimEnd('/');
+            string normalizedAssetsPath = System.IO.Path.GetFullPath(Application.dataPath).Replace('\\', '/').TrimEnd('/');
+
+            bool isAssetsRoot = normalizedSelectedPath.Equals(normalizedAssetsPath, StringComparison.OrdinalIgnoreCase);
+            bool isAssetsChild = normalizedSelectedPath.StartsWith(normalizedAssetsPath + "/", StringComparison.OrdinalIgnoreCase);
+            if (!isAssetsRoot && !isAssetsChild)
+            {
+                return false;
+            }
+
+            if (isAssetsRoot)
+            {
+                assetsRelativePath = "Assets";
+                return true;
+            }
+
+            string relativeSuffix = normalizedSelectedPath.Substring(normalizedAssetsPath.Length + 1);
+            assetsRelativePath = "Assets/" + relativeSuffix;
+            return true;
         }
 
         private void DrawPlayerDataRuntime(SaveComponent s)
@@ -287,27 +459,114 @@ namespace StarryFramework.Editor
             EditorGUILayout.EndFoldoutHeaderGroup(); 
         }
 
-        private void DrawPlayerDataInfo(SaveComponent s)
+        private void DrawPlayerDataInfo()
         {
-            dataInfoFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(dataInfoFoldout, "Save Data Info", EditorStyles.boldLabel);
-            if(dataInfoFoldout)
+            dataInfoFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(dataInfoFoldout, "Saved Data List (Disk)", EditorStyles.boldLabel);
+            if (dataInfoFoldout)
             {
-                EditorGUILayout.LabelField("Save Info List", s.AutoSaveInfo);
+                string configuredAssetsPath = GetConfiguredEditorSaveDataDirectoryPath();
+                EditorGUILayout.LabelField("Save Directory", configuredAssetsPath);
+
+                if (!IsValidAssetsRelativePath(configuredAssetsPath))
+                {
+                    EditorGUILayout.HelpBox("Use a path under Assets (for example: Assets/SaveData).", MessageType.Warning);
+                    EditorGUILayout.EndFoldoutHeaderGroup();
+                    return;
+                }
+
+                if (!TryConvertAssetsRelativeToAbsolutePath(configuredAssetsPath, out string absolutePath))
+                {
+                    EditorGUILayout.HelpBox("Failed to resolve save directory path.", MessageType.Error);
+                    EditorGUILayout.EndFoldoutHeaderGroup();
+                    return;
+                }
+
                 EditorGUILayout.BeginVertical("box");
                 {
-                    if (s.DataInfoDic != null && s.DataInfoDic.Count != 0)
+                    if (!Directory.Exists(absolutePath))
                     {
-                        foreach (var item in s.DataInfoDic.Values)
+                        EditorGUILayout.LabelField("None");
+                        EditorGUILayout.LabelField("Status", "Save directory not found.");
+                    }
+                    else if (TryReadSaveInfosFromDisk(absolutePath, out List<PlayerDataInfo> saveInfos, out List<string> invalidFiles))
+                    {
+                        if (saveInfos.Count == 0)
                         {
-                            EditorGUILayout.LabelField($"{item.index}      {item.time}",   item.note);
+                            EditorGUILayout.LabelField("None");
+                        }
+                        else
+                        {
+                            EditorGUILayout.LabelField("Count", saveInfos.Count.ToString());
+                            foreach (PlayerDataInfo item in saveInfos)
+                            {
+                                string note = string.IsNullOrEmpty(item.note) ? "(No Note)" : item.note;
+                                EditorGUILayout.LabelField($"{item.index}      {item.time}", note);
+                            }
+                        }
+
+                        if (invalidFiles.Count > 0)
+                        {
+                            EditorGUILayout.Space(4);
+                            EditorGUILayout.HelpBox($"Skipped {invalidFiles.Count} invalid save info file(s).", MessageType.Warning);
+                            foreach (string invalidFile in invalidFiles)
+                            {
+                                EditorGUILayout.LabelField("Invalid", invalidFile);
+                            }
                         }
                     }
                     else
+                    {
                         EditorGUILayout.LabelField("None");
+                        EditorGUILayout.LabelField("Status", "Failed to read save directory.");
+                    }
                 }
                 EditorGUILayout.EndVertical();
             }
             EditorGUILayout.EndFoldoutHeaderGroup();
+        }
+
+        private string GetConfiguredEditorSaveDataDirectoryPath()
+        {
+            SerializedProperty settingsProperty = serializedObject.FindProperty("settings");
+            SerializedProperty pathProperty = settingsProperty?.FindPropertyRelative("EditorSaveDataDirectoryPath");
+            string configuredPath = NormalizeAssetsRelativePath(pathProperty?.stringValue);
+            return string.IsNullOrWhiteSpace(configuredPath) ? DefaultEditorSaveDataDirectoryPath : configuredPath;
+        }
+
+        private static bool TryReadSaveInfosFromDisk(string absolutePath, out List<PlayerDataInfo> saveInfos, out List<string> invalidFiles)
+        {
+            saveInfos = new List<PlayerDataInfo>();
+            invalidFiles = new List<string>();
+
+            try
+            {
+                foreach (string filePath in Directory.EnumerateFiles(absolutePath, "SaveDataInfo*.save"))
+                {
+                    try
+                    {
+                        string json = File.ReadAllText(filePath, System.Text.Encoding.UTF8);
+                        PlayerDataInfo info = JsonConvert.DeserializeObject<PlayerDataInfo>(json);
+                        if (info == null)
+                        {
+                            invalidFiles.Add(Path.GetFileName(filePath));
+                            continue;
+                        }
+
+                        saveInfos.Add(info);
+                    }
+                    catch
+                    {
+                        invalidFiles.Add(Path.GetFileName(filePath));
+                    }
+                }
+
+                saveInfos.Sort((a, b) => a.index.CompareTo(b.index));
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

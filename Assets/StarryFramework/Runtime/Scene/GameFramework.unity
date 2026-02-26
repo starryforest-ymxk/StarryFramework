@@ -511,6 +511,7 @@ MonoBehaviour:
   settings:
     AutoSave: 1
     AutoSaveDataInterval: 600
+    EditorSaveDataDirectoryPath: Assets/SaveData
     SaveInfoList: []
 --- !u!1 &1818399018
 GameObject:

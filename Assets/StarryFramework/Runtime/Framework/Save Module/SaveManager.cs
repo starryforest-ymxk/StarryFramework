@@ -12,6 +12,10 @@ namespace StarryFramework
         private SaveSettings settings;
         private bool isInitialized;
         private const string SaveDataFolderName = "SaveData";
+#if UNITY_EDITOR
+        private const string DefaultEditorSaveDataDirectoryPath = "Assets/SaveData";
+        private static string editorSaveDataDirectoryPathOverride;
+#endif
 
         // 当前游戏默认加载的存档编号，用于自动存档以及快速存档
         // 只在游戏开始前置初值为-1，在点击继续游戏按钮才会有效
@@ -58,10 +62,25 @@ namespace StarryFramework
 
         internal Dictionary<int, PlayerDataInfo> infoDic = new Dictionary<int, PlayerDataInfo>();
 
+        internal static void ApplyEditorSaveDataPathOverride(SaveSettings saveSettings)
+        {
+#if UNITY_EDITOR
+            string configuredPath = saveSettings?.EditorSaveDataDirectoryPath;
+            editorSaveDataDirectoryPathOverride = string.IsNullOrWhiteSpace(configuredPath)
+                ? DefaultEditorSaveDataDirectoryPath
+                : configuredPath.Trim();
+#endif
+        }
+
         internal static string GetSaveDataDirectoryPath()
         {
-            // Save files are stored under Application.persistentDataPath only.
+#if UNITY_EDITOR
+            return string.IsNullOrWhiteSpace(editorSaveDataDirectoryPathOverride)
+                ? DefaultEditorSaveDataDirectoryPath
+                : editorSaveDataDirectoryPathOverride;
+#else
             return Path.Combine(Application.persistentDataPath, SaveDataFolderName);
+#endif
         }
 
         private static string GetDataFilePath(int index)
@@ -161,6 +180,7 @@ namespace StarryFramework
         void IConfigurableManager.SetSettings(IManagerSettings settings)
         {
             this.settings = settings as SaveSettings;
+            ApplyEditorSaveDataPathOverride(this.settings);
             if (isInitialized)
             {
                 ApplySettings();

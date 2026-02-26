@@ -7,10 +7,11 @@ using Newtonsoft.Json;
 
 namespace StarryFramework
 {
-    internal class SaveManager : IManager
+    internal class SaveManager : IManager, IConfigurableManager
     {
 
         private SaveSettings settings;
+        private bool isInitialized;
 
         // 当前游戏默认加载的存档编号，用于自动存档以及快速存档
         // 只在游戏开始前置初值为-1，在点击继续游戏按钮才会有效
@@ -66,8 +67,8 @@ namespace StarryFramework
         }
         void IManager.Init()
         {
-            SetInfoList(settings.SaveInfoList);
-            autoSaveDataInterval = settings.AutoSaveDataInterval;
+            ApplySettings();
+            isInitialized = true;
         }
         void IManager.Update()
         {
@@ -83,6 +84,7 @@ namespace StarryFramework
         }
         void IManager.ShutDown()
         {
+            isInitialized = false;
             SaveSetting();
             SaveCurrentDataIndex();
             infoDic.Clear();
@@ -94,9 +96,13 @@ namespace StarryFramework
             autoSaveInfo = null;
         }
 
-        void IManager.SetSettings(IManagerSettings settings)
+        void IConfigurableManager.SetSettings(IManagerSettings settings)
         {
             this.settings = settings as SaveSettings;
+            if (isInitialized)
+            {
+                ApplySettings();
+            }
         }
 
         #region 内部方法
@@ -113,6 +119,47 @@ namespace StarryFramework
                     autoSaveInfo = infos[0];
                 }
 
+            }
+        }
+
+        private void ApplySettings()
+        {
+            if (settings == null)
+            {
+                FrameworkManager.Debugger.LogError("SaveSettings is null.");
+                return;
+            }
+
+            string oldDefaultInfo = saveInfoList != null && saveInfoList.Count > 0 ? saveInfoList[0] : "";
+            string oldAutoSaveInfo = autoSaveInfo;
+
+            saveInfoList ??= new List<string>();
+            saveInfoList.Clear();
+
+            if (settings.SaveInfoList == null)
+            {
+                FrameworkManager.Debugger.LogError("Info List can not be null.");
+            }
+            else
+            {
+                settings.SaveInfoList.ForEach(i => saveInfoList.Add(i));
+            }
+
+            string newDefaultInfo = saveInfoList.Count > 0 ? saveInfoList[0] : "";
+            if (string.IsNullOrEmpty(oldAutoSaveInfo) || oldAutoSaveInfo == oldDefaultInfo)
+            {
+                autoSaveInfo = newDefaultInfo;
+            }
+
+            autoSaveDataInterval = settings.AutoSaveDataInterval;
+
+            if (!settings.AutoSave)
+            {
+                StopAutoSaveTimer();
+            }
+            else if (currentLoadedDataIndex != -1 && !startAutoSave)
+            {
+                StartAutoSaveTimer();
             }
         }
 

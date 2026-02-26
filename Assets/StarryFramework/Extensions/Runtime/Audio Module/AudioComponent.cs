@@ -26,16 +26,18 @@ namespace StarryFramework.Extentions
 #if UNITY_EDITOR
         private void OnValidate()
         {
+            settings ??= new AudioSettings();
             if(EditorApplication.isPlaying && _manager != null)
-                (_manager as IManager).SetSettings(settings);
+                (_manager as IConfigurableManager)?.SetSettings(settings);
         }
 #endif
 
         protected override void Awake()
         {
             base.Awake();
+            settings ??= new AudioSettings();
             _manager ??= FrameworkManager.GetManager<AudioManager>();
-            (_manager as IManager).SetSettings(settings);
+            (_manager as IConfigurableManager)?.SetSettings(settings);
         }
 
         private void Start()

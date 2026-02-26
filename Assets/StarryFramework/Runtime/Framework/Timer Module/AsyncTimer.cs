@@ -26,7 +26,7 @@ namespace StarryFramework
             {
                 if (!repeat) _state = TimerState.Stop;
                 else _state = TimerState.Active;
-                action.Invoke();
+                FrameworkManager.PostToMainThread(() => action?.Invoke());
             };
         }
 

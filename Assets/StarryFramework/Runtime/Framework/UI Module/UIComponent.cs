@@ -12,7 +12,7 @@ namespace StarryFramework
         private UIManager _manager;
         private UIManager Manager => _manager ??= FrameworkManager.GetManager<UIManager>();
         
-        [SerializeField] private UISettings settings;
+        [SerializeField] private UISettings settings = new();
         
         public Dictionary<string, UIGroup> UIGroupsDic => Manager.uiGroupsDic;
         public LinkedList<UIForm> UIFormsCacheList => Manager.uiFormsCacheList;
@@ -20,16 +20,18 @@ namespace StarryFramework
 #if UNITY_EDITOR
         private void OnValidate()
         {
+            settings ??= new UISettings();
             if(EditorApplication.isPlaying && _manager != null)
-                (_manager as IManager).SetSettings(settings);
+                (_manager as IConfigurableManager)?.SetSettings(settings);
         }
 #endif
 
         protected override void Awake()
         {
             base.Awake();
+            settings ??= new UISettings();
             _manager ??= FrameworkManager.GetManager<UIManager>();
-            (_manager as IManager).SetSettings(settings);
+            (_manager as IConfigurableManager)?.SetSettings(settings);
         }
         
         

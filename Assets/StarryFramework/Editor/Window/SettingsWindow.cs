@@ -207,35 +207,16 @@ namespace StarryFramework.Editor
         
         private void DrawValidationMessages()
         {
-            List<ModuleType> modules = _frameworkSettings.modules;
-            List<string> errors = new List<string>();
-            
-            HashSet<ModuleType> uniqueCheck = new HashSet<ModuleType>();
-            foreach (ModuleType module in modules)
-            {
-                if (!uniqueCheck.Add(module))
-                {
-                    errors.Add($"模块列表中存在重复的组件: {module}。Duplicate module in the list: {module}.");
-                    break;
-                }
-            }
-            
-            if (_frameworkSettings.InternalEventTrigger && !modules.Contains(ModuleType.Event))
-            {
-                errors.Add("勾选了Internal Event Trigger但是没有启用Event组件。Internal Event Trigger is enabled but Event module is not in the list.");
-            }
-            
-            if (_frameworkSettings.StartScene != 0 && !modules.Contains(ModuleType.Scene))
-            {
-                errors.Add("设置了初始加载场景但是没有启用Scene组件。Start Scene is set but Scene module is not in the list.");
-            }
-            
-            if (errors.Count > 0)
+            List<FrameworkSettingsValidationIssue> issues = FrameworkSettingsValidator.Validate(_frameworkSettings);
+            if (issues.Count > 0)
             {
                 EditorGUILayout.Space(5);
-                foreach (string error in errors)
+                foreach (FrameworkSettingsValidationIssue issue in issues)
                 {
-                    EditorGUILayout.HelpBox(error, MessageType.Error);
+                    MessageType messageType = issue.Severity == FrameworkSettingsValidationSeverity.Error
+                        ? MessageType.Error
+                        : MessageType.Warning;
+                    EditorGUILayout.HelpBox(issue.Message, messageType);
                 }
                 EditorGUILayout.Space(5);
             }
@@ -293,6 +274,13 @@ namespace StarryFramework.Editor
             EditorGUILayout.Space(10);
             
             EditorGUILayout.HelpBox("游戏框架各模块是否启用以及优先级，越靠近列表前端优先级越高。Whether each module of the game framework is enabled and its priority, with higher priority given to those closer to the top of the list.", MessageType.Info);
+            EditorGUILayout.HelpBox(
+                "This panel edits framework-level settings only (startup flow, module enable list/order, logging). " +
+                "Per-module detailed settings (Scene/Save/Timer/UI/Audio etc.) are configured on the corresponding module components in the GameFramework scene.",
+                MessageType.Info);
+            
+            EditorGUILayout.Space(10);
+            
             DrawValidationMessages();
             
             EditorGUILayout.PropertyField(modulesProp, new GUIContent("Modules List"), true);
@@ -344,47 +332,21 @@ namespace StarryFramework.Editor
         
         private void CreateFrameworkSettings()
         {
-            string folderPath = "Assets/StarryFramework/Resources";
-            if (!AssetDatabase.IsValidFolder(folderPath))
-            {
-                string parentFolder = "Assets/StarryFramework";
-                if (!AssetDatabase.IsValidFolder(parentFolder))
-                {
-                    AssetDatabase.CreateFolder("Assets", "StarryFramework");
-                }
-                AssetDatabase.CreateFolder(parentFolder, "Resources");
-            }
-            
-            string assetPath = $"{folderPath}/FrameworkSettings.asset";
-            
-            if (AssetDatabase.LoadAssetAtPath<FrameworkSettings>(assetPath) != null)
+            string assetPath = FrameworkSettings.DefaultSettingsAssetPath;
+            FrameworkSettings existing = FrameworkSettings.LoadDefaultSettingsAsset();
+            if (existing != null)
             {
                 EditorUtility.DisplayDialog("Warning", $"FrameworkSettings already exists at: {assetPath}", "OK");
-                _frameworkSettings = AssetDatabase.LoadAssetAtPath<FrameworkSettings>(assetPath);
+                _frameworkSettings = existing;
                 _settingsSerializedObject = new SerializedObject(_frameworkSettings);
                 return;
             }
-            
-            FrameworkSettings settings = ScriptableObject.CreateInstance<FrameworkSettings>();
-            settings.modules = new List<ModuleType>
-            {
-                ModuleType.Scene,
-                ModuleType.Event,
-                ModuleType.Timer,
-                ModuleType.Resource,
-                ModuleType.ObjectPool,
-                ModuleType.FSM,
-                ModuleType.Save,
-                ModuleType.UI
-            };
-            
-            AssetDatabase.CreateAsset(settings, assetPath);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-            
+
+            FrameworkSettings settings = FrameworkSettings.CreateSettingsAssetWithDefaults(assetPath);
+
             _frameworkSettings = settings;
             _settingsSerializedObject = new SerializedObject(_frameworkSettings);
-            
+
             Selection.activeObject = settings;
             EditorUtility.DisplayDialog("Success", $"Created FrameworkSettings at: {assetPath}", "OK");
         }

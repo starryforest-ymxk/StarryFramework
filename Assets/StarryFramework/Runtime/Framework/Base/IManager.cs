@@ -10,6 +10,10 @@ namespace StarryFramework
         internal void Init();
         internal void Update();
         internal void ShutDown();
+    }
+
+    internal interface IConfigurableManager
+    {
         internal void SetSettings(IManagerSettings settings);
     }
 

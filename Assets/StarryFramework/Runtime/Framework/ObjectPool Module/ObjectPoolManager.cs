@@ -36,8 +36,6 @@ namespace StarryFramework
             }
         }
         
-        void IManager.SetSettings(IManagerSettings settings) { }
-
         internal List<ObjectPoolProperty> getObjectPoolProperties()
         {
             return objectPoolProperties;

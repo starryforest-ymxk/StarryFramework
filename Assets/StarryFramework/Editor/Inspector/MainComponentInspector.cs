@@ -56,7 +56,11 @@ namespace StarryFramework.Editor
                 EditorGUILayout.LabelField("路径 / Path:", assetPath, EditorStyles.wordWrappedLabel);
                 
                 EditorGUILayout.Space(5);
-                
+                EditorGUILayout.HelpBox(
+                    "FrameworkSettings controls framework-level startup flow, logging and module enable/order. " +
+                    "Per-module detailed settings are configured on each module component in the GameFramework scene.",
+                    MessageType.Info);
+
                 EditorGUILayout.BeginHorizontal();
                 if (GUILayout.Button("在 Settings Panel 中编辑 / Edit in Settings Panel"))
                 {

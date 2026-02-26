@@ -14,7 +14,7 @@ namespace StarryFramework
         private TimerManager _manager;
         private TimerManager Manager => _manager ??= FrameworkManager.GetManager<TimerManager>();
 
-        [SerializeField] private TimerSettings settings;
+        [SerializeField] private TimerSettings settings = new();
         public List<Timer> Timers => Manager.timers;
         public List<TriggerTimer> TriggerTimers => Manager.triggerTimers;
         public List<AsyncTimer> AsyncTimers => Manager.asyncTimers;
@@ -24,16 +24,18 @@ namespace StarryFramework
 #if UNITY_EDITOR
         private void OnValidate()
         {
+            settings ??= new TimerSettings();
             if(EditorApplication.isPlaying && _manager != null)
-                (_manager as IManager).SetSettings(settings);
+                (_manager as IConfigurableManager)?.SetSettings(settings);
         }
 #endif
 
         protected override void Awake()
         {
             base.Awake();
+            settings ??= new TimerSettings();
             _manager ??= FrameworkManager.GetManager<TimerManager>();
-            (_manager as IManager).SetSettings(settings);
+            (_manager as IConfigurableManager)?.SetSettings(settings);
         }
 
 

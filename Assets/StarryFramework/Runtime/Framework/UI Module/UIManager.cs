@@ -6,9 +6,10 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace StarryFramework
 {
-    public class UIManager :IManager
+    public class UIManager :IManager, IConfigurableManager
     {
         private UISettings settings;
+        private bool isInitialized;
         private int serial;
         private int cacheCapacity;
         internal readonly Dictionary<string, UIGroup> uiGroupsDic = new();
@@ -17,8 +18,8 @@ namespace StarryFramework
         void IManager.Awake() { }
         void IManager.Init()
         {
-            serial = settings.startOfSerialID;
-            cacheCapacity = settings.cacheCapacity;
+            ApplySettings(true);
+            isInitialized = true;
         }
         void IManager.Update()
         {
@@ -26,11 +27,48 @@ namespace StarryFramework
         }
         void IManager.ShutDown()
         {
+            isInitialized = false;
             ShutDown();
         }
-        void IManager.SetSettings(IManagerSettings settings)
+        void IConfigurableManager.SetSettings(IManagerSettings settings)
         {
             this.settings = settings as UISettings;
+            if (isInitialized)
+            {
+                ApplySettings(false);
+            }
+        }
+
+        private void ApplySettings(bool isInit)
+        {
+            if (settings == null)
+            {
+                FrameworkManager.Debugger.LogError("UISettings is null.");
+                return;
+            }
+
+            cacheCapacity = Mathf.Max(0, settings.cacheCapacity);
+
+            if (isInit)
+            {
+                serial = settings.startOfSerialID;
+            }
+            else
+            {
+                // Avoid rolling back IDs at runtime to prevent duplicate serial IDs.
+                serial = Mathf.Max(serial, settings.startOfSerialID);
+                TrimCacheToCapacity();
+            }
+        }
+
+        private void TrimCacheToCapacity()
+        {
+            while (uiFormsCacheList.Count > cacheCapacity)
+            {
+                UIForm uiFormToRelease = uiFormsCacheList.Last.Value;
+                uiFormsCacheList.RemoveLast();
+                uiFormToRelease.OnRelease();
+            }
         }
         
         #region UIGroup

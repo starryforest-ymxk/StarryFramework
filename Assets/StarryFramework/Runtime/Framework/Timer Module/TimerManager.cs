@@ -5,10 +5,11 @@ using UnityEngine.Events;
 
 namespace StarryFramework
 {
-    public class TimerManager : IManager
+    public class TimerManager : IManager, IConfigurableManager
     {
 
         private TimerSettings settings;
+        private bool isInitialized;
         private Dictionary<string, Timer> timersDic = new Dictionary<string, Timer>();
         internal List<Timer> timers = new List<Timer>();
 
@@ -39,12 +40,8 @@ namespace StarryFramework
 
         void IManager.Init()
         {
-            clearUnusedTriggerTimersInterval = settings.ClearUnusedTriggerTimersInterval;
-            clearUnusedAsyncTimersInterval = settings.ClearUnusedAsyncTimersInterval;
-            unusedTriggerTimersClear  = new TriggerTimer(clearUnusedTriggerTimersInterval, ClearUnusedTriggerTimers, false, true, "UnusedTriggerTimersClear");
-            unusedAsyncTimersClear = new AsyncTimer(clearUnusedAsyncTimersInterval, ClearUnusedAsyncTimers, true, "UnusedAsyncTimersClear");
-            unusedTriggerTimersClear.Start();
-            unusedAsyncTimersClear.Start();
+            ApplySettings();
+            isInitialized = true;
         }
 
         void IManager.Update()
@@ -85,6 +82,7 @@ namespace StarryFramework
 
         void IManager.ShutDown()
         {
+            isInitialized = false;
             CloseAllAsyncTimers();
             timersDic.Clear();
             timers.Clear();
@@ -95,13 +93,36 @@ namespace StarryFramework
             asyncTimersDic.Clear();
             asyncTimers.Clear();
             unusedTriggerTimersClear = null;
-            unusedAsyncTimersClear.Close();
+            unusedAsyncTimersClear?.Close();
             unusedAsyncTimersClear = null;
         }
 
-        void IManager.SetSettings(IManagerSettings settings)
+        void IConfigurableManager.SetSettings(IManagerSettings settings)
         {
             this.settings = settings as TimerSettings;
+            if (isInitialized)
+            {
+                ApplySettings();
+            }
+        }
+
+        private void ApplySettings()
+        {
+            if (settings == null)
+            {
+                FrameworkManager.Debugger.LogError("TimerSettings is null.");
+                return;
+            }
+
+            clearUnusedTriggerTimersInterval = Mathf.Max(0.01f, settings.ClearUnusedTriggerTimersInterval);
+            clearUnusedAsyncTimersInterval = Mathf.Max(0.01f, settings.ClearUnusedAsyncTimersInterval);
+
+            unusedTriggerTimersClear = new TriggerTimer(clearUnusedTriggerTimersInterval, ClearUnusedTriggerTimers, false, true, "UnusedTriggerTimersClear");
+            unusedTriggerTimersClear.Start();
+
+            unusedAsyncTimersClear?.Close();
+            unusedAsyncTimersClear = new AsyncTimer(clearUnusedAsyncTimersInterval, ClearUnusedAsyncTimers, true, "UnusedAsyncTimersClear");
+            unusedAsyncTimersClear.Start();
         }
 
         #region Timer       

@@ -89,6 +89,21 @@ namespace StarryFramework
             return modules.Contains(type);
         }
 
+        public static List<ModuleType> CreateDefaultModules()
+        {
+            return new List<ModuleType>
+            {
+                ModuleType.Scene,
+                ModuleType.Event,
+                ModuleType.Timer,
+                ModuleType.Resource,
+                ModuleType.ObjectPool,
+                ModuleType.FSM,
+                ModuleType.Save,
+                ModuleType.UI
+            };
+        }
+
         public void Init()
         {
 #if UNITY_EDITOR
@@ -115,53 +130,58 @@ namespace StarryFramework
 
         public void SettingCheck()
         {
-            List<ModuleType> check = new List<ModuleType>();
-            foreach (ModuleType type in modules)
+            foreach (var issue in FrameworkSettingsValidator.Validate(this))
             {
-                if (check.Contains(type))
+                if (issue.Severity == FrameworkSettingsValidationSeverity.Error)
                 {
-                    Debug.LogError("Same components are not allowed in the Module List");
+                    Debug.LogError(issue.Message);
                 }
                 else
                 {
-                    check.Add(type);
+                    Debug.LogWarning(issue.Message);
                 }
             }
-            check.Clear();
         }
 
 #if UNITY_EDITOR
-        private static FrameworkSettings CreateDefaultSettings()
+        internal static string DefaultSettingsFolderPath => "Assets/StarryFramework/Resources";
+        internal static string DefaultSettingsAssetPath => $"{DefaultSettingsFolderPath}/{SETTINGS_PATH}.asset";
+
+        internal static void EnsureDefaultSettingsFolder()
         {
-            FrameworkSettings settings = CreateInstance<FrameworkSettings>();
-            
-            settings.modules = new List<ModuleType>
+            if (!AssetDatabase.IsValidFolder(DefaultSettingsFolderPath))
             {
-                ModuleType.Scene,
-                ModuleType.Event,
-                ModuleType.Timer,
-                ModuleType.Resource,
-                ModuleType.ObjectPool,
-                ModuleType.FSM,
-                ModuleType.Save,
-                ModuleType.UI
-            };
-            
-            string folderPath = "Assets/StarryFramework/Resources";
-            if (!AssetDatabase.IsValidFolder(folderPath))
-            {
-                string parentFolder = "Assets/StarryFramework";
+                const string parentFolder = "Assets/StarryFramework";
                 if (!AssetDatabase.IsValidFolder(parentFolder))
                 {
                     AssetDatabase.CreateFolder("Assets", "StarryFramework");
                 }
                 AssetDatabase.CreateFolder(parentFolder, "Resources");
             }
-            
-            string assetPath = $"{folderPath}/{SETTINGS_PATH}.asset";
+        }
+
+        internal static FrameworkSettings LoadDefaultSettingsAsset()
+        {
+            return AssetDatabase.LoadAssetAtPath<FrameworkSettings>(DefaultSettingsAssetPath);
+        }
+
+        internal static FrameworkSettings CreateSettingsAssetWithDefaults(string assetPath)
+        {
+            EnsureDefaultSettingsFolder();
+            FrameworkSettings settings = CreateInstance<FrameworkSettings>();
+            settings.modules = CreateDefaultModules();
+
             AssetDatabase.CreateAsset(settings, assetPath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+
+            return settings;
+        }
+
+        private static FrameworkSettings CreateDefaultSettings()
+        {
+            string assetPath = DefaultSettingsAssetPath;
+            FrameworkSettings settings = CreateSettingsAssetWithDefaults(assetPath);
             
             Debug.Log($"Created default FrameworkSettings at: {assetPath}");
             return settings;
@@ -170,42 +190,16 @@ namespace StarryFramework
         [MenuItem("Tools/StarryFramework/Create Settings Asset", priority = 2)]
         private static void CreateSettingsAsset()
         {
-            string folderPath = "Assets/StarryFramework/Resources";
-            if (!AssetDatabase.IsValidFolder(folderPath))
-            {
-                string parentFolder = "Assets/StarryFramework";
-                if (!AssetDatabase.IsValidFolder(parentFolder))
-                {
-                    AssetDatabase.CreateFolder("Assets", "StarryFramework");
-                }
-                AssetDatabase.CreateFolder(parentFolder, "Resources");
-            }
-            
-            string assetPath = $"{folderPath}/{SETTINGS_PATH}.asset";
-            
-            if (AssetDatabase.LoadAssetAtPath<FrameworkSettings>(assetPath) != null)
+            string assetPath = DefaultSettingsAssetPath;
+            FrameworkSettings existing = LoadDefaultSettingsAsset();
+            if (existing != null)
             {
                 EditorUtility.DisplayDialog("Warning", $"FrameworkSettings already exists at: {assetPath}", "OK");
-                Selection.activeObject = AssetDatabase.LoadAssetAtPath<FrameworkSettings>(assetPath);
+                Selection.activeObject = existing;
                 return;
             }
             
-            FrameworkSettings settings = CreateInstance<FrameworkSettings>();
-            settings.modules = new List<ModuleType>
-            {
-                ModuleType.Scene,
-                ModuleType.Event,
-                ModuleType.Timer,
-                ModuleType.Resource,
-                ModuleType.ObjectPool,
-                ModuleType.FSM,
-                ModuleType.Save,
-                ModuleType.UI
-            };
-            
-            AssetDatabase.CreateAsset(settings, assetPath);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
+            FrameworkSettings settings = CreateSettingsAssetWithDefaults(assetPath);
             
             Selection.activeObject = settings;
             EditorUtility.DisplayDialog("Success", $"Created FrameworkSettings at: {assetPath}", "OK");

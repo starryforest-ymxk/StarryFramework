@@ -97,8 +97,6 @@ namespace StarryFramework
             _tempRemoveList = null;
         }
 
-        void IManager.SetSettings(IManagerSettings settings) { }
-
         public int FSMCount => _fsms.Count;
 
         public IFSM<T> CreateFSM<T>(string name, T owner, List<FSMState<T>> states) where T : class

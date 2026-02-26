@@ -62,8 +62,6 @@ namespace StarryFramework
             eventInfoDic.Clear();
         }
         
-        void IManager.SetSettings(IManagerSettings settings) { }
-        
         #region GetFullName
 
         private string GetFullName(string eventName)

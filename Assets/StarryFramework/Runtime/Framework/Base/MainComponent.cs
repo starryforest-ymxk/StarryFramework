@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -138,20 +137,17 @@ namespace StarryFramework
             BaseComponent[] components = gameObject.GetComponentsInChildren<BaseComponent>();
             foreach(BaseComponent component in components)
             {
-                try
+                if (!FrameworkManager.TryGetModuleType(component, out ModuleType type))
                 {
-                    ModuleType type = (ModuleType)Enum.Parse(typeof(ModuleType), component.gameObject.name);
-
-                    if (!FrameworkSetting.modules.Contains(type))
-                    {
-                        FrameworkManager.Debugger.Log($"Unused module: {type}");
-                        component.gameObject.SetActive(false);
-                        component.DisableProcess();
-                    }
+                    FrameworkManager.Debugger.LogError($"Module component type is not registered: {component.GetType().FullName}");
+                    continue;
                 }
-                catch
+
+                if (!FrameworkSetting.modules.Contains(type))
                 {
-                    Debug.LogError("The Name of component gameObject can not be modified.");
+                    FrameworkManager.Debugger.Log($"Unused module: {type}");
+                    component.gameObject.SetActive(false);
+                    component.DisableProcess();
                 }
             }
         }

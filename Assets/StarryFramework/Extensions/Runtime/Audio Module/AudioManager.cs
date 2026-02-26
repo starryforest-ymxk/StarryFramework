@@ -6,9 +6,11 @@ using UnityEngine;
 
 namespace StarryFramework.Extentions
 {
-    internal class AudioManager : IManager
+    internal class AudioManager : IManager, IConfigurableManager
     {
         private AudioSettings settings;
+        private bool isInitialized;
+        private readonly HashSet<string> loadedGlobalBanks = new HashSet<string>();
         
         private EventInstance currentBGM;
 
@@ -26,9 +28,15 @@ namespace StarryFramework.Extentions
         }
         void IManager.Init()
         {
-            clearTimer.Elapsed += (a, e) => ClearStoppedUnnamedEvent();
-            clearTimer.Interval = settings.clearUnusedAudioInterval;
-            PreloadBankData(settings.globalBanks);
+            clearTimer.Elapsed += (a, e) => FrameworkManager.PostToMainThread(() =>
+            {
+                if (isInitialized)
+                {
+                    ClearStoppedUnnamedEvent();
+                }
+            });
+            ApplySettings();
+            isInitialized = true;
         }
         void IManager.Update()
         {
@@ -36,16 +44,85 @@ namespace StarryFramework.Extentions
         }
         void IManager.ShutDown()
         {
-            UnloadBankData(settings.globalBanks);
+            isInitialized = false;
+            if (loadedGlobalBanks.Count > 0)
+            {
+                UnloadBankData(new List<string>(loadedGlobalBanks));
+                loadedGlobalBanks.Clear();
+            }
             bgmState = AudioState.Stop;
             namedEventDic.Clear();
             unnamedEventDic.Clear();
             clearTimer.Close();
         }
 
-        void IManager.SetSettings(IManagerSettings settings)
+        void IConfigurableManager.SetSettings(IManagerSettings settings)
         {
             this.settings = settings as AudioSettings;
+            if (isInitialized)
+            {
+                ApplySettings();
+            }
+        }
+
+        private void ApplySettings()
+        {
+            if (settings == null)
+            {
+                FrameworkManager.Debugger.LogError("AudioSettings is null.");
+                return;
+            }
+
+            clearTimer.Interval = Mathf.Max(1f, settings.clearUnusedAudioInterval);
+            SyncGlobalBanks(settings.globalBanks);
+        }
+
+        private void SyncGlobalBanks(List<string> targetBanks)
+        {
+            HashSet<string> nextBanks = new HashSet<string>();
+            if (targetBanks != null)
+            {
+                foreach (var bank in targetBanks)
+                {
+                    if (!string.IsNullOrEmpty(bank))
+                    {
+                        nextBanks.Add(bank);
+                    }
+                }
+            }
+
+            List<string> banksToUnload = new List<string>();
+            foreach (var loadedBank in loadedGlobalBanks)
+            {
+                if (!nextBanks.Contains(loadedBank))
+                {
+                    banksToUnload.Add(loadedBank);
+                }
+            }
+
+            if (banksToUnload.Count > 0)
+            {
+                UnloadBankData(banksToUnload);
+                foreach (var bank in banksToUnload)
+                {
+                    loadedGlobalBanks.Remove(bank);
+                }
+            }
+
+            List<string> banksToLoad = new List<string>();
+            foreach (var bank in nextBanks)
+            {
+                if (!loadedGlobalBanks.Contains(bank))
+                {
+                    banksToLoad.Add(bank);
+                    loadedGlobalBanks.Add(bank);
+                }
+            }
+
+            if (banksToLoad.Count > 0)
+            {
+                PreloadBankData(banksToLoad);
+            }
         }
 
         #region eventDic 内部操作

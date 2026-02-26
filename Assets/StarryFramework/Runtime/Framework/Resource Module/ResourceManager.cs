@@ -117,8 +117,6 @@ namespace StarryFramework
                 }
             }
         }
-        void IManager.SetSettings(IManagerSettings settings) { }
-
         #region Resources Load
 
         /// <summary>

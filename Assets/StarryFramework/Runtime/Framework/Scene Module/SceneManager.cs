@@ -12,8 +12,6 @@ namespace StarryFramework
         void IManager.Init() { }
         void IManager.Update() { }
         void IManager.ShutDown() { }
-        void IManager.SetSettings(IManagerSettings settings) { }
-
 
         #region Unload
 

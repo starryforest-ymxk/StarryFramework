@@ -20,6 +20,7 @@ namespace StarryFramework.Editor
 
         public static void BindCallback()
         {
+            EditorApplication.playModeStateChanged -= PrepareStartScenes;
             EditorApplication.playModeStateChanged += PrepareStartScenes;
         }
 

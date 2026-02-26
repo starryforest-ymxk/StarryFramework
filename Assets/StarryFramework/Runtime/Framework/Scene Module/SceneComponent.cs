@@ -14,7 +14,7 @@ namespace StarryFramework
         private SceneManager _manager;
         private SceneManager Manager => _manager ??= FrameworkManager.GetManager<SceneManager>();
 
-        [SerializeField] private SceneSettings settings;
+        [SerializeField] private SceneSettings settings = new();
 
         private int sceneIndex;
         private float sceneLoadedTime;
@@ -28,16 +28,15 @@ namespace StarryFramework
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if(EditorApplication.isPlaying && _manager != null)
-                (_manager as IManager).SetSettings(settings);
+            settings ??= new SceneSettings();
         }
 #endif
 
         protected override void Awake()
         {
             base.Awake();
+            settings ??= new SceneSettings();
             _manager ??= FrameworkManager.GetManager<SceneManager>();
-            (_manager as IManager).SetSettings(settings);
             currentActiveScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
         }
 

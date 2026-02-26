@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,9 @@ namespace StarryFramework
     internal static class FrameworkManager
     {
         private static readonly Dictionary<Type, IManager> managers = new();
+        private static readonly Dictionary<ModuleType, Type> moduleManagerTypeMap = new();
+        private static readonly Dictionary<Type, ModuleType> componentModuleTypeMap = new();
+        private static readonly ConcurrentQueue<Action> mainThreadActions = new();
 
         //记录module启用以及优先级
         private static readonly List<Type> managerTypeList = new();
@@ -31,11 +35,117 @@ namespace StarryFramework
             get { return _debugger ??= new FrameworkDebugger(); }
         }
 
+        static FrameworkManager()
+        {
+            RegisterModuleManagerType(ModuleType.Scene, typeof(SceneManager));
+            RegisterModuleManagerType(ModuleType.Timer, typeof(TimerManager));
+            RegisterModuleManagerType(ModuleType.Event, typeof(EventManager));
+            RegisterModuleManagerType(ModuleType.Save, typeof(SaveManager));
+            RegisterModuleManagerType(ModuleType.Resource, typeof(ResourceManager));
+            RegisterModuleManagerType(ModuleType.ObjectPool, typeof(ObjectPoolManager));
+            RegisterModuleManagerType(ModuleType.FSM, typeof(FSMManager));
+            RegisterModuleManagerType(ModuleType.UI, typeof(UIManager));
+
+            RegisterModuleComponentType(ModuleType.Scene, typeof(SceneComponent));
+            RegisterModuleComponentType(ModuleType.Timer, typeof(TimerComponent));
+            RegisterModuleComponentType(ModuleType.Event, typeof(EventComponent));
+            RegisterModuleComponentType(ModuleType.Save, typeof(SaveComponent));
+            RegisterModuleComponentType(ModuleType.Resource, typeof(ResourceComponent));
+            RegisterModuleComponentType(ModuleType.ObjectPool, typeof(ObjectPoolComponent));
+            RegisterModuleComponentType(ModuleType.FSM, typeof(FSMComponent));
+            RegisterModuleComponentType(ModuleType.UI, typeof(UIComponent));
+        }
+
         #region Setting注册
 
         internal static void RegisterSetting(FrameworkSettings setting)
         {
             frameworkSetting = setting;
+        }
+
+        #endregion
+
+        #region Module Mapping / MainThread Dispatch
+
+        internal static void RegisterModuleManagerType(ModuleType moduleType, Type managerType)
+        {
+            if (managerType == null)
+            {
+                Debug.LogError($"Trying to register null manager type for module [{moduleType}]");
+                return;
+            }
+
+            moduleManagerTypeMap[moduleType] = managerType;
+        }
+
+        internal static void RegisterModuleComponentType(ModuleType moduleType, Type componentType)
+        {
+            if (componentType == null)
+            {
+                Debug.LogError($"Trying to register null component type for module [{moduleType}]");
+                return;
+            }
+
+            if (!typeof(BaseComponent).IsAssignableFrom(componentType))
+            {
+                Debug.LogError($"Type [{componentType}] is not a BaseComponent and cannot be registered as module component.");
+                return;
+            }
+
+            componentModuleTypeMap[componentType] = moduleType;
+        }
+
+        internal static bool TryGetModuleType(BaseComponent component, out ModuleType moduleType)
+        {
+            moduleType = default;
+            if (component == null)
+            {
+                return false;
+            }
+
+            Type currentType = component.GetType();
+            while (currentType != null && typeof(BaseComponent).IsAssignableFrom(currentType))
+            {
+                if (componentModuleTypeMap.TryGetValue(currentType, out moduleType))
+                {
+                    return true;
+                }
+
+                currentType = currentType.BaseType;
+            }
+
+            // Legacy fallback for custom modules not yet registered explicitly.
+            return Enum.TryParse(component.gameObject.name, out moduleType);
+        }
+
+        internal static void PostToMainThread(Action action)
+        {
+            if (action == null)
+            {
+                return;
+            }
+
+            mainThreadActions.Enqueue(action);
+        }
+
+        private static void ProcessMainThreadActions()
+        {
+            while (mainThreadActions.TryDequeue(out var action))
+            {
+                try
+                {
+                    action?.Invoke();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                }
+            }
+        }
+
+        private static void ClearMainThreadActions()
+        {
+            while (mainThreadActions.TryDequeue(out _)) { }
         }
 
         #endregion
@@ -46,6 +156,7 @@ namespace StarryFramework
         #region 组件流程
         internal static void BeforeAwake()
         {
+            ClearMainThreadActions();
             state = FrameworkState.Awake;
         }
 
@@ -78,6 +189,7 @@ namespace StarryFramework
 
         internal static void Update()
         {
+            ProcessMainThreadActions();
             foreach (Type type in managerTypeList)
             {
                 managers[type].Update();
@@ -105,6 +217,8 @@ namespace StarryFramework
             managers.Clear();
 
             EventManager.ShutDown();
+
+            ClearMainThreadActions();
 
             state = FrameworkState.Stop;
         }
@@ -153,6 +267,12 @@ namespace StarryFramework
 
         private static Type GetManagerType(ModuleType managerType)
         {
+            if (moduleManagerTypeMap.TryGetValue(managerType, out var mappedType))
+            {
+                return mappedType;
+            }
+
+            // Legacy fallback for unregistered/custom modules.
             return Type.GetType("StarryFramework." + managerType + "Manager");
         }
 

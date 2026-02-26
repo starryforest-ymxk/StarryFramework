@@ -11,7 +11,7 @@ namespace StarryFramework
         private SaveManager _manager;
         private SaveManager Manager => _manager ??= FrameworkManager.GetManager<SaveManager>();
 
-        [SerializeField] private SaveSettings settings;
+        [SerializeField] private SaveSettings settings = new();
 
         private UnityAction onLeaveMainGame;
 
@@ -57,9 +57,10 @@ namespace StarryFramework
 #if UNITY_EDITOR
         private void OnValidate()
         {
+            settings ??= new SaveSettings();
             if(EditorApplication.isPlaying && _manager != null )
             {
-                (_manager as IManager).SetSettings(settings);
+                (_manager as IConfigurableManager)?.SetSettings(settings);
             }
         }
 #endif
@@ -68,8 +69,9 @@ namespace StarryFramework
         protected override void Awake()
         {
             base.Awake();
+            settings ??= new SaveSettings();
             _manager ??= FrameworkManager.GetManager<SaveManager>();
-            (_manager as IManager).SetSettings(settings);
+            (_manager as IConfigurableManager)?.SetSettings(settings);
             
             onLeaveMainGame = () => { UnloadData();};
         }

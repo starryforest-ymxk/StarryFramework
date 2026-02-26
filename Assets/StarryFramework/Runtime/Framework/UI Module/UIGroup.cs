@@ -66,7 +66,7 @@ namespace StarryFramework
         
         internal void Update()
         {
-            //显式迭代，避免游戏逻辑导致foreach内部增删节点
+            // 显式迭代，避免游戏逻辑导致 foreach 内部增删节点。
             LinkedListNode<UIFormInfo> current = formInfosList.First;
             while (current != null)
             {
@@ -254,11 +254,21 @@ namespace StarryFramework
         }
         internal void RemoveAndCloseAllUIForms(bool isShutdown)
         {
-            foreach (UIFormInfo uiFormInfo in formInfosList)
+            // 显式迭代，避免 OnClose 回调里操作 UI 导致集合被修改。
+            LinkedListNode<UIFormInfo> current = formInfosList.First;
+            while (current != null)
             {
-                uiFormInfo.UIForm.OnClose(isShutdown);
+                var tempNode = current.Next;
+                UIForm uiForm = current.Value.UIForm;
+                if (uiForm != null && uiForm.IsOpened)
+                {
+                    uiForm.OnClose(isShutdown);
+                }
+                current = tempNode;
             }
             formInfosList.Clear();
+            formCount = 0;
+            pause = false;
         }
         
         #endregion

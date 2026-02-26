@@ -44,9 +44,18 @@ namespace StarryFramework
         {
             releaseTag = false;
             m_rectTransform = transform as RectTransform;
-            transform.SetParent(uiDynamicType == UIDynamicType.Static
-                ? GameObject.Find("CanvasStatic").GetComponent<Transform>()
-                : GameObject.Find("CanvasDynamic").GetComponent<Transform>());
+
+            Transform uiParent = ResolveUIParent();
+            if (uiParent != null)
+            {
+                transform.SetParent(uiParent);
+            }
+            else
+            {
+                Debug.LogError(
+                    $"[{GetType().Name}] Can not resolve parent canvas for '{uiDynamicType}' UI. " +
+                    "Expected UIRoot canvas references or a scene object named CanvasStatic/CanvasDynamic.");
+            }
 
             if (!TryGetComponent(out m_group))
             {
@@ -56,6 +65,18 @@ namespace StarryFramework
             m_group.interactable = false;
             m_group.blocksRaycasts = false;
             m_group.alpha = 0;
+        }
+
+        private Transform ResolveUIParent()
+        {
+            if (UIRoot.TryGetCanvasParent(uiDynamicType, out Transform parent))
+            {
+                return parent;
+            }
+
+            string fallbackName = uiDynamicType == UIDynamicType.Static ? "CanvasStatic" : "CanvasDynamic";
+            GameObject fallbackObject = GameObject.Find(fallbackName);
+            return fallbackObject != null ? fallbackObject.transform : null;
         }
 
         #region UI lifecycle

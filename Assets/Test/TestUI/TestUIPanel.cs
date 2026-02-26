@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using StarryFramework;
 using UnityEngine;
 
@@ -10,12 +8,33 @@ public class TestUIPanel : UIMainPanelBase
 
     public void OpenPanel()
     {
-        Framework.UIComponent.CloseUIForm(gameUIFormName);
-        Framework.UIComponent.OpenUIForm(openPanelName, "DefaultUIGroup", true);
+        CloseTopmost(gameUIFormName);
+        OpenSingleGlobal(openPanelName);
     }
     
     public void OpenSetting()
     {
-        Framework.UIComponent.OpenUIForm(openSettingName, "DefaultUIGroup", true);
+        OpenSingleGlobal(openSettingName);
+    }
+
+    private static void CloseTopmost(string assetName)
+    {
+        UIForm topmost = Framework.UIComponent.GetTopUIForm(assetName);
+        if (topmost != null)
+        {
+            Framework.UIComponent.CloseUIForm(topmost.SerialID);
+        }
+    }
+
+    private static void OpenSingleGlobal(string assetName)
+    {
+        Framework.UIComponent.OpenUIForm(new OpenUIFormOptions
+        {
+            AssetName = assetName,
+            GroupName = "DefaultUIGroup",
+            PauseCoveredUIForm = true,
+            OpenPolicy = UIOpenPolicy.SingleInstanceGlobal,
+            RefocusIfExists = true
+        });
     }
 }

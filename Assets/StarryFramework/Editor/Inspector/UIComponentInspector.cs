@@ -1,5 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,6 +14,10 @@ namespace StarryFramework.Editor
     {
         private bool foldoutUIFormsCache;
         private bool foldoutUIGroups;
+        private bool foldoutActiveForms;
+        private bool foldoutOpeningRequests;
+        private string topmostQueryAssetName;
+        private string topmostQueryResult = "N/A";
         
         public override void OnInspectorGUI()
         {
@@ -30,11 +34,118 @@ namespace StarryFramework.Editor
             
             if (EditorApplication.isPlaying)
             {
+                DrawOpeningRequests(ui);
+                DrawActiveForms(ui);
+                DrawTopmostQuery(ui);
                 DrawUIFormsCache(ui);
                 DrawAllUIGroups(ui);
             }
             
             Repaint();
+        }
+
+        private void DrawOpeningRequests(UIComponent ui)
+        {
+            foldoutOpeningRequests = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutOpeningRequests, "Opening Requests");
+
+            if (foldoutOpeningRequests)
+            {
+                EditorGUILayout.BeginVertical("box");
+                {
+                    string[] requestKeys = ui.GetOpeningRequestKeysSnapshot();
+                    EditorGUILayout.LabelField("Count", ui.OpeningRequestCount.ToString());
+                    EditorGUILayout.Space(2);
+
+                    foreach (string requestKey in requestKeys)
+                    {
+                        EditorGUILayout.LabelField(requestKey);
+                    }
+                }
+                EditorGUILayout.EndVertical();
+            }
+
+            EditorGUILayout.EndFoldoutHeaderGroup();
+        }
+
+        private void DrawActiveForms(UIComponent ui)
+        {
+            foldoutActiveForms = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutActiveForms, "Active Forms");
+
+            if (foldoutActiveForms)
+            {
+                UIForm[] activeForms = ui.GetAllActiveUIFormsSnapshot();
+
+                EditorGUILayout.BeginVertical("box");
+                {
+                    EditorGUILayout.LabelField("Count", activeForms.Length.ToString());
+                    EditorGUILayout.LabelField("ActiveFormCount", ui.ActiveFormCount.ToString());
+                    EditorGUILayout.LabelField("ActiveAssetKeyCount", ui.ActiveAssetKeyCount.ToString());
+                    EditorGUILayout.Space(2);
+
+                    var formsByAsset = activeForms
+                        .GroupBy(form => form.UIFormAssetName ?? string.Empty, StringComparer.Ordinal)
+                        .OrderBy(group => group.Key, StringComparer.Ordinal);
+
+                    foreach (var assetGroup in formsByAsset)
+                    {
+                        UIForm[] forms = assetGroup
+                            .OrderByDescending(form => form.LastFocusSequence)
+                            .ThenByDescending(form => form.SerialID)
+                            .ToArray();
+
+                        if (forms.Length == 0)
+                        {
+                            continue;
+                        }
+
+                        UIForm topmost = forms[0];
+
+                        EditorGUILayout.BeginVertical(StyleFramework.box);
+                        {
+                            EditorGUILayout.LabelField("Asset", assetGroup.Key);
+                            EditorGUILayout.LabelField("Instance Count", forms.Length.ToString());
+                            EditorGUILayout.LabelField(
+                                "Topmost",
+                                $"[{topmost.SerialID}] Group={topmost.UIGroup?.Name ?? "null"}, InstanceKey={FormatInstanceKey(topmost.InstanceKey)}");
+
+                            foreach (UIForm form in forms)
+                            {
+                                DrawUIForm(form);
+                            }
+                        }
+                        EditorGUILayout.EndVertical();
+                    }
+                }
+                EditorGUILayout.EndVertical();
+            }
+
+            EditorGUILayout.EndFoldoutHeaderGroup();
+        }
+
+        private void DrawTopmostQuery(UIComponent ui)
+        {
+            EditorGUILayout.BeginVertical("box");
+            {
+                EditorGUILayout.LabelField("Topmost Query");
+                topmostQueryAssetName = EditorGUILayout.TextField("Asset Name", topmostQueryAssetName);
+
+                if (GUILayout.Button("Query Topmost"))
+                {
+                    UIForm topmost = ui.GetTopUIForm(topmostQueryAssetName);
+                    if (topmost == null)
+                    {
+                        topmostQueryResult = "null";
+                    }
+                    else
+                    {
+                        topmostQueryResult =
+                            $"[{topmost.SerialID}] Group={topmost.UIGroup?.Name ?? "null"}, InstanceKey={FormatInstanceKey(topmost.InstanceKey)}";
+                    }
+                }
+
+                EditorGUILayout.LabelField("Result", topmostQueryResult);
+            }
+            EditorGUILayout.EndVertical();
         }
         
         private void DrawUIFormsCache(UIComponent ui)
@@ -45,9 +156,9 @@ namespace StarryFramework.Editor
             {
                 EditorGUILayout.BeginVertical("box");
                 {
-                    EditorGUILayout.LabelField("Count", ui.UIFormsCacheList.Count.ToString());
+                    EditorGUILayout.LabelField("Count", ui.UIFormsCacheSnapshot.Count.ToString());
                     EditorGUILayout.Space(2);
-                    foreach (var uiForm in ui.UIFormsCacheList)
+                    foreach (var uiForm in ui.UIFormsCacheSnapshot)
                     {
                         DrawUIForm(uiForm, true);
                     }
@@ -65,9 +176,9 @@ namespace StarryFramework.Editor
             {
                 EditorGUILayout.BeginVertical("box");
                 {
-                    EditorGUILayout.LabelField("Count", ui.UIGroupsDic.Count.ToString());
+                    EditorGUILayout.LabelField("Count", ui.UIGroups.Count.ToString());
                     EditorGUILayout.Space(2);
-                    foreach (var uiGroup in ui.UIGroupsDic.Values)
+                    foreach (var uiGroup in ui.UIGroups.Values)
                     {
                         DrawUIGroup(uiGroup);
                     }
@@ -90,7 +201,6 @@ namespace StarryFramework.Editor
             EditorGUILayout.EndHorizontal();
             if (uiGroup.Foldout)
             {
-                //EditorGUI.BeginDisabledGroup(true);
                 EditorGUILayout.BeginVertical(StyleFramework.box);
                 {
                     EditorGUILayout.LabelField("Form Count", uiGroup.FormCount.ToString());
@@ -115,7 +225,6 @@ namespace StarryFramework.Editor
                     EditorGUILayout.EndVertical();
                 }
                 EditorGUILayout.EndVertical();
-                //EditorGUI.EndDisabledGroup();
             }
         }
         
@@ -140,13 +249,15 @@ namespace StarryFramework.Editor
 
             if (showInCache?uiForm.FoldoutInCache:uiForm.Foldout)
             {
-                //EditorGUI.BeginDisabledGroup(true);
                 EditorGUILayout.BeginVertical(StyleFramework.box);
                 {
                     EditorGUILayout.LabelField("SerialID", uiForm.SerialID.ToString());
-                    EditorGUILayout.LabelField("UI Group", uiForm.UIGroup.Name);
+                    EditorGUILayout.LabelField("UI Group", uiForm.UIGroup != null ? uiForm.UIGroup.Name : "null");
                     EditorGUILayout.LabelField("Depth in group", uiForm.DepthInUIGroup.ToString());
                     EditorGUILayout.LabelField("Pause Covered", uiForm.PauseCoveredUIForm.ToString());
+                    EditorGUILayout.LabelField("Instance Key", FormatInstanceKey(uiForm.InstanceKey));
+                    EditorGUILayout.LabelField("Last Focus Sequence", uiForm.LastFocusSequence.ToString());
+                    EditorGUILayout.LabelField("Is Opened", uiForm.IsOpened.ToString());
                     
                     MonoBehaviour currentFormLogic = uiForm.UIFormLogic as MonoBehaviour;
                     if (currentFormLogic != null)
@@ -154,13 +265,9 @@ namespace StarryFramework.Editor
                         EditorGUILayout.ObjectField("Form Logic", currentFormLogic, typeof(MonoBehaviour), true);
                     }
                     
-                    //EditorGUILayout.ObjectField("UI GameObject", uiForm.UIObject, typeof(GameObject), true);
-                    //EditorGUILayout.ObjectField("Object Handle", uiForm.ObjectHandle, typeof(GameObject), false);
-                    
                     EditorGUILayout.LabelField("Release Tag", uiForm.ReleaseTag.ToString());
                 }
                 EditorGUILayout.EndVertical();
-                //EditorGUI.EndDisabledGroup();
             }
         }
         
@@ -179,7 +286,6 @@ namespace StarryFramework.Editor
 
             if (uiFormInfo.Foldout)
             {
-                //EditorGUI.BeginDisabledGroup(true);
                 EditorGUILayout.BeginVertical(StyleFramework.box);
                 {
                     EditorGUILayout.LabelField("SerialID", uiForm.SerialID.ToString());
@@ -187,6 +293,9 @@ namespace StarryFramework.Editor
                     EditorGUILayout.LabelField("Paused", uiFormInfo.Paused.ToString());
                     EditorGUILayout.LabelField("Covered", uiFormInfo.Covered.ToString());
                     EditorGUILayout.LabelField("Pause Covered", uiForm.PauseCoveredUIForm.ToString());
+                    EditorGUILayout.LabelField("Instance Key", FormatInstanceKey(uiForm.InstanceKey));
+                    EditorGUILayout.LabelField("Last Focus Sequence", uiForm.LastFocusSequence.ToString());
+                    EditorGUILayout.LabelField("Is Opened", uiForm.IsOpened.ToString());
                     
                     MonoBehaviour currentFormLogic = uiForm.UIFormLogic as MonoBehaviour;
                     if (currentFormLogic != null)
@@ -194,14 +303,15 @@ namespace StarryFramework.Editor
                         EditorGUILayout.ObjectField("Form Logic", currentFormLogic, typeof(MonoBehaviour), true);
                     }
                     
-                    //EditorGUILayout.ObjectField("UI GameObject", uiForm.UIObject, typeof(GameObject), true);
-                    //EditorGUILayout.ObjectField("Object Handle", uiForm.ObjectHandle, typeof(GameObject), false);
-                    
                     EditorGUILayout.LabelField("Release Tag", uiForm.ReleaseTag.ToString());
                 }
                 EditorGUILayout.EndVertical();
-                //EditorGUI.EndDisabledGroup();
             }
+        }
+
+        private static string FormatInstanceKey(string instanceKey)
+        {
+            return string.IsNullOrEmpty(instanceKey) ? "<null>" : instanceKey;
         }
 
 

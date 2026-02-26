@@ -9,14 +9,14 @@ namespace StarryFramework
     {
         private int serialID;
         private string uiFormAssetName;
+        private string instanceKey;
         private UIGroup uiGroup;
         private int depthInUIGroup;
         private bool pauseCoveredUiForm;
         private UIFormLogic uiFormLogic;
-        // private GameObject objectHandle;
-        // private GameObject uiObject;
         private bool releaseTag;
         private bool isOpened;
+        private long lastFocusSequence;
         
         /// <summary>
         /// UI窗体序列号
@@ -27,9 +27,11 @@ namespace StarryFramework
         /// UI窗体资源名称
         /// </summary>
         public string UIFormAssetName => uiFormAssetName;
-        
-        // public GameObject ObjectHandle => objectHandle;
-        // public GameObject UIObject => uiObject;
+
+        /// <summary>
+        /// 业务层实例标识键（多实例模式使用）。
+        /// </summary>
+        public string InstanceKey => instanceKey;
         
         /// <summary>
         /// UI窗体所属的UI组
@@ -60,12 +62,73 @@ namespace StarryFramework
         /// 是否已打开
         /// </summary>
         public bool IsOpened => isOpened;
+
+        /// <summary>
+        /// 最近一次打开/聚焦的顺序号（用于 Topmost 判定）。
+        /// </summary>
+        public long LastFocusSequence => lastFocusSequence;
         
 #if UNITY_EDITOR
         public bool Foldout { get; set; }
         public bool FoldoutInCache { get; set; }
 #endif
         
+        /// <summary>
+        /// 绑定本次打开上下文（所属组、覆盖暂停策略）。
+        /// 用于缓存复用时更新运行时上下文，不触发资源初始化逻辑。
+        /// </summary>
+        internal void BindOpenContext(UIGroup group, bool pauseCoveredUIForm)
+        {
+            BindOpenContext(group, pauseCoveredUIForm, null);
+        }
+
+        /// <summary>
+        /// 绑定本次打开上下文（所属组、覆盖暂停策略、业务实例标识）。
+        /// 用于缓存复用时更新运行时上下文，不触发资源初始化逻辑。
+        /// </summary>
+        internal void BindOpenContext(UIGroup group, bool pauseCoveredUIForm, string newInstanceKey)
+        {
+            if (group == null)
+            {
+                FrameworkManager.Debugger.LogError("UI group is invalid.");
+                return;
+            }
+
+            uiGroup = group;
+            pauseCoveredUiForm = pauseCoveredUIForm;
+            instanceKey = string.IsNullOrEmpty(newInstanceKey) ? null : newInstanceKey;
+        }
+
+        /// <summary>
+        /// Prepare one open session for this form (serial id is session-scoped and reallocated on every open).
+        /// </summary>
+        internal bool PrepareForOpenSession(int newSerialId, UIGroup group, bool pauseCoveredUIForm, string newInstanceKey)
+        {
+            if (releaseTag)
+            {
+                FrameworkManager.Debugger.LogError("Can not prepare an already released uiForm.");
+                return false;
+            }
+
+            if (isOpened)
+            {
+                FrameworkManager.Debugger.LogError("Can not prepare an already opened uiForm.");
+                return false;
+            }
+
+            serialID = newSerialId;
+            BindOpenContext(group, pauseCoveredUIForm, newInstanceKey);
+            lastFocusSequence = 0;
+            return true;
+        }
+
+        /// <summary>
+        /// 更新最近一次聚焦顺序号（由 UIManager 维护）。
+        /// </summary>
+        internal void SetLastFocusSequence(long sequence)
+        {
+            lastFocusSequence = sequence;
+        }
         
         
         #region 生命周期
@@ -75,15 +138,14 @@ namespace StarryFramework
         /// </summary>
         public void OnInit(
             int serialId, string assetName, UIGroup group, bool pauseCoveredUIForm, 
-            UIFormLogic logic, GameObject handle/*, GameObject @object*/)
+            UIFormLogic logic, GameObject handle, string newInstanceKey = null)
         {
-            serialID = serialId;
             uiFormAssetName = assetName;
-            uiGroup = group;
-            pauseCoveredUiForm = pauseCoveredUIForm;
+            if (!PrepareForOpenSession(serialId, group, pauseCoveredUIForm, newInstanceKey))
+            {
+                return;
+            }
             uiFormLogic = logic;
-            // objectHandle = handle;
-            // uiObject = @object;
             releaseTag = false;
             if(uiFormLogic != null)
                 uiFormLogic.OnInit(handle);
@@ -102,13 +164,11 @@ namespace StarryFramework
                 FrameworkManager.Debugger.LogWarning("uiForm has already been released.");
                 return;
             }
+            isOpened = false;
             if(uiFormLogic != null)
                 uiFormLogic.OnRelease();
             else
                 FrameworkManager.Debugger.LogWarning("uiFormLogic is null.");
-            // if(uiObject != null)
-            //     Object.Destroy(uiObject);
-            // Addressables.Release(objectHandle);
             releaseTag = true;
         }
         

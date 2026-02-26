@@ -8,13 +8,15 @@
 **框架版本**: 开源游戏开发框架  
 **框架许可**: MIT License  
 **渲染管线**: Built-in Render Pipeline  
-**项目类型**: 2D游戏开发框架
+**项目类型**: 游戏开发框架
 
 ---
 
 ## 项目简介
 
 StarryFramework 是一个轻量化的Unity开发框架，提供了一系列开箱即用的方法和模块，旨在加快游戏开发速度、提高代码质量并保证项目的可维护性。框架采用MOM（Manager-Of-Managers）架构组织各个模块，实现模块间的零耦合设计，支持灵活的模块组合和扩展。
+
+**API文档**: 查看 `/Assets/Overview/API_QUICK_REFERENCE.md` 获取完整API速查手册
 
 ### 核心设计理念
 
@@ -43,6 +45,8 @@ StarryFramework 是一个轻量化的Unity开发框架，提供了一系列开�
 │   └── /Borodar/RainbowFolders # 编辑器工具
 ├── /Test                      # 模块测试示例
 ├── /Overview                  # 项目文档目录
+│   ├── PROJECT_OVERVIEW.md    # 项目概览文档（当前文档）
+│   └── API_QUICK_REFERENCE.md # API 速查手册
 └── /Scenes                    # 游戏场景
 
 ```
@@ -180,7 +184,8 @@ Framework.EventComponent.ClearAllEventLinsteners(string eventName)
 - 自动存档和手动存档
 - 多存档管理（创建、删除、覆盖）
 - 存档注释和信息管理
-- JSON格式存储玩家数据
+- **JSON序列化**: 使用 Newtonsoft.Json 进行序列化（支持 Dictionary、多态、Nullable、自定义转换器）
+- **UTF-8编码**: 所有文件读写使用 UTF-8 编码
 - PlayerPrefs存储游戏设置
 
 **主要API**:
@@ -195,9 +200,15 @@ Framework.SaveComponent.GameSettings
 ```
 
 **数据结构**:
-- **PlayerData**: ScriptableObject，存储玩家游戏数据
-- **GameSettings**: ScriptableObject，存储游戏设置（音量等）
+- **PlayerData**: 可序列化类，存储玩家游戏数据（用户自定义）
+- **GameSettings**: 可序列化类，存储游戏设置（用户自定义）
 - **PlayerDataInfo**: 存档元信息（时间、注释等）
+
+**Inspector功能**:
+- 运行时通过反射动态显示和编辑 `PlayerData` 和 `GameSettings` 的所有字段
+- 支持基础类型（int、float、bool、string等）
+- 支持Unity类型（Vector2/3/4、Color等）
+- 支持枚举、列表、数组和自定义可序列化类
 
 **使用场景**:
 - RPG游戏存档系统
@@ -345,7 +356,7 @@ Framework.TimerComponent.RegisterAsyncTimer(float timeDelta, UnityAction action,
 
 ### 7. Resource Module（资源管理模块）
 
-**核心文件**: `ResourceComponent.cs`, `ResourceManager.cs`
+**核心文件**: `ResourceComponent.cs`, `ResourceManager.cs`, `ResourceRefInfo.cs`, `AsyncLoadOperation.cs`
 
 **功能特性**:
 - 同步/异步加载Resources资源
@@ -354,6 +365,14 @@ Framework.TimerComponent.RegisterAsyncTimer(float timeDelta, UnityAction action,
 - 资源卸载管理
 - 加载进度追踪
 - Addressable资源句柄管理
+- **统一资源缓存系统**（支持Resources和Addressables）
+- **资源引用计数系统**（Phase 1 新增）
+- **完善的错误处理**（Phase 1 新增）
+- **加载状态管理**（支持Idle/Loading/Completed/Failed）
+- **异步操作追踪系统**（Phase 1.5 新增）
+- **完整的资源生命周期事件**（Phase 1.5 新增）
+- **同步加载性能警告**（Phase 1.5 新增）
+- **增强的Inspector调试功能**（Phase 2 新增）
 
 #### Resources加载API
 
@@ -361,28 +380,17 @@ Framework.TimerComponent.RegisterAsyncTimer(float timeDelta, UnityAction action,
 
 ```csharp
 Framework.ResourceComponent.LoadRes<T>(string path, bool instantiate)
-Framework.ResourceComponent.LoadAsync<T>(string path, UnityAction<T> callback, bool instantiate)
+Framework.ResourceComponent.LoadResAsync<T>(string path, UnityAction<T> callback, bool instantiate)
 Framework.ResourceComponent.LoadAllRes<T>(string path)
-Framework.ResourceComponent.Unload(UnityEngine.Object obj)
-Framework.ResourceComponent.UnloadUnused()
-```
-
-**使用示例**:
-```csharp
-GameObject prefab = Framework.ResourceComponent.LoadRes<GameObject>("Prefabs/Player");
-GameObject instance = Framework.ResourceComponent.LoadRes<GameObject>("Prefabs/Enemy", true);
-Sprite[] sprites = Framework.ResourceComponent.LoadAllRes<Sprite>("Sprites/UI");
-
-Framework.ResourceComponent.LoadAsync<AudioClip>("Audio/BGM", (clip) => 
-{
-    if (clip != null) Debug.Log($"Loaded: {clip.name}");
-});
+Framework.ResourceComponent.UnloadRes(UnityEngine.Object obj)
+Framework.ResourceComponent.UnloadUnusedRes()
 ```
 
 #### Addressables加载API
 
 用于加载通过Addressables系统管理的资源：
 
+**单个资源加载**:
 ```csharp
 Framework.ResourceComponent.LoadAddressable<T>(string address, bool instantiate)
 Framework.ResourceComponent.LoadAddressableAsync<T>(string address, UnityAction<T> callback, bool instantiate)
@@ -393,25 +401,154 @@ Framework.ResourceComponent.ReleaseAddressableInstance(GameObject instance)
 Framework.ResourceComponent.ReleaseAllAddressableHandles()
 ```
 
-**使用示例**:
+**批量加载API** (Phase 3 新增):
 ```csharp
-GameObject prefab = Framework.ResourceComponent.LoadAddressable<GameObject>("Player");
+// 按标签批量加载（如加载所有标记为"Characters"的预制体）
+AsyncOperationHandle<IList<GameObject>> handle = Framework.ResourceComponent.LoadAddressablesByLabel<GameObject>(
+    "Characters",
+    onEachLoaded: character => Debug.Log($"Loaded: {character.name}"),
+    onCompleted: result => Debug.Log($"Total loaded: {result.SuccessCount}")
+);
 
-var handle = Framework.ResourceComponent.LoadAddressableAsync<AudioClip>("BGM_Main", (clip) => 
+// 按多个标签批量加载（支持Union/Intersection/UseFirst模式）
+var keys = new List<object> { "Characters", "Enemies" };
+Framework.ResourceComponent.LoadAddressablesBatch<GameObject>(
+    keys,
+    Addressables.MergeMode.Union,  // 加载匹配任一标签的资源
+    onEachLoaded: obj => Instantiate(obj),
+    onCompleted: result => {
+        Debug.Log($"成功: {result.SuccessCount}, 失败: {result.FailedCount}");
+        Debug.Log($"总资源数: {result.Assets.Count}");
+    }
+);
+
+// 按地址列表批量加载（可关联地址和资源）
+var addresses = new List<string> { "Player", "Enemy1", "Enemy2" };
+Framework.ResourceComponent.LoadAddressablesByAddresses<GameObject>(
+    addresses,
+    onEachLoaded: (address, obj) => Debug.Log($"{address} -> {obj.name}"),
+    onCompleted: result => {
+        // result.AssetDictionary 包含地址到资源的映射
+        if (result.AssetDictionary.TryGetValue("Player", out var player))
+        {
+            Instantiate(player);
+        }
+    }
+);
+```
+
+**批量加载结果 (BatchLoadResult)**:
+```csharp
+public class BatchLoadResult<T>
 {
-    if (clip != null) Debug.Log($"Loaded: {clip.name}");
-});
+    public List<T> Assets;                      // 所有成功加载的资源列表
+    public List<string> Addresses;              // 对应的地址列表
+    public Dictionary<string, T> AssetDictionary;  // 地址到资源的映射
+    public int SuccessCount;                    // 成功加载的数量
+    public int FailedCount;                     // 失败的数量
+    public List<string> FailedAddresses;        // 失败的地址列表
+}
+```
 
-var instanceHandle = Framework.ResourceComponent.InstantiateAddressable("Enemy", transform);
+#### 统一资源管理API
 
-Framework.ResourceComponent.ReleaseAddressableHandle(handle);
+```csharp
+// 统计信息
+int count = Framework.ResourceComponent.GetLoadedAssetCount();
+long memory = Framework.ResourceComponent.GetTotalMemorySize();
+Dictionary<string, ResourceRefInfo> all = Framework.ResourceComponent.GetAllLoadedAssets();
+Dictionary<string, ResourceRefInfo> resources = Framework.ResourceComponent.GetResourcesByType(ResourceSourceType.Resources);
+Dictionary<string, ResourceRefInfo> addressables = Framework.ResourceComponent.GetResourcesByType(ResourceSourceType.Addressables);
+
+// 异步操作追踪
+int activeCount = Framework.ResourceComponent.GetActiveOperationCount();
+Dictionary<string, AsyncLoadOperation> ops = Framework.ResourceComponent.GetAllActiveOperations();
+
+// 释放资源（支持Resources和Addressables）
+Framework.ResourceComponent.ReleaseResource(string address);
+```
+
+#### 加载状态和错误处理
+
+```csharp
+LoadState state = Framework.ResourceComponent.State;
+float progress = Framework.ResourceComponent.Progress;
+string error = Framework.ResourceComponent.LastError;
+
+// 监听加载失败
+Framework.EventComponent.AddEventListener<string>(FrameworkEvent.OnLoadAssetFailed, 
+    address => Debug.LogError($"加载失败: {address}"));
+```
+
+#### 完整的资源生命周期事件
+
+```csharp
+// 加载开始
+Framework.EventComponent.AddEventListener<string>(FrameworkEvent.OnLoadAssetStart, 
+    address => Debug.Log($"开始加载: {address}"));
+
+// 加载进度更新
+Framework.EventComponent.AddEventListener<string, float>(FrameworkEvent.OnLoadAssetProgress, 
+    (address, progress) => Debug.Log($"加载进度 {address}: {progress * 100}%"));
+
+// 加载成功
+Framework.EventComponent.AddEventListener<string>(FrameworkEvent.OnLoadAssetSucceeded, 
+    address => Debug.Log($"加载成功: {address}"));
+
+// 加载失败
+Framework.EventComponent.AddEventListener<string>(FrameworkEvent.OnLoadAssetFailed, 
+    address => Debug.LogError($"加载失败: {address}"));
+
+// 资源释放
+Framework.EventComponent.AddEventListener<string>(FrameworkEvent.OnReleaseAsset, 
+    address => Debug.Log($"资源已释放: {address}"));
 ```
 
 **重要说明**:
-- **Resources加载**: 适用于小型项目或原型开发，资源打包在应用中，无法动态更新
-- **Addressables加载**: 适用于大型项目，支持资源热更新、按需加载、远程资源等高级功能
-- 使用Addressables时，记得在不需要资源时调用Release方法释放资源，避免内存泄漏
-- 框架会在ShutDown时自动释放所有未释放的Addressable句柄
+- **统一缓存**: Resources和Addressables资源都使用统一的缓存系统进行管理
+- **引用计数**: 同一资源多次加载时会自动使用缓存，只在引用计数归零时释放
+- **自动追踪**: 所有加载的资源都会被追踪，包括类型、来源、内存占用等信息
+- **性能警告**: `LoadAddressable`同步方法会阻塞主线程并输出警告，推荐使用异步方法
+- 框架会在ShutDown时自动释放所有未释放的资源
+
+**Phase 1 改进**:
+- ✅ 实现资源引用计数，避免重复加载和过早释放
+- ✅ 添加Addressables资源缓存机制，提升性能
+- ✅ 完善异步加载错误处理，支持Failed状态
+- ✅ 新增资源加载失败事件（OnLoadAssetFailed）
+- ✅ 新增资源释放事件（OnReleaseAsset）
+- ✅ Inspector面板增强，显示引用计数和缓存信息
+
+**Phase 1.5 改进**:
+- ✅ 实现异步操作状态追踪（AsyncLoadOperation类）
+- ✅ 添加完整的资源生命周期事件（Start/Progress/Succeeded/Failed/Release）
+- ✅ 同步加载性能警告（LogWarning提示性能问题）
+- ✅ Inspector显示活动异步操作列表（地址、状态、进度、耗时）
+- ✅ 自动更新异步操作进度并触发进度事件
+
+**Phase 2 改进**:
+- ✅ Resources资源缓存支持（统一缓存机制）
+- ✅ Resources资源引用计数管理
+- ✅ 资源来源类型标识（Resources/Addressables）
+- ✅ 资源类型信息追踪
+- ✅ 内存占用统计（实时计算资源内存大小）
+- ✅ Inspector高级过滤功能（来源类型、搜索）
+- ✅ Inspector排序功能（名称、引用计数、加载时间、内存大小、类型）
+- ✅ Inspector单个资源释放按钮
+- ✅ 分类批量释放（Resources/Addressables）
+- ✅ 资源详细信息显示（来源、类型、引用、时间、内存）
+
+**Phase 3 改进**:
+- ✅ Addressables批量加载API（按标签）
+- ✅ Addressables批量加载API（按多个键/标签）
+- ✅ Addressables批量加载API（按地址列表）
+- ✅ 批量加载进度追踪和回调
+- ✅ 批量加载结果详细信息（成功/失败统计）
+- ✅ 批量加载资源自动缓存和引用计数
+- ✅ 批量加载地址到资源的映射（AssetDictionary）
+- ✅ 支持多种合并模式（Union/Intersection/UseFirst）
+- ✅ 批量加载异步操作追踪（Inspector显示）
+- ✅ 批量加载生命周期事件触发
 
 **使用场景**:
 - 预制体加载
@@ -420,6 +557,9 @@ Framework.ResourceComponent.ReleaseAddressableHandle(handle);
 - 纹理和材质加载
 - 远程资源下载（Addressables）
 - 资源热更新（Addressables）
+- **批量资源预加载**（Phase 3 新增）
+- **按标签批量加载关卡资源**（Phase 3 新增）
+- **批量加载角色/敌人预制体**（Phase 3 新增）
 
 ---
 
@@ -548,7 +688,77 @@ Utilities.ScenePathToName(string scenePath)
 
 **位置**: `/Editor/Window/SettingsWindow.cs`
 
-提供框架全局设置的编辑器窗口
+**功能**: 提供框架全局设置的编辑器窗口
+
+**特性**:
+- 支持切换和编辑不同的FrameworkSettings资产
+- 实时同步检测：显示当前编辑的设置是否与MainComponent中的设置一致
+- 快速同步功能：一键将当前设置同步到MainComponent
+- 快速切换功能：一键切换到MainComponent正在使用的设置
+- 编辑器设置：配置进入Play模式的方式、GameFramework场景路径
+- 框架设置编辑：直接编辑FrameworkSettings ScriptableObject资源，包括：
+  - 日志等级（Debug Type）
+  - 框架内部事件触发设置
+  - 初始场景加载配置
+  - 模块启用列表和优先级（默认启用Scene、Event、Timer、Resource、ObjectPool、FSM、Save、UI）
+- 独立于场景的配置管理，不依赖MainComponent
+- 自动保存设置到ScriptableObject资源文件
+- 提供快速定位设置资源的功能
+- 实时验证功能：
+  - 检测模块列表中的重复组件
+  - 检测Internal Event Trigger启用但Event模块未启用的情况
+  - 检测设置了初始场景但Scene模块未启用的情况
+- Logo和文档快速链接
+
+**使用方法**: 
+- 通过菜单 `Tools > StarryFramework > Settings Panel` 打开设置窗口
+- 通过菜单 `Tools > StarryFramework > Create Settings Asset` 创建设置资源
+- 通过菜单 `Tools > StarryFramework > Select Settings Asset` 快速选择设置资源
+- 在Settings Panel中拖拽不同的FrameworkSettings文件到"Settings Asset"字段即可切换编辑
+
+### 框架设置（FrameworkSettings）
+
+**位置**: `/Runtime/Framework/Base/FrameworkSettings.cs`
+
+**类型**: ScriptableObject
+
+**存储位置**: `Assets/StarryFramework/Resources/FrameworkSettings.asset`
+
+**访问方式**:
+- 静态单例：`FrameworkSettings.Instance` - 全局唯一的框架设置
+- 运行时和编辑器：框架始终使用`FrameworkSettings.Instance`
+- 编辑器切换：在MainComponent Inspector或Settings Panel中拖拽新的FrameworkSettings文件即可全局切换
+
+**自动同步机制**:
+- MainComponent Inspector和Settings Panel共享同一个`FrameworkSettings.Instance`
+- 在任意一处切换或修改设置，所有地方自动同步
+- 无需手动同步或担心配置不一致的问题
+- 切换后立即在所有编辑器窗口和运行时生效
+
+**配置项**:
+- **编辑器设置**: Enter PlayMode Way、GameFramework场景路径
+- **日志等级**: Debug Type（Normal/Warning/Error/None）
+- **内部事件触发**: 是否将框架内部事件同时触发为外部事件
+- **初始场景加载**: 启动时加载的场景和是否启用加载动画
+- **模块列表**: 启用的模块及其优先级顺序
+
+**默认模块配置**:
+创建新的FrameworkSettings时，默认启用以下模块（按优先级排序）：
+1. Scene（场景管理）
+2. Event（事件系统）
+3. Timer（计时器）
+4. Resource（资源管理）
+5. ObjectPool（对象池）
+6. FSM（有限状态机）
+7. Save（存档系统）
+8. UI（UI管理）
+
+**优势**:
+- 独立于场景，不会因场景变化而丢失
+- 支持版本控制和团队协作
+- 可创建多套配置用于不同环境
+- 全局访问，运行时和编辑器均可使用
+- 包含编辑器设置，统一管理所有框架配置
 
 ### 编辑器逻辑
 
@@ -673,6 +883,7 @@ public static class GameEvents
 - **TestSave**: 存档系统测试
 - **TestFSM**: 状态机测试
 - **TestObjectPool**: 对象池测试
+- **TestResource**: 资源加载测试
 - **TestTimer**: 计时器测试
 - **TestScene**: 场景管理测试
 - **TestUI**: UI系统测试
@@ -745,6 +956,49 @@ Player:
 ---
 
 ## 版本历史
+
+### 最新更新 (2024年12月)
+
+#### FrameworkSettings 自动同步架构重构 ⭐
+
+**核心架构改进**
+- ✅ **统一全局设置**：移除MainComponent的frameworkSettings序列化字段
+- ✅ **真正的自动同步**：MainComponent和Settings Panel都直接操作`FrameworkSettings.Instance`
+- ✅ **零配置同步**：无需手动同步，天然保证一致性
+- ✅ **实时响应**：Settings Panel在获得焦点时自动刷新，确保显示最新设置
+
+**MainComponent Inspector优化**
+- ✅ 直接显示和编辑`FrameworkSettings.Instance`
+- ✅ 支持拖拽切换全局FrameworkSettings
+- ✅ 自动更新Instance缓存
+- ✅ 提供"在Settings Panel中编辑"快捷按钮
+- ✅ 显示当前使用的设置文件路径和同步提示
+
+**FrameworkSettings核心功能**
+- ✅ `SetInstance()`方法：手动更新全局Instance
+- ✅ `ClearCache()`方法：清除Instance缓存
+- ✅ 全局单例模式：确保整个项目使用同一配置
+
+**SettingsWindow功能增强**
+- ✅ 支持拖拽切换FrameworkSettings
+- ✅ `OnFocus()`自动刷新：切换窗口时自动同步到最新Instance
+- ✅ 移除冗余的同步检测逻辑（不再需要）
+- ✅ 简化UI，突出全局设置概念
+- ✅ 添加清晰的同步说明提示
+
+**用户体验提升**
+- ✅ 在MainComponent或Settings Panel任意一处更改设置，另一处自动同步
+- ✅ 切换FrameworkSettings文件后，所有面板立即更新
+- ✅ 不再需要担心"设置不同步"的问题
+- ✅ 彩色日志反馈，清晰提示操作结果
+
+**Bug修复**
+- 🐛 修复了MainComponent和Settings Panel设置不同步的问题
+- 🐛 修复了拖拽新设置文件后需要手动同步的问题
+- 🐛 修复了多面板编辑时可能出现的配置冲突
+- 🐛 简化了配置管理流程，降低用户操作复杂度
+
+### 历史版本
 
 当前使用版本的主要特性：
 - MOM架构，模块化设计

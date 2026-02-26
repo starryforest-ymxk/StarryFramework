@@ -5,7 +5,7 @@ using StarryFramework;
 
 public class TestObject : GameObjectBase
 {
-    [FoldOutGroup("¶ÔÏó³ØÊôĞÔ")]
+    [FoldOutGroup("å¯¹è±¡æ± å±æ€§")]
     public bool UseObjectPool;
     private void Update()
     {

@@ -1,8 +1,9 @@
-using System.Collections.Generic;
-using UnityEngine;
+using System;
 using System.IO;
 using System.Linq;
-using System;
+using System.Collections.Generic;
+using UnityEngine;
+using Newtonsoft.Json;
 
 namespace StarryFramework
 {
@@ -11,17 +12,17 @@ namespace StarryFramework
 
         private SaveSettings settings;
 
-        //µ±Ç°ÓÎÏ·Ä¬ÈÏ¼ÓÔØµÄ´æµµ±àºÅ£¬ÓÃÓÚ×Ô¶¯´æµµÒÔ¼°¿ìËÙ´æµµ
-        //Ö»ÓĞÓÎÏ·¿ªÊ¼Ç°ÆäÊıÖµ²»Îª-1£¬¡°¼ÌĞøÓÎÏ·¡±°´Å¥²Å»áÉúĞ§
+        // å½“å‰æ¸¸æˆé»˜è®¤åŠ è½½çš„å­˜æ¡£ç¼–å·ï¼Œç”¨äºè‡ªåŠ¨å­˜æ¡£ä»¥åŠå¿«é€Ÿå­˜æ¡£
+        // åªåœ¨æ¸¸æˆå¼€å§‹å‰ç½®åˆå€¼ä¸º-1ï¼Œåœ¨ç‚¹å‡»ç»§ç»­æ¸¸æˆæŒ‰é’®æ‰ä¼šæœ‰æ•ˆ
         private int defaultDataIndex = -1;
-        //µ±Ç°ÓÎÏ·ÒÑ¼ÓÔØ´æµµ±àºÅ
+        // å½“å‰æ¸¸æˆå·²åŠ è½½å­˜æ¡£ç¼–å·
         private int currentLoadedDataIndex = -1;
 
         private float autoSaveDataInterval;
 
         private float lastAutoSaveTime;
 
-        //ÆôÍ£×Ô¶¯´æµµ±êÖ¾Î»
+        // å¯åœè‡ªåŠ¨å­˜æ¡£æ ‡å¿—ä½
         private bool startAutoSave;
 
         private string autoSaveInfo = "";
@@ -31,6 +32,11 @@ namespace StarryFramework
         private PlayerData playerData;
 
         private GameSettings gameSettings;
+
+        private static readonly JsonSerializerSettings deserializeSettings = new JsonSerializerSettings
+        {
+            ObjectCreationHandling = ObjectCreationHandling.Replace
+        };
 
 
 
@@ -43,9 +49,11 @@ namespace StarryFramework
         internal List<string> SaveInfoList => saveInfoList;
         internal PlayerData PlayerData => playerData;
         internal GameSettings GameSettings => gameSettings;
+        internal bool PlayerDataLoaded => playerData != null;
+        internal bool GameSettingsLoaded => gameSettings != null;
 
 
-        //Ä¿Ç°È«²¿µÄ´æµµĞÅÏ¢´Êµä
+        // ç›®å‰å…¨éƒ¨çš„å­˜æ¡£ä¿¡æ¯å­—å…¸
 
         internal Dictionary<int, PlayerDataInfo> infoDic = new Dictionary<int, PlayerDataInfo>();
 
@@ -91,7 +99,7 @@ namespace StarryFramework
             this.settings = settings as SaveSettings;
         }
 
-        #region ÄÚ²¿²Ù×÷
+        #region å†…éƒ¨æ–¹æ³•
 
         private void SetInfoList(List<string> infos)
         {
@@ -108,7 +116,7 @@ namespace StarryFramework
             }
         }
 
-        #region ´æµµĞÅÏ¢¹ÜÀí
+        #region å­˜æ¡£ä¿¡æ¯ç®¡ç†
 
         private void InitInfoDic()
         {
@@ -121,12 +129,12 @@ namespace StarryFramework
                 try
                 {
                     string js = File.ReadAllText(filePath, System.Text.Encoding.UTF8);
-                    PlayerDataInfo info = JsonUtility.FromJson<PlayerDataInfo>(js);
+                    PlayerDataInfo info = JsonConvert.DeserializeObject<PlayerDataInfo>(js, deserializeSettings);
                     infoDic.Add(info.index, info);
                 }
                 catch
                 {
-                    FrameworkManager.Debugger.LogWarning("´æµµĞÅÏ¢Ëğ»µ");
+                    FrameworkManager.Debugger.LogWarning("å­˜æ¡£ä¿¡æ¯æŸå");
                     File.Move(filePath, Path.Combine(Application.dataPath, "SaveData", $"Corrupted{Path.GetFileName(filePath)}"));
                     File.Delete(filePath);
                     string metaFilePath = filePath + ".meta";
@@ -144,7 +152,7 @@ namespace StarryFramework
         {
             if (infoDic == null)
             {
-                FrameworkManager.Debugger.LogError("Info×ÖµäÉĞÎ´³õÊ¼»¯");
+                FrameworkManager.Debugger.LogError("Infoå­—å…¸å°šæœªåˆå§‹åŒ–");
                 return null;
             }
             if (infoDic.ContainsKey(index))
@@ -163,7 +171,7 @@ namespace StarryFramework
         {
             if (infoDic == null)
             {
-                FrameworkManager.Debugger.LogError("Info×ÖµäÉĞÎ´³õÊ¼»¯");
+                FrameworkManager.Debugger.LogError("Infoå­—å…¸å°šæœªåˆå§‹åŒ–");
                 return null;
             }
             if (infoDic.TryGetValue(index, out var info))
@@ -172,52 +180,52 @@ namespace StarryFramework
             }
             else
             {
-                FrameworkManager.Debugger.LogError("´æµµĞÅÏ¢²»´æÔÚ");
+                FrameworkManager.Debugger.LogError("å­˜æ¡£ä¿¡æ¯ä¸å­˜åœ¨");
                 return null;
             }
         }
 
         #endregion
 
-        #region ÓÎÏ·´æµµ±àºÅ¹ÜÀí
+        #region æ¸¸æˆå­˜æ¡£ç¼–å·ç®¡ç†
 
         /// <summary>
-        /// [ÉèÖÃµ±Ç°ÒÑ¼ÓÔØµÄÓÎÏ·±àºÅ]
-        /// Ö»ÓĞÈıÖÖÇé¿öÏÂ»á·¢Éú¸Ä±ä£º
-        /// 1 ´´½¨ĞÂÓÎÏ·Ê±£¬´Ë±àºÅ±äÎªĞÂÓÎÏ·µÄ´æµµ±àºÅ
-        /// 2 ¼ÓÔØ´æµµÊ±£¬´Ë±àºÅ±äÎªÒÑ¼ÓÔØµÄ´æµµ±àºÅ
-        /// 3 Ğ¶ÔØµ±Ç°´æµµÊ±£¬´Ë±àºÅÖØÖÃÎª-1
+        /// [è®¾ç½®å½“å‰å·²åŠ è½½çš„æ¸¸æˆç¼–å·]
+        /// åªåœ¨å¦‚ä¸‹æƒ…å†µä¸‹ä¼šå‘ç”Ÿæ”¹å˜ï¼š
+        /// 1 å¼€å¯æ–°æ¸¸æˆæ—¶ï¼Œå˜é‡è¢«è®¾ç½®ä¸ºæ–°æ¸¸æˆçš„å­˜æ¡£ç¼–å·
+        /// 2 åŠ è½½å­˜æ¡£æ—¶ï¼Œå˜é‡è¢«è®¾ç½®ä¸ºå·²åŠ è½½çš„å­˜æ¡£ç¼–å·
+        /// 3 å¸è½½å½“å‰å­˜æ¡£æ—¶ï¼Œå˜é‡è¢«é‡ç½®ä¸º-1
         /// </summary>
         private void SetCurrentLoadedDataIndex(int index)
         {
             if (index < -1 || index >= 1000)
             {
-                FrameworkManager.Debugger.LogError("´æµµ±àºÅ³¬³ö·¶Î§");
+                FrameworkManager.Debugger.LogError("å­˜æ¡£ç¼–å·è¶…å‡ºèŒƒå›´");
             }
             else
                 currentLoadedDataIndex = index;
         }
 
         /// <summary>
-        /// [ÉèÖÃÄ¬ÈÏ¼ÓÔØµÄÓÎÏ·±àºÅ]
-        /// Ö»ÓĞËÄÖÖÇé¿öÏÂ»á·¢Éú¸Ä±ä£º
-        /// 1 ´ò¿ªÓÎÏ·Ê±£¬ÏµÍ³¶ÁÈ¡ÉÏ´ÎµÄÓÎÏ·±àºÅ
-        /// 2 ´´½¨ĞÂÓÎÏ·Ê±£¬´Ë±àºÅ±äÎªĞÂÓÎÏ·µÄ´æµµ±àºÅ
-        /// 3 °´ÕÕĞòºÅ¼ÓÔØ´æµµÊ±£¬´Ë±àºÅ±äÎª¼ÓÔØµÄ´æµµ±àºÅ
-        /// 4 É¾³ıÄ¬ÈÏ´æµµÊ±£¬´Ë±àºÅÖØÖÃÎª-1
+        /// [è®¾ç½®é»˜è®¤åŠ è½½çš„æ¸¸æˆç¼–å·]
+        /// åªåœ¨å¦‚ä¸‹æƒ…å†µä¸‹ä¼šå‘ç”Ÿæ”¹å˜ï¼š
+        /// 1 å¯åŠ¨æ¸¸æˆæ—¶ï¼Œç³»ç»Ÿè¯»å–ä¸Šæ¬¡çš„æ¸¸æˆç¼–å·
+        /// 2 å¼€å¯æ–°æ¸¸æˆæ—¶ï¼Œå˜é‡è¢«è®¾ç½®ä¸ºæ–°æ¸¸æˆçš„å­˜æ¡£ç¼–å·
+        /// 3 æ‰‹åŠ¨åŠ è½½å­˜æ¡£æ—¶ï¼Œå˜é‡è¢«è®¾ç½®ä¸ºåŠ è½½çš„å­˜æ¡£ç¼–å·
+        /// 4 åˆ é™¤é»˜è®¤å­˜æ¡£æ—¶ï¼Œå˜é‡è¢«é‡ç½®ä¸º-1
         /// </summary>
         private void SetDefaultDataIndex(int index)
         {
             if(index < -1 || index >= 1000)
             {
-                FrameworkManager.Debugger.LogError("´æµµ±àºÅ³¬³ö·¶Î§");
+                FrameworkManager.Debugger.LogError("å­˜æ¡£ç¼–å·è¶…å‡ºèŒƒå›´");
             }
             else
                 defaultDataIndex= index;
         }
         private void InitCurrentDataIndex()
         {
-            //´ò¿ªÓÎÏ·Ê±£¬ÏµÍ³¶ÁÈ¡ÉÏ´ÎµÄÓÎÏ·±àºÅ
+            // å¯åŠ¨æ¸¸æˆæ—¶ï¼Œç³»ç»Ÿè¯»å–ä¸Šæ¬¡çš„æ¸¸æˆç¼–å·
             defaultDataIndex = PlayerPrefs.GetInt("DefaultDataIndex", -1);
         }
         private void SaveCurrentDataIndex()
@@ -227,9 +235,9 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// »ñÈ¡ĞÂµÄ´æµµ±àºÅ£¬³É¹¦·µ»Ø0-999£¬Ê§°Ü·µ»Ø-1
+        /// è·å–æ–°çš„å­˜æ¡£ç¼–å·ï¼ŒæˆåŠŸè¿”å›0-999ï¼Œå¤±è´¥è¿”å›-1
         /// </summary>
-        /// <returns>·µ»ØµÄ±àºÅ</returns>
+        /// <returns>è¿”å›çš„ç¼–å·</returns>
         private int GetNewSaveIndex()
         {
             for (int i = 0; i < 1000; i++)
@@ -239,7 +247,7 @@ namespace StarryFramework
                     return i;
                 }
             }
-            FrameworkManager.Debugger.LogError("´æµµÈİÁ¿ÒÑÂú");
+            FrameworkManager.Debugger.LogError("å­˜æ¡£ç¼–å·å·²æ»¡");
             return -1;
         }
 
@@ -247,12 +255,12 @@ namespace StarryFramework
 
         #endregion
 
-        #region ×Ô¶¯´æµµ¼ÆÊ±Æ÷ÆôÍ£
+        #region è‡ªåŠ¨å­˜æ¡£è®¡æ—¶å¯åœ
         internal void StartAutoSaveTimer()
         {
             if(currentLoadedDataIndex == -1)
             {
-                FrameworkManager.Debugger.LogError("´æµµÎ´¼ÓÔØ");
+                FrameworkManager.Debugger.LogError("å­˜æ¡£æœªåŠ è½½");
                 return;
             }
 
@@ -267,26 +275,26 @@ namespace StarryFramework
 
         #endregion
 
-        #region ´æµµ²Ù×÷
+        #region å­˜æ¡£æ“ä½œ
 
         /// <summary>
-        /// ´´½¨ĞÂ´æµµ
+        /// åˆ›å»ºæ–°å­˜æ¡£
         /// </summary>
-        /// <param name="isNewGame">ÊÇ·ñÊÇĞÂÓÎÏ·</param>
-        /// <param name="note">´æµµĞÅÏ¢</param>
+        /// <param name="isNewGame">æ˜¯å¦æ˜¯æ–°æ¸¸æˆ</param>
+        /// <param name="note">å­˜æ¡£ä¿¡æ¯</param>
         internal void CreateNewData(bool isNewGame, string note = "")
         {
 
             int newIndex = GetNewSaveIndex();
             if(newIndex==-1)
             {
-                FrameworkManager.Debugger.LogError("´´½¨ĞÂ´æµµÊ§°Ü");
+                FrameworkManager.Debugger.LogError("åˆ›å»ºæ–°å­˜æ¡£å¤±è´¥");
                 return;
             }
             if(isNewGame)
             {
-                playerData = ScriptableObject.CreateInstance<PlayerData>();
-                SetDefaultDataIndex(newIndex); //´´½¨ĞÂÓÎÏ·Ê±£¬´Ë±àºÅ±äÎªĞÂÓÎÏ·µÄ´æµµ±àºÅ
+                playerData = new PlayerData();
+                SetDefaultDataIndex(newIndex);
                 SetCurrentLoadedDataIndex(newIndex);
                 autoSaveInfo = saveInfoList.Count > 0 ? saveInfoList[0] : "";
             }
@@ -294,8 +302,8 @@ namespace StarryFramework
             Directory.CreateDirectory(Path.Combine(Application.dataPath, "SaveData"));
             var dataPath = Path.Combine(Application.dataPath, "SaveData", $"SaveData{newIndex:000}.save");
             var infoPath = Path.Combine(Application.dataPath, "SaveData", $"SaveDataInfo{newIndex:000}.save");
-            var dataJs = JsonUtility.ToJson(playerData, true);
-            var infoJs = JsonUtility.ToJson(note != "" ? UpdateInfo(newIndex, note) : UpdateInfo(newIndex, autoSaveInfo), true);
+            var dataJs = JsonConvert.SerializeObject(playerData, Formatting.Indented);
+            var infoJs = JsonConvert.SerializeObject(note != "" ? UpdateInfo(newIndex, note) : UpdateInfo(newIndex, autoSaveInfo), Formatting.Indented);
             File.WriteAllText(dataPath, dataJs, System.Text.Encoding.UTF8);
             File.WriteAllText(infoPath, infoJs, System.Text.Encoding.UTF8);
             if (isNewGame)
@@ -307,59 +315,59 @@ namespace StarryFramework
                 FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.OnSaveData);
         }
         /// <summary>
-        /// ´¢´æ´æµµ,¿ìËÙ´æµµºÍ×Ô¶¯´æµµ
+        /// ä¿å­˜å­˜æ¡£ï¼Œå¿«é€Ÿå­˜æ¡£æˆ–è‡ªåŠ¨å­˜æ¡£
         /// </summary>
         internal void SaveData(string note = "")
         {
             if (currentLoadedDataIndex == -1)
             {
-                FrameworkManager.Debugger.LogError("´æµµÉĞÎ´¼ÓÔØ");
+                FrameworkManager.Debugger.LogError("å­˜æ¡£å°šæœªåŠ è½½");
                 return;
             }
             Directory.CreateDirectory(Path.Combine(Application.dataPath, "SaveData"));
             var dataPath = Path.Combine(Application.dataPath, "SaveData", $"SaveData{currentLoadedDataIndex:000}.save");
             var infoPath = Path.Combine(Application.dataPath, "SaveData", $"SaveDataInfo{currentLoadedDataIndex:000}.save");
-            var dataJs = JsonUtility.ToJson(playerData,true);
-            var infoJs = JsonUtility.ToJson(note != "" ? UpdateInfo(currentLoadedDataIndex, note) : UpdateInfo(currentLoadedDataIndex, autoSaveInfo), true);
+            var dataJs = JsonConvert.SerializeObject(playerData, Formatting.Indented);
+            var infoJs = JsonConvert.SerializeObject(note != "" ? UpdateInfo(currentLoadedDataIndex, note) : UpdateInfo(currentLoadedDataIndex, autoSaveInfo), Formatting.Indented);
             File.WriteAllText(dataPath, dataJs, System.Text.Encoding.UTF8);
             File.WriteAllText(infoPath, infoJs, System.Text.Encoding.UTF8);
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.OnSaveData);
         }
 
         /// <summary>
-        /// ´¢´æ´æµµµ½±àºÅi£¬ÊÖ¶¯Ñ¡Ôñ
+        /// ä¿å­˜å­˜æ¡£ï¼Œç¼–å·iï¼Œæ‰‹åŠ¨é€‰æ‹©
         /// </summary>
-        /// <param name="i">´¢´æ´æµµµÄ±àºÅ</param>
-        /// <param name="note">´æµµ×¢ÊÍ</param>
+        /// <param name="i">ä¿å­˜å­˜æ¡£çš„ç¼–å·</param>
+        /// <param name="note">å­˜æ¡£æ³¨é‡Š</param>
         internal void SaveData(int i, string note = "")
         {
             if (i >= 1000 || i < 0)
             {
-                FrameworkManager.Debugger.LogError("´æµµĞòºÅ²»ºÏ·¨(0-999)");
+                FrameworkManager.Debugger.LogError("å­˜æ¡£ç¼–å·ä¸åˆæ³•(0-999)");
                 return;
             }
             if (currentLoadedDataIndex == -1)
             {
-                FrameworkManager.Debugger.LogError("´æµµÉĞÎ´¼ÓÔØ");
+                FrameworkManager.Debugger.LogError("å­˜æ¡£å°šæœªåŠ è½½");
                 return;
             }
             Directory.CreateDirectory(Path.Combine(Application.dataPath, "SaveData"));
             var dataPath = Path.Combine(Application.dataPath, "SaveData", $"SaveData{i:000}.save");
             var infoPath = Path.Combine(Application.dataPath, "SaveData", $"SaveDataInfo{i:000}.save");
-            var dataJs = JsonUtility.ToJson(playerData,true);
-            var infoJs = JsonUtility.ToJson(note != "" ? UpdateInfo(i, note) : UpdateInfo(i, autoSaveInfo), true);
+            var dataJs = JsonConvert.SerializeObject(playerData, Formatting.Indented);
+            var infoJs = JsonConvert.SerializeObject(note != "" ? UpdateInfo(i, note) : UpdateInfo(i, autoSaveInfo), Formatting.Indented);
             File.WriteAllText(dataPath, dataJs, System.Text.Encoding.UTF8);
             File.WriteAllText(infoPath, infoJs, System.Text.Encoding.UTF8);
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.OnSaveData);
         }
         /// <summary>
-        /// ¶ÁÈ¡µ±Ç°´æµµ
+        /// è¯»å–å½“å‰å­˜æ¡£
         /// </summary>
         internal bool LoadData()
         {
             if(defaultDataIndex == -1)
             {
-                FrameworkManager.Debugger.LogError("µ±Ç°´æµµÒÑ±»É¾³ı");
+                FrameworkManager.Debugger.LogError("å½“å‰å­˜æ¡£å·²è¢«åˆ é™¤");
                 return false;
             }
             string dataPath = Path.Combine(Application.dataPath, "SaveData", $"SaveData{defaultDataIndex:000}.save");
@@ -368,13 +376,11 @@ namespace StarryFramework
             try
             {
                 var js = File.ReadAllText(dataPath, System.Text.Encoding.UTF8);
-                if(playerData == null)
-                    playerData = ScriptableObject.CreateInstance<PlayerData>();
-                JsonUtility.FromJsonOverwrite(js, playerData);
+                playerData = JsonConvert.DeserializeObject<PlayerData>(js, deserializeSettings);
             }
             catch
             {
-                FrameworkManager.Debugger.LogError("´æµµËğ»µ");
+                FrameworkManager.Debugger.LogError("å­˜æ¡£æŸå");
                 File.Move(dataPath, Path.Combine(Application.dataPath, "SaveData", $"CorruptedSaveData{defaultDataIndex:000}.save"));
                 File.Delete(dataPath);
                 if (File.Exists(dataMetaPath))
@@ -390,41 +396,39 @@ namespace StarryFramework
             return true;
         }
         /// <summary>
-        /// ¶ÁÈ¡µ±Ç°´æµµĞÅÏ¢
+        /// è¯»å–å½“å‰å­˜æ¡£ä¿¡æ¯
         /// </summary>
         internal PlayerDataInfo LoadDataInfo()
         {
             if (defaultDataIndex == -1)
             {
-                FrameworkManager.Debugger.LogError("µ±Ç°´æµµĞÅÏ¢ÒÑ±»É¾³ı");
+                FrameworkManager.Debugger.LogError("å½“å‰å­˜æ¡£ä¿¡æ¯å·²è¢«åˆ é™¤");
                 return null;
             }
             return GetInfo(defaultDataIndex);
         }
 
         /// <summary>
-        /// ÊÖ¶¯¶ÁÈ¡±àºÅÎªiµÄ´æµµ
+        /// æ‰‹åŠ¨è¯»å–ï¼Œç¼–å·ä¸ºiçš„å­˜æ¡£
         /// </summary>
-        /// <param name="i">´æµµ±àºÅ</param>
+        /// <param name="i">å­˜æ¡£ç¼–å·</param>
         internal bool LoadData(int i)
         {
             string dataPath = Path.Combine(Application.dataPath, "SaveData", $"SaveData{i:000}.save");
             string dataMetaPath = Path.Combine(Application.dataPath, "SaveData", $"SaveData{i:000}.save.meta");
             if (!Directory.Exists(Path.Combine(Application.dataPath, "SaveData")) || !File.Exists(dataPath))
             {
-                FrameworkManager.Debugger.LogError("´æµµ²»´æÔÚ");
+                FrameworkManager.Debugger.LogError("å­˜æ¡£ä¸å­˜åœ¨");
                 return false;
             }
             try
             {
                 string js = File.ReadAllText(dataPath, System.Text.Encoding.UTF8);
-                if(playerData == null)
-                    playerData = ScriptableObject.CreateInstance<PlayerData>();
-                JsonUtility.FromJsonOverwrite(js, playerData);
+                playerData = JsonConvert.DeserializeObject<PlayerData>(js, deserializeSettings);
             }
             catch
             {
-                FrameworkManager.Debugger.LogError("´æµµËğ»µ");
+                FrameworkManager.Debugger.LogError("å­˜æ¡£æŸå");
                 File.Move(dataPath, Path.Combine(Application.dataPath, "SaveData", $"CorruptedSaveData{i:000}.save"));
                 File.Delete(dataPath);
                 if (File.Exists(dataMetaPath))
@@ -434,28 +438,28 @@ namespace StarryFramework
                 }
                 return false;
             }
-            SetDefaultDataIndex(i);// ¶ÁÈ¡´æµµÊ±£¬´Ë±àºÅ±äÎª¶ÁÈ¡µÄ´æµµ±àºÅ
+            SetDefaultDataIndex(i);
             SetCurrentLoadedDataIndex(i);
             if (settings.AutoSave) StartAutoSaveTimer();
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.OnLoadData);
             return true;
         }
         /// <summary>
-        /// »ñÈ¡±àºÅÎªiµÄ´æµµĞÅÏ¢
+        /// è¯»å–ç¼–å·ä¸ºiçš„å­˜æ¡£ä¿¡æ¯
         /// </summary>
-        /// <returns>±àºÅÎªiµÄ´æµµĞÅÏ¢</returns>
+        /// <returns>ç¼–å·ä¸ºiçš„å­˜æ¡£ä¿¡æ¯</returns>
         internal PlayerDataInfo LoadDataInfo(int i)
         {
             return GetInfo(i);
         }
         /// <summary>
-        /// Ğ¶ÔØ´æµµ£¬ÔÚÍË³öÖ÷ÓÎÏ·Ê±µ÷ÓÃ
+        /// å¸è½½å­˜æ¡£ï¼Œåœ¨é€€å‡ºä¸»æ¸¸æˆæ—¶è°ƒç”¨
         /// </summary>
         internal bool UnloadData()
         {
             if(currentLoadedDataIndex == -1)
             {
-                FrameworkManager.Debugger.LogError("´æµµÎ´¼ÓÔØ");
+                FrameworkManager.Debugger.LogError("å­˜æ¡£æœªåŠ è½½");
                 return false;
             }
             else
@@ -470,14 +474,14 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// É¾³ı´æµµ(²»¿ÉÉ¾³ıµ±Ç°ÕıÔÚÔËĞĞµÄ´æµµ)
+        /// åˆ é™¤å­˜æ¡£(ç¦æ­¢åˆ é™¤å½“å‰æ­£åœ¨è¿è¡Œçš„å­˜æ¡£)
         /// </summary>
-        /// <param name="i">´ıÉ¾³ıµÄ´æµµ±àºÅ</param>
+        /// <param name="i">è¢«åˆ é™¤çš„å­˜æ¡£ç¼–å·</param>
         internal bool DeleteData(int i)
         {
             if(i == currentLoadedDataIndex)
             {
-                FrameworkManager.Debugger.LogError("½ûÖ¹É¾³ıµ±Ç°ÕıÔÚÔËĞĞµÄ´æµµ");
+                FrameworkManager.Debugger.LogError("ç¦æ­¢åˆ é™¤å½“å‰æ­£åœ¨è¿è¡Œçš„å­˜æ¡£");
                 return false;
             }
             string dataPath = Path.Combine(Application.dataPath, "SaveData", $"SaveData{i:000}.save");
@@ -486,7 +490,7 @@ namespace StarryFramework
             string infoMetaPath = Path.Combine(Application.dataPath, "SaveData", $"SaveDataInfo{i:000}.save.meta");
             if (!Directory.Exists(Path.Combine(Application.dataPath, "SaveData")) || !File.Exists(dataPath))
             {
-                FrameworkManager.Debugger.LogWarning("´ıÉ¾³ıµÄ´æµµ²»´æÔÚ");
+                FrameworkManager.Debugger.LogWarning("è¢«åˆ é™¤çš„å­˜æ¡£ä¸å­˜åœ¨");
                 if (File.Exists(infoPath))
                 {
                     File.Delete(infoPath);
@@ -517,14 +521,14 @@ namespace StarryFramework
 
         }
         /// <summary>
-        /// »ñÈ¡È«²¿´æµµĞÅÏ¢
+        /// è·å–å…¨éƒ¨å­˜æ¡£ä¿¡æ¯
         /// </summary>
         /// <returns></returns>
         internal List<PlayerDataInfo> GetDataInfos()
         {
             if(infoDic == null)
             {
-                FrameworkManager.Debugger.LogError("Info×ÖµäÉĞÎ´³õÊ¼»¯");
+                FrameworkManager.Debugger.LogError("Infoå­—å…¸å°šæœªåˆå§‹åŒ–");
                 return null;
             }
             else
@@ -535,42 +539,41 @@ namespace StarryFramework
 
         #endregion
 
-        #region ¶Á´æÉèÖÃÊı¾İ
+        #region æ¸¸æˆè®¾ç½®ç®¡ç†
         /// <summary>
-        /// ±£´æÉèÖÃÊı¾İ
+        /// ä¿å­˜æ¸¸æˆè®¾ç½®
         /// </summary>
         private void SaveSetting()
         {
-            string json = JsonUtility.ToJson(gameSettings, true);
+            string json = JsonConvert.SerializeObject(gameSettings, Formatting.Indented);
             PlayerPrefs.SetString("Settings", json);
             PlayerPrefs.Save();
         }
         /// <summary>
-        /// ¶ÁÈ¡ÉèÖÃÊı¾İ
+        /// è¯»å–æ¸¸æˆè®¾ç½®
         /// </summary>
         private void LoadSetting()
         {
             string json = PlayerPrefs.GetString("Settings", String.Empty);
             if (json.Equals(string.Empty))
             {
-                gameSettings = ScriptableObject.CreateInstance<GameSettings>();
+                gameSettings = new GameSettings();
             }
             else
             {
-                gameSettings = ScriptableObject.CreateInstance<GameSettings>();
-                JsonUtility.FromJsonOverwrite(json, gameSettings);
+                gameSettings = JsonConvert.DeserializeObject<GameSettings>(json, deserializeSettings);
             }
             
         }
         #endregion
 
-        #region ÉèÖÃ´æµµ×¢ÊÍ
+        #region è®¾ç½®å­˜æ¡£æ³¨é‡Š
 
         /// <summary>
-        /// ÉèÖÃ´æµµ×¢ÊÍÎªiºÅ×¢ÊÍ
-        /// ´æµµ×¢ÊÍÎªÓë´æµµÒ»Í¬±£´æµÄĞÅÏ¢
+        /// è®¾ç½®å­˜æ¡£æ³¨é‡Šä¸ºiå·æ³¨é‡Š
+        /// å­˜æ¡£æ³¨é‡Šä¸ºä¸å­˜æ¡£ä¸€åŒä¿å­˜çš„ä¿¡æ¯
         /// </summary>
-        /// <param name="i">×¢ÊÍ±àºÅ</param>
+        /// <param name="i">æ³¨é‡Šç¼–å·</param>
         internal void SetSaveInfo(int i)
         {
             if (saveInfoList == null)
@@ -589,9 +592,9 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÉèÖÃ´æµµ×¢ÊÍÄÚÈİ
+        /// è®¾ç½®å­˜æ¡£æ³¨é‡Šå­—ç¬¦ä¸²
         /// </summary>
-        /// <param name="info">×¢ÊÍÄÚÈİ</param>
+        /// <param name="info">æ³¨é‡Šå­—ç¬¦ä¸²</param>
         internal void SetSaveInfo(string info)
         {
             if (string.IsNullOrEmpty(info))

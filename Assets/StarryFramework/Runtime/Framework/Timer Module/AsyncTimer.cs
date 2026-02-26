@@ -19,7 +19,7 @@ namespace StarryFramework
 
         internal AsyncTimer(float timeDelta, UnityAction action, bool repeat = false, string name = null)
         {
-            this._timer = new System.Timers.Timer(timeDelta * 1000);//×ª»»³ÉºÁÃë
+            this._timer = new System.Timers.Timer(timeDelta * 1000);//è½¬æ¢æˆæ¯«ç§’
             this._name = name;
             _timer.AutoReset = repeat;
             _timer.Elapsed += (s,e)=> 

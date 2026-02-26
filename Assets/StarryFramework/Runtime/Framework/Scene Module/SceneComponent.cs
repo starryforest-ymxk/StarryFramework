@@ -70,9 +70,9 @@ namespace StarryFramework
         #region Unload
 
         /// <summary>
-        /// Ğ¶ÔØµ±Ç°»î¶¯³¡¾°
+        /// å¸è½½å½“å‰æ´»åŠ¨åœºæ™¯
         /// </summary>
-        /// <param Name="callback">Ğ¶ÔØÍê³ÉÊ±µÄ»Øµ÷º¯Êı</param>
+        /// <param Name="callback">å¸è½½å®Œæˆæ—¶çš„å›è°ƒå‡½æ•°</param>
         public void UnloadScene(UnityAction callback = null)
         {
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.BeforeUnloadScene);
@@ -88,10 +88,10 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Í¨¹ıË÷ÒıĞ¶ÔØ³¡¾°
+        /// é€šè¿‡ç´¢å¼•å¸è½½åœºæ™¯
         /// </summary>
-        /// <param Name="sceneIndex">ÒÑ¼ÓÔØ³¡¾°µÄbuildIndex</param>
-        /// <param Name="callback">Ğ¶ÔØÍê³ÉÊ±µÄ»Øµ÷º¯Êı</param>
+        /// <param Name="sceneIndex">å·²åŠ è½½åœºæ™¯çš„buildIndex</param>
+        /// <param Name="callback">å¸è½½å®Œæˆæ—¶çš„å›è°ƒå‡½æ•°</param>
         public void UnloadScene(int sceneIndex, UnityAction callback = null, bool autoSetActiveSceneIfUnloadActiveScene = true)
         {
             bool setSceneActive = false;
@@ -116,10 +116,10 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Í¨¹ı³¡¾°Ãû³ÆĞ¶ÔØ³¡¾°
+        /// é€šè¿‡åœºæ™¯åç§°å¸è½½åœºæ™¯
         /// </summary>
-        /// <param Name="sceneName">´ıĞ¶ÔØ³¡¾°Ãû</param>
-        /// <param Name="callback">Ğ¶ÔØÍê³ÉÊ±µÄ»Øµ÷º¯Êı</param>
+        /// <param Name="sceneName">å¾…å¸è½½åœºæ™¯å</param>
+        /// <param Name="callback">å¸è½½å®Œæˆæ—¶çš„å›è°ƒå‡½æ•°</param>
         public void UnloadScene(string sceneName, UnityAction callback = null, bool autoSetActiveSceneIfUnloadActiveScene = true)
         {
             bool setSceneActive = false;
@@ -148,11 +148,11 @@ namespace StarryFramework
         #region Load
 
         /// <summary>
-        /// Í¨¹ıË÷Òı¼ÓÔØ³¡¾°
+        /// é€šè¿‡ç´¢å¼•åŠ è½½åœºæ™¯
         /// </summary>
-        /// <param Name="buildIndex">³¡¾°µÄbuildIndex</param>
-        /// <param Name="callback">¼ÓÔØÍê³ÉµÄ»Øµ÷</param>
-        /// <returns>¼ÓÔØ³¡¾°AsyncOperation</returns>
+        /// <param Name="buildIndex">åœºæ™¯çš„buildIndex</param>
+        /// <param Name="callback">åŠ è½½å®Œæˆçš„å›è°ƒ</param>
+        /// <returns>åŠ è½½åœºæ™¯AsyncOperation</returns>
         public AsyncOperation LoadScene(int buildIndex, UnityAction callback = null, bool setSceneToLoadActive = true)
         {
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.BeforeLoadScene);
@@ -171,11 +171,11 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Í¨¹ı³¡¾°Ãû³Æ¼ÓÔØ³¡¾°
+        /// é€šè¿‡åœºæ™¯åç§°åŠ è½½åœºæ™¯
         /// </summary>
-        /// <param Name="sceneName">³¡¾°Ãû³Æ</param>
-        /// <param Name="callback">¼ÓÔØÍê³ÉµÄ»Øµ÷</param>
-        /// <returns>¼ÓÔØ³¡¾°AsyncOperation</returns>
+        /// <param Name="sceneName">åœºæ™¯åç§°</param>
+        /// <param Name="callback">åŠ è½½å®Œæˆçš„å›è°ƒ</param>
+        /// <returns>åŠ è½½åœºæ™¯AsyncOperation</returns>
         public AsyncOperation LoadScene(string sceneName, UnityAction callback = null, bool setSceneToLoadActive = true)
         {
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.BeforeLoadScene);
@@ -198,12 +198,12 @@ namespace StarryFramework
         #region Change
 
         /// <summary>
-        /// Í¨¹ıË÷ÒıÇĞ»»³¡¾°
+        /// é€šè¿‡ç´¢å¼•åˆ‡æ¢åœºæ™¯
         /// </summary>
-        /// <param Name="to">Ä¿µÄ³¡¾°buildIndex</param>
-        /// <param Name="from">´ıĞ¶ÔØµÄ³¡¾°buildIndex£¬Èç¹ûÎª-1£¬ÔòĞ¶ÔØµ±Ç°¼¤»î³¡¾°</param>
-        /// <param Name="callback">ÇĞ»»³¡¾°Íê³ÉµÄ»Øµ÷</param>
-        /// <returns>¼ÓÔØ³¡¾°AsyncOperation</returns>
+        /// <param Name="to">ç›®çš„åœºæ™¯buildIndex</param>
+        /// <param Name="from">å¾…å¸è½½çš„åœºæ™¯buildIndexï¼Œå¦‚æœä¸º-1ï¼Œåˆ™å¸è½½å½“å‰æ¿€æ´»åœºæ™¯</param>
+        /// <param Name="callback">åˆ‡æ¢åœºæ™¯å®Œæˆçš„å›è°ƒ</param>
+        /// <returns>åŠ è½½åœºæ™¯AsyncOperation</returns>
         public AsyncOperation ChangeScene(int to, int from = -1, UnityAction callback = null)
         {
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.BeforeChangeScene);
@@ -218,12 +218,12 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// Í¨¹ı³¡¾°Ãû³ÆÇĞ»»³¡¾°
+        /// é€šè¿‡åœºæ™¯åç§°åˆ‡æ¢åœºæ™¯
         /// </summary>
-        /// <param Name="to">Ä¿µÄ³¡¾°Ãû³Æ</param>
-        /// <param Name="from">´ıĞ¶ÔØµÄ³¡¾°Ãû³Æ£¬Èç¹ûÁôÎª""£¬ÔòĞ¶ÔØµ±Ç°¼¤»î³¡¾°</param>
-        /// <param Name="callback">ÇĞ»»³¡¾°Íê³ÉµÄ»Øµ÷</param>
-        /// <returns>¼ÓÔØ³¡¾°AsyncOperation</returns>
+        /// <param Name="to">ç›®çš„åœºæ™¯åç§°</param>
+        /// <param Name="from">å¾…å¸è½½çš„åœºæ™¯åç§°ï¼Œå¦‚æœç•™ä¸º""ï¼Œåˆ™å¸è½½å½“å‰æ¿€æ´»åœºæ™¯</param>
+        /// <param Name="callback">åˆ‡æ¢åœºæ™¯å®Œæˆçš„å›è°ƒ</param>
+        /// <returns>åŠ è½½åœºæ™¯AsyncOperation</returns>
         public AsyncOperation ChangeScene(string to, string from = "" , UnityAction callback = null)
         {
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.BeforeChangeScene);
@@ -243,7 +243,7 @@ namespace StarryFramework
         #region LoadWithAnimation
 
         /// <summary>
-        /// ÒÔÄ¬ÈÏ¶¯»­¼ÓÔØ³¡¾°
+        /// ä»¥é»˜è®¤åŠ¨ç”»åŠ è½½åœºæ™¯
         /// </summary>
         /// <param Name="buildIndex"></param>
         /// <param Name="callback"></param>
@@ -278,7 +278,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÒÔÄ¬ÈÏ¶¯»­¼ÓÔØ³¡¾°
+        /// ä»¥é»˜è®¤åŠ¨ç”»åŠ è½½åœºæ™¯
         /// </summary>
         /// <param Name="_sceneName"></param>
         /// <param Name="callback"></param>
@@ -313,10 +313,10 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÒÔ½ø¶ÈÌõ¶¯»­¼ÓÔØ³¡¾°
+        /// ä»¥è¿›åº¦æ¡åŠ¨ç”»åŠ è½½åœºæ™¯
         /// </summary>
         /// <param Name="buildIndex"></param>
-        /// <param Name="_gameObject">½ø¶ÈÌõ¶¯»­ÎïÌå,ĞèÒªÓµÓĞ¼Ì³Ğ×ÔILoadProgressµÄ½Å±¾×é¼ş</param>
+        /// <param Name="_gameObject">è¿›åº¦æ¡åŠ¨ç”»ç‰©ä½“,éœ€è¦æ‹¥æœ‰ç»§æ‰¿è‡ªILoadProgressçš„è„šæœ¬ç»„ä»¶</param>
         /// <param Name="callback"></param>
         public void LoadSceneProgressBar(int buildIndex, GameObject _gameObject, UnityAction callback = null)
         {
@@ -340,10 +340,10 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÒÔ½ø¶ÈÌõ¶¯»­¼ÓÔØ³¡¾°
+        /// ä»¥è¿›åº¦æ¡åŠ¨ç”»åŠ è½½åœºæ™¯
         /// </summary>
         /// <param Name="buildIndex"></param>
-        /// <param Name="filepath">½ø¶ÈÌõ¶¯»­ÎïÌåµÄÂ·¾¶,ÎïÌåĞèÒªÓµÓĞ¼Ì³Ğ×ÔILoadProgressµÄ½Å±¾×é¼ş</param>
+        /// <param Name="filepath">è¿›åº¦æ¡åŠ¨ç”»ç‰©ä½“çš„è·¯å¾„,ç‰©ä½“éœ€è¦æ‹¥æœ‰ç»§æ‰¿è‡ªILoadProgressçš„è„šæœ¬ç»„ä»¶</param>
         /// <param Name="callback"></param>
         public void LoadSceneProgressBar(int buildIndex, string filepath, UnityAction callback = null)
         {
@@ -368,10 +368,10 @@ namespace StarryFramework
         }
         
         /// <summary>
-        /// ÒÔ½ø¶ÈÌõ¶¯»­¼ÓÔØ³¡¾°
+        /// ä»¥è¿›åº¦æ¡åŠ¨ç”»åŠ è½½åœºæ™¯
         /// </summary>
         /// <param Name="sceneName"></param>
-        /// <param Name="_gameObject">½ø¶ÈÌõ¶¯»­ÎïÌå,ĞèÒªÓµÓĞ¼Ì³Ğ×ÔILoadProgressµÄ½Å±¾×é¼ş</param>
+        /// <param Name="_gameObject">è¿›åº¦æ¡åŠ¨ç”»ç‰©ä½“,éœ€è¦æ‹¥æœ‰ç»§æ‰¿è‡ªILoadProgressçš„è„šæœ¬ç»„ä»¶</param>
         /// <param Name="callback"></param>
         public void LoadSceneProgressBar(string sceneName, GameObject _gameObject, UnityAction callback = null)
         {
@@ -396,10 +396,10 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÒÔ½ø¶ÈÌõ¶¯»­¼ÓÔØ³¡¾°
+        /// ä»¥è¿›åº¦æ¡åŠ¨ç”»åŠ è½½åœºæ™¯
         /// </summary>
         /// <param Name="sceneName"></param>
-        /// <param Name="filepath">½ø¶ÈÌõ¶¯»­ÎïÌåµÄÂ·¾¶,ÎïÌåĞèÒªÓµÓĞ¼Ì³Ğ×ÔILoadProgressµÄ½Å±¾×é¼ş</param>
+        /// <param Name="filepath">è¿›åº¦æ¡åŠ¨ç”»ç‰©ä½“çš„è·¯å¾„,ç‰©ä½“éœ€è¦æ‹¥æœ‰ç»§æ‰¿è‡ªILoadProgressçš„è„šæœ¬ç»„ä»¶</param>
         /// <param Name="callback"></param>
         public void LoadSceneProgressBar(string sceneName, string filepath, UnityAction callback = null)
         {
@@ -424,10 +424,10 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÒÔÄ¬ÈÏ¶¯»­ÇĞ»»³¡¾°
+        /// ä»¥é»˜è®¤åŠ¨ç”»åˆ‡æ¢åœºæ™¯
         /// </summary>
         /// <param Name="to"></param>
-        /// <param Name="from">ÁôÎª-1ÔòÎªµ±Ç°»î¶¯³¡¾°</param>
+        /// <param Name="from">ç•™ä¸º-1åˆ™ä¸ºå½“å‰æ´»åŠ¨åœºæ™¯</param>
         /// <param Name="callback"></param>
         public void ChangeSceneDefault(int to, int from = -1, UnityAction callback = null)
         {
@@ -460,10 +460,10 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÒÔÄ¬ÈÏ¶¯»­ÇĞ»»³¡¾°
+        /// ä»¥é»˜è®¤åŠ¨ç”»åˆ‡æ¢åœºæ™¯
         /// </summary>
         /// <param Name="to"></param>
-        /// <param Name="from">ÁôÎª""ÔòÎªµ±Ç°»î¶¯³¡¾°</param>
+        /// <param Name="from">ç•™ä¸º""åˆ™ä¸ºå½“å‰æ´»åŠ¨åœºæ™¯</param>
         /// <param Name="callback"></param>
         public void ChangeSceneDefault(string to, string from = "", UnityAction callback = null)
         {
@@ -496,11 +496,11 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÒÔ½ø¶ÈÌõ¶¯»­µÄ·½Ê½ÇĞ»»³¡¾°
+        /// ä»¥è¿›åº¦æ¡åŠ¨ç”»çš„æ–¹å¼åˆ‡æ¢åœºæ™¯
         /// </summary>
         /// <param Name="to"></param>
         /// <param Name="from"></param>
-        /// <param Name="_gameObject">½ø¶ÈÌõ¶¯»­ÎïÌå,ĞèÒªÓµÓĞ¼Ì³Ğ×ÔILoadProgressµÄ½Å±¾×é¼ş</param>
+        /// <param Name="_gameObject">è¿›åº¦æ¡åŠ¨ç”»ç‰©ä½“,éœ€è¦æ‹¥æœ‰ç»§æ‰¿è‡ªILoadProgressçš„è„šæœ¬ç»„ä»¶</param>
         /// <param Name="callback"></param>
         public void ChangeSceneProgressBar(int to, int from, GameObject _gameObject, UnityAction callback = null)
         {
@@ -525,11 +525,11 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÒÔ½ø¶ÈÌõ¶¯»­µÄ·½Ê½ÇĞ»»³¡¾°
+        /// ä»¥è¿›åº¦æ¡åŠ¨ç”»çš„æ–¹å¼åˆ‡æ¢åœºæ™¯
         /// </summary>
         /// <param Name="to"></param>
         /// <param Name="from"></param>
-        /// <param Name="filepath">½ø¶ÈÌõ¶¯»­ÎïÌåµÄÂ·¾¶,ÎïÌåĞèÒªÓµÓĞ¼Ì³Ğ×ÔILoadProgressµÄ½Å±¾×é¼ş</param>
+        /// <param Name="filepath">è¿›åº¦æ¡åŠ¨ç”»ç‰©ä½“çš„è·¯å¾„,ç‰©ä½“éœ€è¦æ‹¥æœ‰ç»§æ‰¿è‡ªILoadProgressçš„è„šæœ¬ç»„ä»¶</param>
         /// <param Name="callback"></param>
         public void ChangeSceneProgressBar(int to, int from, string filepath, UnityAction callback = null)
         {
@@ -554,11 +554,11 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÒÔ½ø¶ÈÌõ¶¯»­µÄ·½Ê½ÇĞ»»³¡¾°
+        /// ä»¥è¿›åº¦æ¡åŠ¨ç”»çš„æ–¹å¼åˆ‡æ¢åœºæ™¯
         /// </summary>
         /// <param Name="to"></param>
         /// <param Name="from"></param>
-        /// <param Name="_gameObject">½ø¶ÈÌõ¶¯»­ÎïÌå,ĞèÒªÓµÓĞ¼Ì³Ğ×ÔILoadProgressµÄ½Å±¾×é¼ş</param>
+        /// <param Name="_gameObject">è¿›åº¦æ¡åŠ¨ç”»ç‰©ä½“,éœ€è¦æ‹¥æœ‰ç»§æ‰¿è‡ªILoadProgressçš„è„šæœ¬ç»„ä»¶</param>
         /// <param Name="callback"></param>
         public void ChangeSceneProgressBar(string to,string from, GameObject _gameObject, UnityAction callback = null)
         {
@@ -582,11 +582,11 @@ namespace StarryFramework
 
         }
         /// <summary>
-        /// ÒÔ½ø¶ÈÌõ¶¯»­µÄ·½Ê½ÇĞ»»³¡¾°
+        /// ä»¥è¿›åº¦æ¡åŠ¨ç”»çš„æ–¹å¼åˆ‡æ¢åœºæ™¯
         /// </summary>
         /// <param Name="to"></param>
         /// <param Name="from"></param>
-        /// <param Name="filepath">½ø¶ÈÌõ¶¯»­ÎïÌåµÄÂ·¾¶,ÎïÌåĞèÒªÓµÓĞ¼Ì³Ğ×ÔILoadProgressµÄ½Å±¾×é¼ş</param>
+        /// <param Name="filepath">è¿›åº¦æ¡åŠ¨ç”»ç‰©ä½“çš„è·¯å¾„,ç‰©ä½“éœ€è¦æ‹¥æœ‰ç»§æ‰¿è‡ªILoadProgressçš„è„šæœ¬ç»„ä»¶</param>
         /// <param Name="callback"></param>
         public void ChangeSceneProgressBar(string to, string from, string filepath, UnityAction callback = null)
         {
@@ -611,7 +611,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ½«UnityÒì²½½ø³ÌÒÔ½ø¶ÈÌõ¶¯»­ĞÎÊ½Õ¹ÏÖ£¬Ö§³Ö¶à½ø³ÌÊ¹ÓÃÒ»¸ö½ø¶ÈÌõ¶¯»­Õ¹Ê¾
+        /// å°†Unityå¼‚æ­¥è¿›ç¨‹ä»¥è¿›åº¦æ¡åŠ¨ç”»å½¢å¼å±•ç°ï¼Œæ”¯æŒå¤šè¿›ç¨‹ä½¿ç”¨ä¸€ä¸ªè¿›åº¦æ¡åŠ¨ç”»å±•ç¤º
         /// </summary>
         /// <param name="asyncOperation"></param>
         /// <param name="loadProgress"></param>

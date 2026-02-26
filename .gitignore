@@ -90,3 +90,8 @@ crashlytics-build.properties
 # =========== #
 fmod_editor.log
 
+# =========== #
+# bezi #
+# =========== #
+.bezisidekick/
+

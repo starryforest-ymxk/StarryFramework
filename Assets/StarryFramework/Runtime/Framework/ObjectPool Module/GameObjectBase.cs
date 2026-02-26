@@ -8,13 +8,13 @@ namespace StarryFramework
 {
     public abstract class GameObjectBase : MonoBehaviour, IObjectBase
     {
-        [FoldOutGroup("¶ÔÏó³ØÊôĞÔ")]
+        [FoldOutGroup("å¯¹è±¡æ± å±æ€§")]
         [SerializeField]
         private bool _inUse;
-        [FoldOutGroup("¶ÔÏó³ØÊôĞÔ")]
+        [FoldOutGroup("å¯¹è±¡æ± å±æ€§")]
         [SerializeField]
         private float _lastUseTime;
-        [FoldOutGroup("¶ÔÏó³ØÊôĞÔ")]
+        [FoldOutGroup("å¯¹è±¡æ± å±æ€§")]
         [SerializeField]
         private bool _releaseFlag;
 

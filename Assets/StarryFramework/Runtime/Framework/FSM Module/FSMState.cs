@@ -9,41 +9,41 @@ namespace StarryFramework
     public abstract class FSMState<T> where T : class
     {
         /// <summary>
-        /// ´´½¨×´Ì¬»úµÄÊ±ºòµ÷ÓÃ
+        /// åˆ›å»ºçŠ¶æ€æœºçš„æ—¶å€™è°ƒç”¨
         /// </summary>
-        /// <param Name="fsm">¹ÜÀíµ±Ç°×´Ì¬µÄ×´Ì¬»ú</param>
+        /// <param Name="fsm">ç®¡ç†å½“å‰çŠ¶æ€çš„çŠ¶æ€æœº</param>
         protected internal virtual void OnInit(IFSM<T> fsm) { }
 
         /// <summary>
-        /// ½øÈë×´Ì¬Ê±µ÷ÓÃ
+        /// è¿›å…¥çŠ¶æ€æ—¶è°ƒç”¨
         /// </summary>
-        /// <param Name="fsm">¹ÜÀíµ±Ç°×´Ì¬µÄ×´Ì¬»ú</param>
+        /// <param Name="fsm">ç®¡ç†å½“å‰çŠ¶æ€çš„çŠ¶æ€æœº</param>
         protected internal virtual void OnEnter(IFSM<T> fsm) { }
 
         /// <summary>
-        /// ´¦ÓÚµ±Ç°×´Ì¬Ê±Ã¿Ò»Ö¡µ÷ÓÃ
+        /// å¤„äºå½“å‰çŠ¶æ€æ—¶æ¯ä¸€å¸§è°ƒç”¨
         /// </summary>
-        /// <param Name="fsm">¹ÜÀíµ±Ç°×´Ì¬µÄ×´Ì¬»ú</param>
+        /// <param Name="fsm">ç®¡ç†å½“å‰çŠ¶æ€çš„çŠ¶æ€æœº</param>
         protected internal virtual void OnUpdate(IFSM<T> fsm) { }
 
         /// <summary>
-        /// Àë¿ª×´Ì¬Ê±µ÷ÓÃ
+        /// ç¦»å¼€çŠ¶æ€æ—¶è°ƒç”¨
         /// </summary>
-        /// <param Name="fsm">¹ÜÀíµ±Ç°×´Ì¬µÄ×´Ì¬»ú</param>
-        /// <param Name="isShutdown">ÊÇ·ñÎª×¢Ïú×´Ì¬»úÊ±µ÷ÓÃ</param>
+        /// <param Name="fsm">ç®¡ç†å½“å‰çŠ¶æ€çš„çŠ¶æ€æœº</param>
+        /// <param Name="isShutdown">æ˜¯å¦ä¸ºæ³¨é”€çŠ¶æ€æœºæ—¶è°ƒç”¨</param>
         protected internal virtual void OnLeave(IFSM<T> fsm, bool isShutdown) { }
 
         /// <summary>
-        /// ×¢Ïú×´Ì¬»úÊ±µ÷ÓÃ
+        /// æ³¨é”€çŠ¶æ€æœºæ—¶è°ƒç”¨
         /// </summary>
-        /// <param Name="fsm">¹ÜÀíµ±Ç°×´Ì¬µÄ×´Ì¬»ú</param>
+        /// <param Name="fsm">ç®¡ç†å½“å‰çŠ¶æ€çš„çŠ¶æ€æœº</param>
         protected internal virtual void OnDestroy(IFSM<T> fsm) { }
 
         /// <summary>
-        /// ÇĞ»»×´Ì¬
+        /// åˆ‡æ¢çŠ¶æ€
         /// </summary>
-        /// <typeparam Name="S">Ä¿±ê×´Ì¬ÀàĞÍ</typeparam>
-        /// <param Name="fsm">¹ÜÀíµ±Ç°×´Ì¬µÄ×´Ì¬»ú</param>
+        /// <typeparam Name="S">ç›®æ ‡çŠ¶æ€ç±»å‹</typeparam>
+        /// <param Name="fsm">ç®¡ç†å½“å‰çŠ¶æ€çš„çŠ¶æ€æœº</param>
         protected internal virtual void ChangeState<S>(IFSM<T> fsm) where S : FSMState<T> 
         { 
             FSM<T> _fsm = fsm as FSM<T>;
@@ -58,10 +58,10 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÇĞ»»×´Ì¬
+        /// åˆ‡æ¢çŠ¶æ€
         /// </summary>
-        /// <param Name="fsm">¹ÜÀíµ±Ç°×´Ì¬µÄ×´Ì¬»ú</param>
-        /// <param Name="stateType">Ä¿±ê×´Ì¬ÀàĞÍ</param>
+        /// <param Name="fsm">ç®¡ç†å½“å‰çŠ¶æ€çš„çŠ¶æ€æœº</param>
+        /// <param Name="stateType">ç›®æ ‡çŠ¶æ€ç±»å‹</param>
         protected internal virtual void ChangeState(IFSM<T> fsm, Type stateType)
         {
             FSM<T> _fsm = fsm as FSM<T>;

@@ -89,44 +89,44 @@ namespace StarryFramework.Extentions
         #region PlayOneShot
 
         /// <summary>
-        /// ´¥·¢Ò»´ÎÉùÒô£¬ÒôÆµ×ÊÔ´ÔÚ´¥·¢ÍêÁ¢¼´Ğ¶ÔØ
-        /// Æµ·±Ê¹ÓÃ½«´øÀ´ĞÔÄÜ¿ªÏú£¬³£ÓÃÓÚ²»ÔõÃ´Ê¹ÓÃµÄÒôÆµ×ÊÔ´
+        /// è§¦å‘ä¸€æ¬¡å£°éŸ³ï¼ŒéŸ³é¢‘èµ„æºåœ¨è§¦å‘å®Œç«‹å³å¸è½½
+        /// é¢‘ç¹ä½¿ç”¨å°†å¸¦æ¥æ€§èƒ½å¼€é”€ï¼Œå¸¸ç”¨äºä¸æ€ä¹ˆä½¿ç”¨çš„éŸ³é¢‘èµ„æº
         /// </summary>
-        /// <param Name="reference">ÒôÆµÊÂ¼ş</param>
-        /// <param Name="pos">²¥·ÅÎ»ÖÃ£¨3D£©</param>
+        /// <param Name="reference">éŸ³é¢‘äº‹ä»¶</param>
+        /// <param Name="pos">æ’­æ”¾ä½ç½®ï¼ˆ3Dï¼‰</param>
         public void PlayOneShot(EventReference reference, Vector3 pos = default)
         {
             Manager.PlayOneShot(reference, pos);
         }
 
         /// <summary>
-        /// ´¥·¢Ò»´ÎÉùÒô£¬ÒôÆµ×ÊÔ´ÔÚ´¥·¢ÍêÁ¢¼´Ğ¶ÔØ
-        /// Æµ·±Ê¹ÓÃ½«´øÀ´ĞÔÄÜ¿ªÏú£¬³£ÓÃÓÚ²»ÔõÃ´Ê¹ÓÃµÄÒôÆµ×ÊÔ´
+        /// è§¦å‘ä¸€æ¬¡å£°éŸ³ï¼ŒéŸ³é¢‘èµ„æºåœ¨è§¦å‘å®Œç«‹å³å¸è½½
+        /// é¢‘ç¹ä½¿ç”¨å°†å¸¦æ¥æ€§èƒ½å¼€é”€ï¼Œå¸¸ç”¨äºä¸æ€ä¹ˆä½¿ç”¨çš„éŸ³é¢‘èµ„æº
         /// </summary>
-        /// <param Name="path">ÒôÆµÊÂ¼şÂ·¾¶</param>
-        /// <param Name="pos">²¥·ÅÎ»ÖÃ£¨3D£©</param>
+        /// <param Name="path">éŸ³é¢‘äº‹ä»¶è·¯å¾„</param>
+        /// <param Name="pos">æ’­æ”¾ä½ç½®ï¼ˆ3Dï¼‰</param>
         public void PlayOneShot(string path, Vector3 pos = default)
         {
             Manager.PlayOneShot(path, pos);
         }
 
         /// <summary>
-        /// ´¥·¢Ò»´ÎÉùÒô£¬½«ÉùÔ´¸½×Åµ½Ä³¸öÎïÌåÉÏ£¬ÒôÆµ×ÊÔ´ÔÚ´¥·¢ÍêÁ¢¼´Ğ¶ÔØ
-        /// Æµ·±Ê¹ÓÃ½«´øÀ´ĞÔÄÜ¿ªÏú£¬³£ÓÃÓÚ²»ÔõÃ´Ê¹ÓÃµÄÒôÆµ×ÊÔ´
+        /// è§¦å‘ä¸€æ¬¡å£°éŸ³ï¼Œå°†å£°æºé™„ç€åˆ°æŸä¸ªç‰©ä½“ä¸Šï¼ŒéŸ³é¢‘èµ„æºåœ¨è§¦å‘å®Œç«‹å³å¸è½½
+        /// é¢‘ç¹ä½¿ç”¨å°†å¸¦æ¥æ€§èƒ½å¼€é”€ï¼Œå¸¸ç”¨äºä¸æ€ä¹ˆä½¿ç”¨çš„éŸ³é¢‘èµ„æº
         /// </summary>
-        /// <param Name="reference">ÒôÆµÊÂ¼ş</param>
-        /// <param Name="gameObject">¸½×ÅÎï</param>
+        /// <param Name="reference">éŸ³é¢‘äº‹ä»¶</param>
+        /// <param Name="gameObject">é™„ç€ç‰©</param>
         public void PlayOneShotAttached(EventReference reference, GameObject gameObject)
         {
             Manager.PlayOneShotAttached(reference, gameObject);
         }
 
         /// <summary>
-        /// ´¥·¢Ò»´ÎÉùÒô£¬½«ÉùÔ´¸½×Åµ½Ä³¸öÎïÌåÉÏ£¬ÒôÆµ×ÊÔ´ÔÚ´¥·¢ÍêÁ¢¼´Ğ¶ÔØ
-        /// Æµ·±Ê¹ÓÃ½«´øÀ´ĞÔÄÜ¿ªÏú£¬³£ÓÃÓÚ²»ÔõÃ´Ê¹ÓÃµÄÒôÆµ×ÊÔ´
+        /// è§¦å‘ä¸€æ¬¡å£°éŸ³ï¼Œå°†å£°æºé™„ç€åˆ°æŸä¸ªç‰©ä½“ä¸Šï¼ŒéŸ³é¢‘èµ„æºåœ¨è§¦å‘å®Œç«‹å³å¸è½½
+        /// é¢‘ç¹ä½¿ç”¨å°†å¸¦æ¥æ€§èƒ½å¼€é”€ï¼Œå¸¸ç”¨äºä¸æ€ä¹ˆä½¿ç”¨çš„éŸ³é¢‘èµ„æº
         /// </summary>
-        /// <param Name="path">ÒôÆµÊÂ¼şÂ·¾¶</param>
-        /// <param Name="gameObject">¸½×ÅÎï</param>
+        /// <param Name="path">éŸ³é¢‘äº‹ä»¶è·¯å¾„</param>
+        /// <param Name="gameObject">é™„ç€ç‰©</param>
         public void PlayOneShotAttached(string path, GameObject gameObject)
         {
             Manager.PlayOneShotAttached(path, gameObject);
@@ -137,7 +137,7 @@ namespace StarryFramework.Extentions
         #region VCA
 
         /// <summary>
-        /// ÉèÖÃVCAÒôÆµ×éÉùÒô´óĞ¡
+        /// è®¾ç½®VCAéŸ³é¢‘ç»„å£°éŸ³å¤§å°
         /// </summary>
         /// <param Name="VCAPath"></param>
         /// <param Name="value"></param>
@@ -147,7 +147,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// »ñµÃVCAÒôÆµ×éÉùÒô´óĞ¡
+        /// è·å¾—VCAéŸ³é¢‘ç»„å£°éŸ³å¤§å°
         /// </summary>
         /// <param Name="VCAPath"></param>
         /// <returns></returns>
@@ -161,9 +161,9 @@ namespace StarryFramework.Extentions
         #region BGM
 
         /// <summary>
-        /// ²¥·ÅBGM
+        /// æ’­æ”¾BGM
         /// </summary>
-        /// <param Name="index">¿ò¼ÜÉèÖÃÀïµÄBGM±àºÅ</param>
+        /// <param Name="index">æ¡†æ¶è®¾ç½®é‡Œçš„BGMç¼–å·</param>
         public void PlayBGM(int index)
         {
             if(index>=0 && index< currentBGMList.Count)
@@ -181,9 +181,9 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// Í£Ö¹BGM
+        /// åœæ­¢BGM
         /// </summary>
-        /// <param Name="mode">FMOD.Studio.STOP_MODEÃ¶¾Ù£¬ÓÃÓÚÉùÃ÷Í£Ö¹ÀàĞÍ</param>
+        /// <param Name="mode">FMOD.Studio.STOP_MODEæšä¸¾ï¼Œç”¨äºå£°æ˜åœæ­¢ç±»å‹</param>
         public void StopBGM(FMOD.Studio.STOP_MODE mode)
         {
             Manager.StopBGM(mode);
@@ -191,10 +191,10 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÇĞ»»BGM
+        /// åˆ‡æ¢BGM
         /// </summary>
-        /// <param Name="index">Òª²¥·ÅµÄBGM±àºÅ</param>
-        /// <param Name="mode">FMOD.Studio.STOP_MODEÃ¶¾Ù£¬ÓÃÓÚÉùÃ÷Í£Ö¹ÀàĞÍ</param>
+        /// <param Name="index">è¦æ’­æ”¾çš„BGMç¼–å·</param>
+        /// <param Name="mode">FMOD.Studio.STOP_MODEæšä¸¾ï¼Œç”¨äºå£°æ˜åœæ­¢ç±»å‹</param>
         public void ChangeBGM(int index, FMOD.Studio.STOP_MODE mode)
         {
             if (index >= 0 && index < currentBGMList.Count)
@@ -212,9 +212,9 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÉèÖÃBGM²¥·Å¡¢ÔİÍ£×´Ì¬
+        /// è®¾ç½®BGMæ’­æ”¾ã€æš‚åœçŠ¶æ€
         /// </summary>
-        /// <param Name="value">trueÎªÔİÍ££¬falseÎª¼ÌĞø²¥·Å</param>
+        /// <param Name="value">trueä¸ºæš‚åœï¼Œfalseä¸ºç»§ç»­æ’­æ”¾</param>
         public void SetBGMPause(bool value)
         {
             Manager.SetBGMPause(value);
@@ -222,7 +222,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// »ñµÃBGM×´Ì¬
+        /// è·å¾—BGMçŠ¶æ€
         /// </summary>
         /// <returns></returns>
         public AudioState GetBGMState()
@@ -231,7 +231,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÉèÖÃBGMµÄ²ÎÊı
+        /// è®¾ç½®BGMçš„å‚æ•°
         /// </summary>
         /// <param Name="ID"></param>
         /// <param Name="value"></param>
@@ -242,7 +242,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÉèÖÃBGM²ÎÊı
+        /// è®¾ç½®BGMå‚æ•°
         /// </summary>
         /// <param Name="name"></param>
         /// <param Name="value"></param>
@@ -253,7 +253,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÉèÖÃBGMÒ»×é²ÎÊıÖµ
+        /// è®¾ç½®BGMä¸€ç»„å‚æ•°å€¼
         /// </summary>
         /// <param Name="IDs"></param>
         /// <param Name="values"></param>
@@ -265,7 +265,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÓÃ±êÇ©ÉèÖÃBGM²ÎÊı
+        /// ç”¨æ ‡ç­¾è®¾ç½®BGMå‚æ•°
         /// </summary>
         /// <param Name="ID"></param>
         /// <param Name="valueLable"></param>
@@ -276,7 +276,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÓÃ±êÇ©ÉèÖÃBGM²ÎÊı
+        /// ç”¨æ ‡ç­¾è®¾ç½®BGMå‚æ•°
         /// </summary>
         /// <param Name="name"></param>
         /// <param Name="valueLable"></param>
@@ -287,7 +287,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// »ñµÃBGM²ÎÊıÖµ
+        /// è·å¾—BGMå‚æ•°å€¼
         /// </summary>
         /// <param Name="name"></param>
         /// <returns></returns>
@@ -297,7 +297,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// »ñµÃBGM²ÎÊıÖµ
+        /// è·å¾—BGMå‚æ•°å€¼
         /// </summary>
         /// <param Name="ID"></param>
         /// <returns></returns>
@@ -307,7 +307,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÉèÖÃBGMÊôĞÔ
+        /// è®¾ç½®BGMå±æ€§
         /// </summary>
         /// <param Name="property"></param>
         /// <param Name="value"></param>
@@ -317,7 +317,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// »ñµÃBGMÊôĞÔÖµ
+        /// è·å¾—BGMå±æ€§å€¼
         /// </summary>
         /// <param Name="property"></param>
         /// <returns></returns>
@@ -329,11 +329,11 @@ namespace StarryFramework.Extentions
 
         #region PlayAudio
 
-        //ËùÓĞuntaggedµÄÒôÆµ²ÉÓÃ¶ÔÏó³ØÍ³Ò»¹ÜÀí
+        //æ‰€æœ‰untaggedçš„éŸ³é¢‘é‡‡ç”¨å¯¹è±¡æ± ç»Ÿä¸€ç®¡ç†
         #region untagged
 
         /// <summary>
-        /// ²¥·ÅÎ´±ê¼ÇµÄÒôÆµ
+        /// æ’­æ”¾æœªæ ‡è®°çš„éŸ³é¢‘
         /// </summary>
         public void PlayUntaggedAudio(string path, float volume = 1f)
         {
@@ -341,7 +341,7 @@ namespace StarryFramework.Extentions
             Manager.PlayUntaggedAudio(guid, volume);
         }
         /// <summary>
-        /// ²¥·ÅÎ´±ê¼ÇµÄÒôÆµ
+        /// æ’­æ”¾æœªæ ‡è®°çš„éŸ³é¢‘
         /// </summary>
         public void PlayUntaggedAudio(EventReference eventReference, float volume = 1f)
         {
@@ -349,7 +349,7 @@ namespace StarryFramework.Extentions
             Manager.PlayUntaggedAudio(guid, volume);
         }
         /// <summary>
-        /// ²¥·ÅÎ´±ê¼ÇµÄÒôÆµ£¬²¢ÉèÖÃÒôÆµÔ´Î»ÖÃ
+        /// æ’­æ”¾æœªæ ‡è®°çš„éŸ³é¢‘ï¼Œå¹¶è®¾ç½®éŸ³é¢‘æºä½ç½®
         /// </summary>
         public void PlayUntaggedAudio(string path, Transform transform, float volume = 1f)
         {
@@ -357,7 +357,7 @@ namespace StarryFramework.Extentions
             Manager.PlayUntaggedAudio(guid, transform, volume);
         }
         /// <summary>
-        /// ²¥·ÅÎ´±ê¼ÇµÄÒôÆµ£¬²¢ÉèÖÃÒôÆµÔ´Î»ÖÃ
+        /// æ’­æ”¾æœªæ ‡è®°çš„éŸ³é¢‘ï¼Œå¹¶è®¾ç½®éŸ³é¢‘æºä½ç½®
         /// </summary>
         public void PlayUntaggedAudio(EventReference eventReference, Transform transform, float volume = 1f)
         {
@@ -365,7 +365,7 @@ namespace StarryFramework.Extentions
             Manager.PlayUntaggedAudio(guid, transform, volume);
         }
         /// <summary>
-        /// ²¥·ÅÎ´±ê¼ÇµÄÒôÆµ£¬²¢¸½×Åµ½ÎïÌå
+        /// æ’­æ”¾æœªæ ‡è®°çš„éŸ³é¢‘ï¼Œå¹¶é™„ç€åˆ°ç‰©ä½“
         /// </summary>
         public void PlayUntaggedAudio(string path, Transform transform, Rigidbody body, float volume = 1f)
         {
@@ -373,7 +373,7 @@ namespace StarryFramework.Extentions
             Manager.PlayUntaggedAudio(guid, transform, body, volume);
         }
         /// <summary>
-        /// ²¥·ÅÎ´±ê¼ÇµÄÒôÆµ£¬²¢¸½×Åµ½ÎïÌå
+        /// æ’­æ”¾æœªæ ‡è®°çš„éŸ³é¢‘ï¼Œå¹¶é™„ç€åˆ°ç‰©ä½“
         /// </summary>
         public void PlayUntaggedAudio(EventReference eventReference, Transform transform, Rigidbody body, float volume = 1f)
         {
@@ -381,7 +381,7 @@ namespace StarryFramework.Extentions
             Manager.PlayUntaggedAudio(guid, transform, body, volume);
         }
         /// <summary>
-        /// ²¥·ÅÎ´±ê¼ÇµÄÒôÆµ£¬²¢¸½×Åµ½2DÎïÌå
+        /// æ’­æ”¾æœªæ ‡è®°çš„éŸ³é¢‘ï¼Œå¹¶é™„ç€åˆ°2Dç‰©ä½“
         /// </summary>
         public void PlayUntaggedAudio(string path, Transform transform, Rigidbody2D body2d, float volume = 1f)
         {
@@ -389,7 +389,7 @@ namespace StarryFramework.Extentions
             Manager.PlayUntaggedAudio(guid, transform, body2d, volume);
         }
         /// <summary>
-        /// ²¥·ÅÎ´±ê¼ÇµÄÒôÆµ£¬²¢¸½×Åµ½2DÎïÌå
+        /// æ’­æ”¾æœªæ ‡è®°çš„éŸ³é¢‘ï¼Œå¹¶é™„ç€åˆ°2Dç‰©ä½“
         /// </summary>
         public void PlayUntaggedAudio(EventReference eventReference, Transform transform, Rigidbody2D body2d, float volume = 1f)
         {
@@ -398,7 +398,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// Í£Ö¹²¥·ÅÎ´±ê¼ÇµÄÒôÆµ
+        /// åœæ­¢æ’­æ”¾æœªæ ‡è®°çš„éŸ³é¢‘
         /// </summary>
         /// <param Name="path"></param>
         /// <param Name="mode"></param>
@@ -408,7 +408,7 @@ namespace StarryFramework.Extentions
             Manager.StopUntaggedAudio(guid, mode);
         }
         /// <summary>
-        /// Í£Ö¹²¥·ÅÎ´±ê¼ÇµÄÒôÆµ
+        /// åœæ­¢æ’­æ”¾æœªæ ‡è®°çš„éŸ³é¢‘
         /// </summary>
         /// <param Name="eventReference"></param>
         /// <param Name="mode"></param>
@@ -418,7 +418,7 @@ namespace StarryFramework.Extentions
             Manager.StopUntaggedAudio(guid, mode);
         }
         /// <summary>
-        /// Í£Ö¹²¢ÊÍ·ÅÎ´±ê¼ÇµÄÒôÆµ
+        /// åœæ­¢å¹¶é‡Šæ”¾æœªæ ‡è®°çš„éŸ³é¢‘
         /// </summary>
         /// <param Name="path"></param>
         /// <param Name="mode"></param>
@@ -429,7 +429,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// Í£Ö¹²¢ÊÍ·ÅÎ´±ê¼ÇµÄÒôÆµ
+        /// åœæ­¢å¹¶é‡Šæ”¾æœªæ ‡è®°çš„éŸ³é¢‘
         /// </summary>
         /// <param Name="eventReference"></param>
         /// <param Name="mode"></param>
@@ -440,27 +440,27 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÉèÖÃÎ´±ê¼ÇµÄÒôÆµÔİÍ£/²¥·Å×´Ì¬
+        /// è®¾ç½®æœªæ ‡è®°çš„éŸ³é¢‘æš‚åœ/æ’­æ”¾çŠ¶æ€
         /// </summary>
         /// <param Name="path"></param>
-        /// <param Name="pause">trueÎªÔİÍ££¬falseÎª¼ÌĞø²¥·Å</param>
+        /// <param Name="pause">trueä¸ºæš‚åœï¼Œfalseä¸ºç»§ç»­æ’­æ”¾</param>
         public void SetUntaggedAudioPaused(string path, bool pause)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
             Manager.SetUntaggedAudioPaused(guid, pause);
         }
         /// <summary>
-        /// ÉèÖÃÎ´±ê¼ÇµÄÒôÆµÔİÍ£/²¥·Å×´Ì¬
+        /// è®¾ç½®æœªæ ‡è®°çš„éŸ³é¢‘æš‚åœ/æ’­æ”¾çŠ¶æ€
         /// </summary>
         /// <param Name="eventReference"></param>
-        /// <param Name="pause">trueÎªÔİÍ££¬falseÎª¼ÌĞø²¥·Å</param>
+        /// <param Name="pause">trueä¸ºæš‚åœï¼Œfalseä¸ºç»§ç»­æ’­æ”¾</param>
         public void SetUntaggedAudioPaused(EventReference eventReference, bool pause)
         {
             GUID guid = eventReference.Guid;
             Manager.SetUntaggedAudioPaused(guid, pause);
         }
         /// <summary>
-        /// ÉèÖÃÎ´±ê¼ÇµÄÒôÆµÒôÁ¿
+        /// è®¾ç½®æœªæ ‡è®°çš„éŸ³é¢‘éŸ³é‡
         /// </summary>
         /// <param Name="path"></param>
         /// <param Name="volume"></param>
@@ -470,7 +470,7 @@ namespace StarryFramework.Extentions
             Manager.SetUntaggedAudioVolume(guid, volume);
         }
         /// <summary>
-        /// ÉèÖÃÎ´±ê¼ÇµÄÒôÆµÒôÁ¿
+        /// è®¾ç½®æœªæ ‡è®°çš„éŸ³é¢‘éŸ³é‡
         /// </summary>
         /// <param Name="eventReference"></param>
         /// <param Name="volume"></param>
@@ -481,7 +481,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÊÍ·ÅËùÓĞÒÑ¾­Í£Ö¹µÄÎ´±ê¼ÇÒôÆµ
+        /// é‡Šæ”¾æ‰€æœ‰å·²ç»åœæ­¢çš„æœªæ ‡è®°éŸ³é¢‘
         /// </summary>
         public void ClearStoppedUntaggedAudio()
         {
@@ -489,7 +489,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// Í£Ö¹²¢ÊÍ·ÅËùÓĞÎ´±ê¼ÇµÄÒôÆµ
+        /// åœæ­¢å¹¶é‡Šæ”¾æ‰€æœ‰æœªæ ‡è®°çš„éŸ³é¢‘
         /// </summary>
         /// <param Name="mode"></param>
         public void StopAndReleaseAllUntaggedAudio(FMOD.Studio.STOP_MODE mode)
@@ -498,7 +498,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÉèÖÃÎ´±ê¼ÇµÄÒôÆµµÄÊôĞÔ
+        /// è®¾ç½®æœªæ ‡è®°çš„éŸ³é¢‘çš„å±æ€§
         /// </summary>
         public void SetUntaggedAudioProperty(string path, EVENT_PROPERTY property, float value)
         {
@@ -506,7 +506,7 @@ namespace StarryFramework.Extentions
             Manager.SetUntaggedAudioProperty(guid, property, value);
         }
         /// <summary>
-        /// ÉèÖÃÎ´±ê¼ÇµÄÒôÆµµÄÊôĞÔ
+        /// è®¾ç½®æœªæ ‡è®°çš„éŸ³é¢‘çš„å±æ€§
         /// </summary>
         public void SetUntaggedAudioProperty(EventReference eventReference, EVENT_PROPERTY property, float value)
         {
@@ -514,7 +514,7 @@ namespace StarryFramework.Extentions
             Manager.SetUntaggedAudioProperty(guid, property, value);
         }
         /// <summary>
-        /// ÉèÖÃÎ´±ê¼ÇµÄÒôÆµµÄ²ÎÊı
+        /// è®¾ç½®æœªæ ‡è®°çš„éŸ³é¢‘çš„å‚æ•°
         /// </summary>
         public void SetUntaggedAudioParameter(string path, string name, float value, bool ignoreSeekSpeed = false)
         {
@@ -522,7 +522,7 @@ namespace StarryFramework.Extentions
             Manager.SetUntaggedAudioParameter(guid, name, value, ignoreSeekSpeed);  
         }
         /// <summary>
-        /// ÉèÖÃÎ´±ê¼ÇµÄÒôÆµµÄ²ÎÊı
+        /// è®¾ç½®æœªæ ‡è®°çš„éŸ³é¢‘çš„å‚æ•°
         /// </summary>
         public void SetUntaggedAudioParameter(EventReference eventReference, string name, float value, bool ignoreSeekSpeed = false)
         {
@@ -530,7 +530,7 @@ namespace StarryFramework.Extentions
             Manager.SetUntaggedAudioParameter(guid, name, value, ignoreSeekSpeed);
         }
         /// <summary>
-        /// ÉèÖÃÎ´±ê¼ÇµÄÒôÆµµÄ²ÎÊı
+        /// è®¾ç½®æœªæ ‡è®°çš„éŸ³é¢‘çš„å‚æ•°
         /// </summary>
         public void SetUntaggedAudioParameter(string path, PARAMETER_ID id, float value, bool ignoreSeekSpeed = false)
         {
@@ -538,7 +538,7 @@ namespace StarryFramework.Extentions
             Manager.SetUntaggedAudioParameter(guid, id, value, ignoreSeekSpeed);    
         }
         /// <summary>
-        /// ÉèÖÃÎ´±ê¼ÇµÄÒôÆµµÄ²ÎÊı
+        /// è®¾ç½®æœªæ ‡è®°çš„éŸ³é¢‘çš„å‚æ•°
         /// </summary>
         public void SetUntaggedAudioParameter(EventReference eventReference, PARAMETER_ID id, float value, bool ignoreSeekSpeed = false)
         {
@@ -546,7 +546,7 @@ namespace StarryFramework.Extentions
             Manager.SetUntaggedAudioParameter(guid, id, value, ignoreSeekSpeed);
         }
         /// <summary>
-        /// ÓÃ±êÇ©ÉèÖÃÎ´±ê¼ÇµÄÒôÆµµÄ²ÎÊı
+        /// ç”¨æ ‡ç­¾è®¾ç½®æœªæ ‡è®°çš„éŸ³é¢‘çš„å‚æ•°
         /// </summary>
         public void SetUntaggedAudioParameterWithLabel(string path, string name, string label, bool ignoreSeekSpeed = false)
         {
@@ -554,7 +554,7 @@ namespace StarryFramework.Extentions
             Manager.SetUntaggedAudioParameterWithLabel(guid, name, label, ignoreSeekSpeed);
         }
         /// <summary>
-        /// ÓÃ±êÇ©ÉèÖÃÎ´±ê¼ÇµÄÒôÆµµÄ²ÎÊı
+        /// ç”¨æ ‡ç­¾è®¾ç½®æœªæ ‡è®°çš„éŸ³é¢‘çš„å‚æ•°
         /// </summary>
         public void SetUntaggedAudioParameterWithLabel(EventReference eventReference, string name, string label, bool ignoreSeekSpeed = false)
         {
@@ -562,7 +562,7 @@ namespace StarryFramework.Extentions
             Manager.SetUntaggedAudioParameterWithLabel(guid, name, label, ignoreSeekSpeed);
         }
         /// <summary>
-        /// ÓÃ±êÇ©ÉèÖÃÎ´±ê¼ÇµÄÒôÆµµÄ²ÎÊı
+        /// ç”¨æ ‡ç­¾è®¾ç½®æœªæ ‡è®°çš„éŸ³é¢‘çš„å‚æ•°
         /// </summary>
         public void SetUntaggedAudioParameterWithLabel(string path, PARAMETER_ID id, string label, bool ignoreSeekSpeed = false)
         {
@@ -570,7 +570,7 @@ namespace StarryFramework.Extentions
             Manager.SetUntaggedAudioParameterWithLabel(guid, id, label, ignoreSeekSpeed);
         }
         /// <summary>
-        /// ÓÃ±êÇ©ÉèÖÃÎ´±ê¼ÇµÄÒôÆµµÄ²ÎÊı
+        /// ç”¨æ ‡ç­¾è®¾ç½®æœªæ ‡è®°çš„éŸ³é¢‘çš„å‚æ•°
         /// </summary>
         public void SetUntaggedAudioParameterWithLabel(EventReference eventReference, PARAMETER_ID id, string label, bool ignoreSeekSpeed = false)
         {
@@ -578,7 +578,7 @@ namespace StarryFramework.Extentions
             Manager.SetUntaggedAudioParameterWithLabel(guid, id, label, ignoreSeekSpeed);
         }
         /// <summary>
-        /// ÉèÖÃÎ´±ê¼ÇµÄÒôÆµµÄ²ÎÊı
+        /// è®¾ç½®æœªæ ‡è®°çš„éŸ³é¢‘çš„å‚æ•°
         /// </summary>
         public void SetUntaggedAudioParameters(string path, PARAMETER_ID[] ids, float[] values, int count, bool ignoreSeekSpeed = false)
         {
@@ -586,7 +586,7 @@ namespace StarryFramework.Extentions
             Manager.SetUntaggedAudioParameters(guid, ids, values, count, ignoreSeekSpeed);
         }
         /// <summary>
-        /// ÓÃ±êÇ©ÉèÖÃÎ´±ê¼ÇµÄÒôÆµµÄÒ»×é²ÎÊıÖµ
+        /// ç”¨æ ‡ç­¾è®¾ç½®æœªæ ‡è®°çš„éŸ³é¢‘çš„ä¸€ç»„å‚æ•°å€¼
         /// </summary>
         public void SetUntaggedAudioParameters(EventReference eventReference, PARAMETER_ID[] ids, float[] values, int count, bool ignoreSeekSpeed = false)
         {
@@ -596,15 +596,15 @@ namespace StarryFramework.Extentions
 
         #endregion
 
-        //ËùÓĞtaggedµÄÒôÆµ²»²ÉÓÃ¶ÔÏó³Ø¹ÜÀí
+        //æ‰€æœ‰taggedçš„éŸ³é¢‘ä¸é‡‡ç”¨å¯¹è±¡æ± ç®¡ç†
         #region tagged
 
         /// <summary>
-        /// ´´½¨ÒôÆµ
+        /// åˆ›å»ºéŸ³é¢‘
         /// </summary>
-        /// <param Name="path">ÒôÆµÊÂ¼şÂ·¾¶</param>
-        /// <param Name="tag">ÒôÆµ±ê¼Ç</param>
-        /// <param Name="play">ÊÇ·ñÁ¢¿Ì²¥·Å</param>
+        /// <param Name="path">éŸ³é¢‘äº‹ä»¶è·¯å¾„</param>
+        /// <param Name="tag">éŸ³é¢‘æ ‡è®°</param>
+        /// <param Name="play">æ˜¯å¦ç«‹åˆ»æ’­æ”¾</param>
         public void CreateAudio(string path, string tag, bool play = true)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
@@ -612,11 +612,11 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ´´½¨ÒôÆµ
+        /// åˆ›å»ºéŸ³é¢‘
         /// </summary>
-        /// <param Name="eventReference">ÒôÆµÊÂ¼ş</param>
-        /// <param Name="tag">ÒôÆµ±ê¼Ç</param>
-        /// <param Name="play">ÊÇ·ñÁ¢¿Ì²¥·Å</param>
+        /// <param Name="eventReference">éŸ³é¢‘äº‹ä»¶</param>
+        /// <param Name="tag">éŸ³é¢‘æ ‡è®°</param>
+        /// <param Name="play">æ˜¯å¦ç«‹åˆ»æ’­æ”¾</param>
         public void CreateAudio(EventReference eventReference, string tag, bool play = true)
         {
             GUID guid = eventReference.Guid;
@@ -624,7 +624,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ²¥·ÅÒÑ±ê¼ÇµÄÒôÆµ
+        /// æ’­æ”¾å·²æ ‡è®°çš„éŸ³é¢‘
         /// </summary>
         public void PlayTaggedAudio(string tag)
         {
@@ -632,7 +632,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// Í£Ö¹ÒÑ±ê¼ÇµÄÒôÆµ
+        /// åœæ­¢å·²æ ‡è®°çš„éŸ³é¢‘
         /// </summary>
         public void StopTaggedAudio(string tag, FMOD.Studio.STOP_MODE mode)
         {
@@ -640,7 +640,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÊÍ·ÅÒÑ±ê¼ÇµÄÒôÆµ
+        /// é‡Šæ”¾å·²æ ‡è®°çš„éŸ³é¢‘
         /// </summary>
         public void ReleaseTaggedAudio(string tag)
         {
@@ -648,7 +648,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// Í£Ö¹²¢ÊÍ·ÅÒÑ±ê¼ÇµÄÒôÆµ
+        /// åœæ­¢å¹¶é‡Šæ”¾å·²æ ‡è®°çš„éŸ³é¢‘
         /// </summary>
         public void StopAndReleaseTaggedAudio(string tag, FMOD.Studio.STOP_MODE mode)
         {
@@ -656,7 +656,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// Í£Ö¹²¢ÊÍ·ÅËùÓĞÒÑ±ê¼ÇµÄÒôÆµ
+        /// åœæ­¢å¹¶é‡Šæ”¾æ‰€æœ‰å·²æ ‡è®°çš„éŸ³é¢‘
         /// </summary>
         public void StopAndReleaseAllTaggedAudio(FMOD.Studio.STOP_MODE mode)
         {
@@ -664,7 +664,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÉèÖÃÒÑ±ê¼ÇµÄÒôÆµµÄÎ»ÖÃ
+        /// è®¾ç½®å·²æ ‡è®°çš„éŸ³é¢‘çš„ä½ç½®
         /// </summary>
         /// <param Name="tag"></param>
         /// <param Name="transform"></param>
@@ -674,7 +674,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ¸½×ÅÒÑ±ê¼ÇµÄÒôÆµµ½ÎïÌåÉÏ
+        /// é™„ç€å·²æ ‡è®°çš„éŸ³é¢‘åˆ°ç‰©ä½“ä¸Š
         /// </summary>
         /// <param Name="tag"></param>
         /// <param Name="transform"></param>
@@ -685,7 +685,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ¸½×ÅÒÑ±ê¼ÇµÄÒôÆµµ½3DÎïÌåÉÏ
+        /// é™„ç€å·²æ ‡è®°çš„éŸ³é¢‘åˆ°3Dç‰©ä½“ä¸Š
         /// </summary>
         /// <param Name="tag"></param>
         /// <param Name="transform"></param>
@@ -696,7 +696,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// È¡ÏûÒôÆµµÄ¸½×ÅÎïÌå¼°Î»ÖÃ
+        /// å–æ¶ˆéŸ³é¢‘çš„é™„ç€ç‰©ä½“åŠä½ç½®
         /// </summary>
         /// <param Name="tag"></param>
         public void DetachTaggedAudio(string tag)
@@ -705,17 +705,17 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÉèÖÃÒÑ±ê¼ÇµÄÒôÆµÔİÍ£/²¥·Å×´Ì¬
+        /// è®¾ç½®å·²æ ‡è®°çš„éŸ³é¢‘æš‚åœ/æ’­æ”¾çŠ¶æ€
         /// </summary>
         /// <param Name="tag"></param>
-        /// <param Name="pause">trueÎªÔİÍ££¬falseÎª¼ÌĞø²¥·Å</param>
+        /// <param Name="pause">trueä¸ºæš‚åœï¼Œfalseä¸ºç»§ç»­æ’­æ”¾</param>
         public void SetTaggedAudioPaused(string tag, bool pause)
         {
             Manager.SetTaggedAudioPaused(tag, pause);
         }
 
         /// <summary>
-        /// »ñµÃÒÑ±ê¼ÇµÄÒôÆµÔİÍ£/²¥·Å×´Ì¬
+        /// è·å¾—å·²æ ‡è®°çš„éŸ³é¢‘æš‚åœ/æ’­æ”¾çŠ¶æ€
         /// </summary>
         /// <param Name="tag"></param>
         /// <returns></returns>
@@ -725,7 +725,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// »ñµÃÒÑ±ê¼ÇµÄÒôÆµ×´Ì¬
+        /// è·å¾—å·²æ ‡è®°çš„éŸ³é¢‘çŠ¶æ€
         /// </summary>
         /// <param Name="tag"></param>
         /// <returns></returns>
@@ -735,7 +735,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÉèÖÃÒÑ±ê¼ÇµÄÒôÆµÒôÁ¿
+        /// è®¾ç½®å·²æ ‡è®°çš„éŸ³é¢‘éŸ³é‡
         /// </summary>
         /// <param Name="tag"></param>
         /// <param Name="value"></param>
@@ -745,7 +745,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// »ñµÃÒÑ±ê¼ÇµÄÒôÆµÒôÁ¿
+        /// è·å¾—å·²æ ‡è®°çš„éŸ³é¢‘éŸ³é‡
         /// </summary>
         /// <param Name="tag"></param>
         /// <returns></returns>
@@ -755,7 +755,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÉèÖÃÒÑ±ê¼ÇµÄÒôÆµÊôĞÔ
+        /// è®¾ç½®å·²æ ‡è®°çš„éŸ³é¢‘å±æ€§
         /// </summary>
         public void SetTaggedAudioProperty(string tag, EVENT_PROPERTY property, float value)
         {
@@ -763,7 +763,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// »ñµÃÒÑ±ê¼ÇµÄÒôÆµÊôĞÔ
+        /// è·å¾—å·²æ ‡è®°çš„éŸ³é¢‘å±æ€§
         /// </summary>
         public float GetTaggedAudioProperty(string tag, EVENT_PROPERTY property)
         {
@@ -771,7 +771,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÉèÖÃÒÑ±ê¼ÇµÄÒôÆµ²ÎÊı
+        /// è®¾ç½®å·²æ ‡è®°çš„éŸ³é¢‘å‚æ•°
         /// </summary>
         public void SetTaggedAudioParameter(string tag, PARAMETER_ID ID, float value, bool ignoreSeekSpeed = false)
         {
@@ -779,7 +779,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÉèÖÃÒÑ±ê¼ÇµÄÒôÆµ²ÎÊı
+        /// è®¾ç½®å·²æ ‡è®°çš„éŸ³é¢‘å‚æ•°
         /// </summary>
         public void SetTaggedAudioParameter(string tag, string name, float value, bool ignoreSeekSpeed = false)
         {
@@ -787,7 +787,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÉèÖÃÒÑ±ê¼ÇµÄÒôÆµµÄÒ»×é²ÎÊı
+        /// è®¾ç½®å·²æ ‡è®°çš„éŸ³é¢‘çš„ä¸€ç»„å‚æ•°
         /// </summary>
         public void SetTaggedAudioParameters(string tag, PARAMETER_ID[] IDs, float[] values, int count, bool ignoreSeekSpeed = false)
         {
@@ -795,7 +795,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÓÃ±êÇ©ÉèÖÃÒÑ±ê¼ÇµÄÒôÆµ²ÎÊı
+        /// ç”¨æ ‡ç­¾è®¾ç½®å·²æ ‡è®°çš„éŸ³é¢‘å‚æ•°
         /// </summary>
         public void SetTaggedAudioParameterWithLabel(string tag, PARAMETER_ID ID, string valueLable, bool ignoreSeekSpeed = false)
         {
@@ -803,7 +803,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÓÃ±êÇ©ÉèÖÃÒÑ±ê¼ÇµÄÒôÆµ²ÎÊı
+        /// ç”¨æ ‡ç­¾è®¾ç½®å·²æ ‡è®°çš„éŸ³é¢‘å‚æ•°
         /// </summary>
         public void SetTaggedAudioParameterWithLabel(string tag, string name, string valueLable, bool ignoreSeekSpeed = false)
         {
@@ -811,7 +811,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// »ñµÃÒÑ±ê¼ÇµÄÒôÆµ²ÎÊı
+        /// è·å¾—å·²æ ‡è®°çš„éŸ³é¢‘å‚æ•°
         /// </summary>
         public float GetTaggedAudioParameter(string tag, string name)
         {
@@ -819,7 +819,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// »ñµÃÒÑ±ê¼ÇµÄÒôÆµ²ÎÊı
+        /// è·å¾—å·²æ ‡è®°çš„éŸ³é¢‘å‚æ•°
         /// </summary>
         public float GetTaggedAudioParameter(string tag, PARAMETER_ID ID)
         {
@@ -827,7 +827,7 @@ namespace StarryFramework.Extentions
         }
 
         /// <summary>
-        /// ÊÍ·ÅËùÓĞÒÑ¾­Í£Ö¹µÄÒÑ±ê¼ÇÒôÆµ×ÊÔ´
+        /// é‡Šæ”¾æ‰€æœ‰å·²ç»åœæ­¢çš„å·²æ ‡è®°éŸ³é¢‘èµ„æº
         /// </summary>
         public void ReleaseAllStoppedTaggedAudios()
         {

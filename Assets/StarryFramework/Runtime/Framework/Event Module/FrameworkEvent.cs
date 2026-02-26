@@ -13,7 +13,7 @@ namespace StarryFramework
         public const string BeforeUnloadScene = "BeforeUnLoadScene";
         public const string AfterUnloadScene = "AfterUnLoadScene";
 
-        //需要Scene加载动画的时候触发的事件，包括Load和Change
+        //闇�瑕丼cene鍔犺浇鍔ㄧ敾鐨勬椂鍊欒Е鍙戠殑浜嬩欢锛屽寘鎷琇oad鍜孋hange
         public const string StartSceneLoadAnim = "StartSceneLoadAnim";
         public const string EndSceneLoadAnim = "EndSceneLoadAnim";
 
@@ -21,7 +21,12 @@ namespace StarryFramework
         public const string SetNewActiveScene = "SetNewActiveScene";
 
         public const string BeforeLoadAsset = "BeforeLoadAsset";
+        public const string OnLoadAssetStart = "OnLoadAssetStart";
+        public const string OnLoadAssetProgress = "OnLoadAssetProgress";
+        public const string OnLoadAssetSucceeded = "OnLoadAssetSucceeded";
+        public const string OnLoadAssetFailed = "OnLoadAssetFailed";
         public const string AfterLoadAsset = "AfterLoadAsset";
+        public const string OnReleaseAsset = "OnReleaseAsset";
 
         public const string OnSaveData = "OnSaveData";
         public const string OnLoadData = "OnLoadData";

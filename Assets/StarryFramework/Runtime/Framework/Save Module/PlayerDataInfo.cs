@@ -6,6 +6,7 @@ using UnityEditor;
 
 namespace StarryFramework
 {
+    [Serializable]
     public class PlayerDataInfo
     {
         public PlayerDataInfo(int index, string note)

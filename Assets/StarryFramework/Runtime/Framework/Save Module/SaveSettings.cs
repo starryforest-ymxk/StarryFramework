@@ -8,16 +8,16 @@ namespace StarryFramework
     [Serializable]
     public class SaveSettings :IManagerSettings
     {
-        [Tooltip("ÆôÓÃ×Ô¶¯´æ´¢")]
+        [Tooltip("æ˜¯å¦è‡ªåŠ¨å­˜å‚¨")]
         [SerializeField]
         internal bool AutoSave = true;
 
-        [Tooltip("×Ô¶¯´æµµÊ±¼ä¼ä¸ô(Ãë)")]
+        [Tooltip("è‡ªåŠ¨å­˜æ¡£æ—¶é—´é—´éš”(ç§’)")]
         [Min(10)]
         [SerializeField]
         internal float AutoSaveDataInterval = 600f;
 
-        [Tooltip("´æµµ×¢ÊÍÁĞ±í, µÚÒ»ÌõÎªÄ¬ÈÏ×¢ÊÍ")]
+        [Tooltip("å­˜æ¡£æ³¨é‡Šåˆ—è¡¨ï¼Œç¬¬ä¸€ä¸ªä¸ºé»˜è®¤æ³¨é‡Š")]
         [SerializeField]
         [Multiline]
         internal List<string> SaveInfoList = new List<string>();

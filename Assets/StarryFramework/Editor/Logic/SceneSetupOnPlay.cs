@@ -25,12 +25,12 @@ namespace StarryFramework.Editor
 
         private static void PrepareStartScenes(PlayModeStateChange state)
         {
-            EnterPlayModeWay entryWay = (EnterPlayModeWay)EditorPrefs.GetInt("EnterPlayModeWay", 0);
-            if (entryWay != EnterPlayModeWay.FrameworkStart) return;
+            FrameworkSettings settings = FrameworkSettings.Instance;
+            if (settings == null || settings.enterPlayModeWay != EnterPlayModeWay.FrameworkStart) return;
             
             if (state == PlayModeStateChange.ExitingEditMode)
             {
-                string frameworkScenePath = EditorPrefs.GetString("FrameworkScenePath", null);
+                string frameworkScenePath = settings.frameworkScenePath;
                 if (string.IsNullOrEmpty(frameworkScenePath))
                 {
                     Debug.LogError("Framework Scene Path is empty. Check your framework settings.");

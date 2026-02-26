@@ -29,72 +29,72 @@ namespace StarryFramework
         #region public
 
         /// <summary>
-        /// ×¢²áÄ³¸öObjectÎïÌåµÄ¶ÔÏó³Ø,·ÇGameObject¶ÔÏó
+        /// æ³¨å†ŒæŸä¸ªObjectç‰©ä½“çš„å¯¹è±¡æ± ,éGameObjectå¯¹è±¡
         /// </summary>
-        /// <typeparam Name="T">ÎïÌå°ó¶¨µÄ¼Ì³Ğ×ÔObjectBaseµÄÀà</typeparam>
-        /// <param Name="AutoReleaseInterval">×Ô¶¯ÊÍ·ÅµÄÊ±¼ä¼ä¸ô</param>
-        /// <param Name="ExpireTime">ÎïÌå¹ıÆÚÊ±¼ä</param>
-        /// <param Name="key">ÎïÌå±ê¼Ç£¬ÓÃÓÚ¸øÍ¬Ò»¸öÎïÌå×¢²á¶à¸ö¶ÔÏó³Ø</param>
+        /// <typeparam Name="T">ç‰©ä½“ç»‘å®šçš„ç»§æ‰¿è‡ªObjectBaseçš„ç±»</typeparam>
+        /// <param Name="AutoReleaseInterval">è‡ªåŠ¨é‡Šæ”¾çš„æ—¶é—´é—´éš”</param>
+        /// <param Name="ExpireTime">ç‰©ä½“è¿‡æœŸæ—¶é—´</param>
+        /// <param Name="key">ç‰©ä½“æ ‡è®°ï¼Œç”¨äºç»™åŒä¸€ä¸ªç‰©ä½“æ³¨å†Œå¤šä¸ªå¯¹è±¡æ± </param>
         public void Register<T>(float autoReleaseInterval, float expireTime, string key = "") where T : ObjectBase, new()
         {
            Manager.Register<T>(autoReleaseInterval, expireTime, key);
         }
 
         /// <summary>
-        /// ×¢²áÄ³¸öGameObjectÎïÌåµÄ¶ÔÏó³Ø
+        /// æ³¨å†ŒæŸä¸ªGameObjectç‰©ä½“çš„å¯¹è±¡æ± 
         /// </summary>
-        /// <typeparam Name="T">ÎïÌå°ó¶¨µÄ¼Ì³Ğ×ÔGameObjectBaseµÄÀà</typeparam>
-        /// <param Name="targetObject">¶ÔÏó³Ø¹ÜÀíµÄÄ¿±êÎïÌå</param>
-        /// <param Name="AutoReleaseInterval">×Ô¶¯ÊÍ·ÅµÄÊ±¼ä¼ä¸ô</param>
-        /// <param Name="ExpireTime">ÎïÌå¹ıÆÚÊ±¼ä</param>
-        /// <param Name="fatherObject">ÎïÌåÉú³ÉºóµÄ¸¸ÎïÌå</param>
-        /// <param Name="key">ÎïÌå±ê¼Ç£¬ÓÃÓÚ¸øÍ¬Ò»¸öÎïÌå×¢²á¶à¸ö¶ÔÏó³Ø</param>
+        /// <typeparam Name="T">ç‰©ä½“ç»‘å®šçš„ç»§æ‰¿è‡ªGameObjectBaseçš„ç±»</typeparam>
+        /// <param Name="targetObject">å¯¹è±¡æ± ç®¡ç†çš„ç›®æ ‡ç‰©ä½“</param>
+        /// <param Name="AutoReleaseInterval">è‡ªåŠ¨é‡Šæ”¾çš„æ—¶é—´é—´éš”</param>
+        /// <param Name="ExpireTime">ç‰©ä½“è¿‡æœŸæ—¶é—´</param>
+        /// <param Name="fatherObject">ç‰©ä½“ç”Ÿæˆåçš„çˆ¶ç‰©ä½“</param>
+        /// <param Name="key">ç‰©ä½“æ ‡è®°ï¼Œç”¨äºç»™åŒä¸€ä¸ªç‰©ä½“æ³¨å†Œå¤šä¸ªå¯¹è±¡æ± </param>
         public void Register<T>(GameObject targetObject, float autoReleaseInterval, float expireTime, GameObject fatherObject = null, string key = "") where T : GameObjectBase
         {
             Manager.Register<T>(targetObject, autoReleaseInterval, expireTime, fatherObject, key);
         }
 
         /// <summary>
-        /// ×¢²áÄ³¸öGameObjectÎïÌåµÄ¶ÔÏó³Ø
+        /// æ³¨å†ŒæŸä¸ªGameObjectç‰©ä½“çš„å¯¹è±¡æ± 
         /// </summary>
-        /// <typeparam Name="T">ÎïÌå°ó¶¨µÄ¼Ì³Ğ×ÔGameObjectBaseµÄÀà</typeparam>
-        /// <param Name="path">¶ÔÏó³Ø¹ÜÀíµÄÄ¿±êÎïÌåµÄÂ·¾¶</param>
-        /// <param Name="AutoReleaseInterval">×Ô¶¯ÊÍ·ÅµÄÊ±¼ä¼ä¸ô</param>
-        /// <param Name="ExpireTime">ÎïÌå¹ıÆÚÊ±¼ä</param>
-        /// <param Name="fatherObject">ÎïÌåÉú³ÉºóµÄ¸¸ÎïÌå</param>
-        /// <param Name="key">ÎïÌå±ê¼Ç£¬ÓÃÓÚ¸øÍ¬Ò»¸öÎïÌå×¢²á¶à¸ö¶ÔÏó³Ø</param>
+        /// <typeparam Name="T">ç‰©ä½“ç»‘å®šçš„ç»§æ‰¿è‡ªGameObjectBaseçš„ç±»</typeparam>
+        /// <param Name="path">å¯¹è±¡æ± ç®¡ç†çš„ç›®æ ‡ç‰©ä½“çš„è·¯å¾„</param>
+        /// <param Name="AutoReleaseInterval">è‡ªåŠ¨é‡Šæ”¾çš„æ—¶é—´é—´éš”</param>
+        /// <param Name="ExpireTime">ç‰©ä½“è¿‡æœŸæ—¶é—´</param>
+        /// <param Name="fatherObject">ç‰©ä½“ç”Ÿæˆåçš„çˆ¶ç‰©ä½“</param>
+        /// <param Name="key">ç‰©ä½“æ ‡è®°ï¼Œç”¨äºç»™åŒä¸€ä¸ªç‰©ä½“æ³¨å†Œå¤šä¸ªå¯¹è±¡æ± </param>
         public void Register<T>(string path, float autoReleaseInterval, float expireTime, GameObject fatherObject = null, string key = "") where T : GameObjectBase
         {
             Manager.Register<T>(path, autoReleaseInterval, expireTime, fatherObject, key);
         }
 
         /// <summary>
-        /// »ñÈ¡Ä³¸öÎïÌå
+        /// è·å–æŸä¸ªç‰©ä½“
         /// </summary>
-        /// <typeparam Name="T">¶ÔÏó³ØÎïÌåÀà</typeparam>
-        /// <param Name="key">ÎïÌå±ê¼Ç</param>
-        /// <returns>Òª»ñÈ¡µÄÎïÌå</returns>
+        /// <typeparam Name="T">å¯¹è±¡æ± ç‰©ä½“ç±»</typeparam>
+        /// <param Name="key">ç‰©ä½“æ ‡è®°</param>
+        /// <returns>è¦è·å–çš„ç‰©ä½“</returns>
         public T Require<T>(string key = "") where T : class, IObjectBase
         {
             return Manager.Require<T>(key);
         }
 
         /// <summary>
-        /// »ØÊÕÄ³¸öÎïÌå
+        /// å›æ”¶æŸä¸ªç‰©ä½“
         /// </summary>
-        /// <typeparam Name="T">¶ÔÏó³ØÎïÌåÀà</typeparam>
-        /// <param Name="obj">Òª»ØÊÕµÄÎïÌå</param>
-        /// <param Name="key">ÎïÌå±ê¼Ç</param>
+        /// <typeparam Name="T">å¯¹è±¡æ± ç‰©ä½“ç±»</typeparam>
+        /// <param Name="obj">è¦å›æ”¶çš„ç‰©ä½“</param>
+        /// <param Name="key">ç‰©ä½“æ ‡è®°</param>
         public void Recycle<T>(T obj, string key = "") where T : class, IObjectBase
         {
             Manager.Recycle(obj, key);
         }
 
         /// <summary>
-        /// Ëø¶¨»ò½â³ıËø¶¨Ä³¸ö¶ÔÏó³Ø£¬Ê¹Æä²»»á×Ô¶¯ÊÍ·ÅÎïÌå
+        /// é”å®šæˆ–è§£é™¤é”å®šæŸä¸ªå¯¹è±¡æ± ï¼Œä½¿å…¶ä¸ä¼šè‡ªåŠ¨é‡Šæ”¾ç‰©ä½“
         /// </summary>
         /// <typeparam Name="T"></typeparam>
-        /// <param Name="Locked">trueÎ´Ëø¶¨£¬falseÎª½â³ıËø¶¨</param>
+        /// <param Name="Locked">trueæœªé”å®šï¼Œfalseä¸ºè§£é™¤é”å®š</param>
         /// <param Name="key"></param>
         public void SetLocked<T>(bool locked, string key = "") where T : class, IObjectBase
         {
@@ -102,7 +102,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÊÍ·ÅÄ³¸öÎïÌå
+        /// é‡Šæ”¾æŸä¸ªç‰©ä½“
         /// </summary>
         /// <typeparam Name="T"></typeparam>
         /// <param Name="obj"></param>
@@ -113,7 +113,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÊÍ·ÅËùÓĞÎ´Ê¹ÓÃµÄÎïÌå
+        /// é‡Šæ”¾æ‰€æœ‰æœªä½¿ç”¨çš„ç‰©ä½“
         /// </summary>
         /// <typeparam Name="T"></typeparam>
         /// <param Name="key"></param>
@@ -123,7 +123,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÊÍ·ÅËùÓĞÎïÌå
+        /// é‡Šæ”¾æ‰€æœ‰ç‰©ä½“
         /// </summary>
         /// <typeparam Name="T"></typeparam>
         /// <param Name="key"></param>
@@ -133,7 +133,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÊÍ·Å¶ÔÏó³Ø
+        /// é‡Šæ”¾å¯¹è±¡æ± 
         /// </summary>
         /// <typeparam Name="T"></typeparam>
         /// <param Name="key"></param>

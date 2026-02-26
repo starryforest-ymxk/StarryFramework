@@ -5,42 +5,45 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ExampleLoadBar : LoadProgressBase
+namespace StarryFramework
 {
-    [SerializeField]
-    protected Slider progressBar;
-    [SerializeField]
-    protected Text _text;
-    [SerializeField]
-    [Range(0, 4)]
-    protected int decimalPlaces = 2;
-
-    public override void SetProgressValue(float value)
+    public class ExampleLoadBar : LoadProgressBase
     {
-        progressBar.value = value;
-        _text.text = Math.Round(value * 100, decimalPlaces).ToString() + "%";
-    }
+        [SerializeField]
+        protected Slider progressBar;
+        [SerializeField]
+        protected Text _text;
+        [SerializeField]
+        [Range(0, 4)]
+        protected int decimalPlaces = 2;
 
-    public override void BeforeSetActive(AsyncOperation asyncOperation)
-    {
-
-        _text.text = "Press any key to start.";
-        StartCoroutine(Routine());
-        return;
-
-        IEnumerator Routine()
+        public override void SetProgressValue(float value)
         {
-            while(true)
-            {
-                if (Input.anyKeyDown)
-                {
-                    AllowSceneActivate(asyncOperation);
-                    break;
-                }
-
-                yield return null;
-            }
+            progressBar.value = value;
+            _text.text = Math.Round(value * 100, decimalPlaces).ToString() + "%";
         }
-        
+
+        public override void BeforeSetActive(AsyncOperation asyncOperation)
+        {
+
+            _text.text = "Press any key to start.";
+            StartCoroutine(Routine());
+            return;
+
+            IEnumerator Routine()
+            {
+                while(true)
+                {
+                    if (Input.anyKeyDown)
+                    {
+                        AllowSceneActivate(asyncOperation);
+                        break;
+                    }
+
+                    yield return null;
+                }
+            }
+            
+        }
     }
 }

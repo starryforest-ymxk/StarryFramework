@@ -24,29 +24,37 @@ namespace StarryFramework
         [SerializeField]
         private bool neverSleep = true;
 
-        [Header("Framework Setting")]
-        [Space(10)]
-        [SerializeField]
-        private FrameworkSettings frameworkSetting = new FrameworkSettings();
+        private FrameworkSettings FrameworkSetting
+        {
+            get
+            {
+                return FrameworkSettings.Instance;
+            }
+        }
 
 
 
 
 
 
-        #region ×é¼şÁ÷³Ì
+        #region ç»„ä»¶æµç¨‹
 
         private void Awake()
         {
             FrameworkManager.BeforeAwake();
 
-            frameworkSetting.Init();
+            if (FrameworkSetting == null)
+            {
+                Debug.LogError("FrameworkSettings is null! Please create a FrameworkSettings asset.");
+                return;
+            }
 
-            frameworkSetting.SettingCheck();
+            FrameworkSetting.Init();
+            FrameworkSetting.SettingCheck();
 
             UnitySetup();
             
-            FrameworkManager.RegisterSetting(frameworkSetting);
+            FrameworkManager.RegisterSetting(FrameworkSetting);
 
             SetComponentsActive();
 
@@ -72,12 +80,12 @@ namespace StarryFramework
 
         private void SceneUnload()
         {
-            // »ñÈ¡³¡¾°ÊıÁ¿
+            // è·å–åœºæ™¯æ•°é‡
             int sceneCount = UnityEngine.SceneManagement.SceneManager.sceneCount;
 
             bool hasDontDestroy = false;
 
-            // ÄæĞòĞ¶ÔØ³¡¾°
+            // é€†åºå¸è½½åœºæ™¯
             for (int i = sceneCount - 1; i >= 0; i--)
             {
                 Scene scene = UnityEngine.SceneManagement.SceneManager.GetSceneAt(i);
@@ -112,7 +120,7 @@ namespace StarryFramework
         #endregion
 
         /// <summary>
-        /// Unity±à¼­Æ÷ÉèÖÃ
+        /// Unityç¼–è¾‘å™¨è®¾ç½®
         /// </summary>
         private void UnitySetup()
         {
@@ -123,7 +131,7 @@ namespace StarryFramework
         }
 
         /// <summary>
-        /// ÆôÓÃ×é¼ş
+        /// å¯ç”¨ç»„ä»¶
         /// </summary>
         private void SetComponentsActive()
         {
@@ -134,7 +142,7 @@ namespace StarryFramework
                 {
                     ModuleType type = (ModuleType)Enum.Parse(typeof(ModuleType), component.gameObject.name);
 
-                    if (!frameworkSetting.modules.Contains(type))
+                    if (!FrameworkSetting.modules.Contains(type))
                     {
                         FrameworkManager.Debugger.Log($"Unused module: {type}");
                         component.gameObject.SetActive(false);

@@ -1,8 +1,4 @@
-
-
-
-
-<p align="center"><img width="501" height="106" src="./images/README/StarryFramework-Logo.png"></p>
+<p align="center"><img width="501" height="106" src="./images/StarryFramework-Logo.png"></p>
 
 <p align="center">
 	<a href="https://github.com/starryforest-ymxk/StarryFramework/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-blue.svg" title="license-mit" /></a>
@@ -11,229 +7,332 @@
 
 |[中文](README.md)|[English](README_EN.md)|
 
-[toc]
+- [About StarryFramework](#about-starryframework)
+  - [Core Features](#core-features)
+  - [Folder Structure](#folder-structure)
+  - [Basic Modules Introduction](#basic-modules-introduction)
+  - [Extension Modules Introduction](#extension-modules-introduction)
+  - [Framework Dependencies](#framework-dependencies)
+- [Framework Download](#framework-download)
+- [Quick Start](#quick-start)
+  - [Basic Configuration](#basic-configuration)
+  - [Extension Module Configuration](#extension-module-configuration)
+  - [Simple Usage](#simple-usage)
+- [Copyright and Acknowledgments](#copyright-and-acknowledgments)
+- [Support](#support)
 
 ---
 
 ## About StarryFramework
 
-StarryFramework is a lightweight Unity development framework offering a range of ready-to-use methods, such as events, game saving, fsm, object pool, timers, scene management, and more. It employs an MOM architecture to organize various modules, ensuring zero coupling between them. The framework encapsulates Unity's provided APIs, effectively speeding up development and ensuring game quality.
+StarryFramework is a lightweight Unity game development framework designed to provide a set of out-of-the-box functional modules that help developers quickly build high-quality game projects. The framework adopts the MOM (Manager-Of-Managers) architecture design, achieving zero coupling between modules and supporting flexible module composition and extension.
 
-### Introduction to Basic Modules
+### Core Features
 
-In the current version, seven basic modules are included:
-
-1. **Event Module**: Implemented based on delegates and managed using custom event constants. It provides methods for adding event listeners, removing event listeners, and triggering events. It supports events with up to four different parameters, allowing events with different parameters to have the same name.
-2. **Save module**：Offers features like automatic saving, manual saving, save retrieval, save selection, save overwriting, and save creation and deletion. Each save can have annotated information. Save data is stored in JSON format, while game settings are stored using `PlayerPrefs`. Boolean fields declared in the save can be automatically set to true by triggering an event with the same name and no parameters (implemented via reflection).
-3. **FSM Module**：Provides methods for managing multiple Fsms, supporting the registration, destruction, and parameter management of multiple Fsms.
-
-4. **Object Pool Module**: Provides methods for managing multiple object pools, supporting the creation of GameObject type and regular type object pools, and automatic periodic release of expired objects.
-5. **Timer Module**: Offers methods for managing ordinary timers, event-triggered timers, and async timers, supporting automatic management of multiple timers.
-6. **Scene Module**: Encapsulates Unity's API, providing methods for loading, unloading, and switching scenes. It offers methods for switching scenes using default fade-in/fade-out animations and progress bar animations. You can inherit the `LoadProgressBase` class to implement custom progress bar animations. It supports multiple Unity asynchronous processes using a single progress bar to display the overall process.
-7. **Resource Management Module**: Encapsulates Unity's API, providing methods for synchronous resource loading, asynchronous resource loading, and resource unloading.
-
-For specific usage of the modules, refer to the code comments in `StarryFramework.XXComponent`.
-
-You can also create custom modules based on your needs.
+- **Modular Design**: All functions exist as independent modules, which can be freely combined according to project requirements
+- **Zero Coupling Architecture**: Modules communicate through the event system, achieving loose coupling
+- **Unified Entry Point**: Provides a unified API access point through the `Framework` static class
+- **Easy to Extend**: Supports custom module development and easy integration of new features
+- **Editor-Friendly**: Provides custom Inspector panels for each module for easy configuration and debugging
+- **Lifecycle Management**: Strict module lifecycle control ensures proper initialization and destruction order
 
 ### Folder Structure
 
-The `StarryFramework.unitypackage` you downloaded contains the following folder structure:
-
 ```
-Plugins/
-StarryFramework/
-├── Attributes/
-├── Framework/
-│   ├── Editor/
-│   ├── Runtime/
-│   │   ├── Base/
-│   │   ├── Static/
-│   │   ├── Utilities/
-│   │   └── XXModule/
-├── Info/
-└── Scene/
+/Assets
+├── /StarryFramework           		
+│   ├── /Runtime               		
+│   │   ├── /Attributes        			# Custom Attributes
+│   │   ├── /Framework         			# Framework Core
+│   │   └── /Scene             		
+│   │       └── GameFramework.unity 	# Framework startup scene
+│   ├── /Editor                			# Module Editors
+│   ├── /Extensions            			# Extension Modules
+│   ├── /Info                  			# Framework Documentation
+│   └── /Resources             		
+└── /Plugins                   		
 ```
 
-The contents of each folder are as follows:
+### Basic Modules Introduction
 
-- **Plugins :** 
+The current version includes eight basic modules:
 
-  Contains third-party libraries required by the framework
+1. **Event Module**: Event system based on delegates, supporting decoupled communication between modules.
+2. **Save Module**: Complete save management system, supporting multiple saves and auto-save.
+3. **FSM Module**: Flexible state machine management system, supporting multiple concurrent state machines.
 
-- **StarryFramework**
+4. **ObjectPool Module**: Efficient object pool management system, reducing frequent instantiation overhead.
+5. **Timer Module**: Feature-rich timer management system, supporting multiple timer types.
+6. **Scene Module**: Provides scene loading, unloading and switching functions, supporting scene transition animations.
+7. **Resource Module**: Resource management system based on Resources and Addressables.
+8. **UI Module**: Complete UI form management system, supporting UI grouping and hierarchical management.
 
-  - **Attributes :** 
+### Extension Modules Introduction
 
-    Contains custom extended attributes, including features like collapsible sections and scene selection
+The current version includes one extension module:
 
-  - **Framework**
+- **Audio Module**
 
-    - **Editor :** 
+  Considering that some projects use audio middleware to manage game audio in actual development, this framework provides an audio module for FMOD. This audio module encapsulates the API provided by FMOD, making the interface more concise and easier to use.
 
-      Custom inspector panels for each module, including module settings and runtime state displays
+  The audio module provides audio and BGM hosting, supports volume control for multiple output channels, supports dynamically attaching audio to objects; supports automatic BGM playback for different scenes, audio preloading, etc.
 
-    - **Runtime**
+  The audio module content is in `StarryFramework_AudioExtention.unitypackage`.
 
-      - **Base :** 
+### Framework Dependencies
 
-        Includes some basic base classes and fundamental nodes; this part can be used to implement custom modules
+StarryFramework depends on the following Unity Package Manager (UPM) packages and third-party plugins:
 
-      - **Static :** 
+- Required Dependencies
+  - Newtonsoft.Json (`com.unity.nuget.newtonsoft-json`)
+  - Addressables (`com.unity.addressables`)
+  - DOTween (third-party plugin, integrated in the framework package)
 
-        Static content of the framework, including enum type definitions and the **<u>framework entry class</u> `Framework`**
+- Optional Dependencies
+  - FMOD for Unity
 
-      - **Utilities :** 
+---
 
-        Provides some singleton base classes and simple utility functions
+## Framework Download
 
-      - **XX Module :** 
+- Download unitypackage
 
-        Various module codes
+  Go to the [Releases page](https://github.com/starryforest-ymxk/StarryFramework/releases) to download `StarryFramework.unitypackage`
 
-  - **Info :** 
+  If your project uses FMOD and requires the framework's FMOD extension, also download `StarryFramework_AudioExtention.unitypackage`
 
-    Contains readme and license files
-
-  - **Scene :** 
-
-    Provides a basic scene containing framework nodes, serving as the game's starting scene
-
-### Extension Module
-
-In the current version, one extension module is included:
-
-- Audio Module
-
-  Considering that some projects might use audio middleware to manage game audio in practical development, this framework provides an audio module tailored for Fmod. This audio module encapsulates the APIs provided by Fmod, making the interface more concise and easier to use.
-
-  The audio module manages audio and BGM, supports volume control across multiple output channels, and allows dynamic attachment of audio to objects; it supports automatic playback of BGM specific to different scenes, audio preloading, etc.
-
-  The content of the audio module is found in `StarryFramework_AudioExtention.unitypackage`.
-
-
-
-## Download
-
-- Download the unitypackage
-
-  Visit the [release page](https://github.com/starryforest-ymxk/StarryFramework/releases) to download `StarryFramework.unitypackage`.
-
-  If your project uses Fmod and you need the framework's extension for Fmod, also download `StarryFramework_AudioExtention.unitypackage`.
-
-- Clone the repository
-
-  You can also clone the project repository:
+- Or: Clone the project repository
 
   ``` 
   git clone https://github.com/starryforest-ymxk/StarryFramework.git
   ```
 
-  The repository uses Fmod to manage audio files, so it includes both the basic framework and extension content. Additionally, the `Assets/Test` directory contains some test code for various modules of the framework, which you might find interesting to check out.
+  The repository uses FMOD to manage audio files, so it includes the basic framework and extension content. Additionally, the `Assets/Test` directory in the repository contains some test code for various framework modules.
 
-
+---
 
 ## Quick Start
 
-### Basic Setup
+### Basic Configuration
 
-- Import the downloaded `StarryFramework.unitypackage` into your project. Open the scene `StarryFramework/Scene/GameFramework.unity` and add this scene to the **Scenes in Build** in the Build Settings. Ensure **buildindex of the  GameFramework scene is 0**. This scene will be used as the game's startup scene, serving as the entry point of the game, and will not be unloaded throughout the game.
+1. Import framework dependencies
 
-- At this point, your Hierarchy window should look like this:
+   - Import the framework's dependency packages into your project: `Newtonsoft.Json`, `Addressables`
 
-  ![image-20240611011850773](./images/README_EN/image-20240611011850773.png)
+2. Import the framework
+   - Import the downloaded `StarryFramework.unitypackage` into your project
 
-  In the GameFramework, the `MainComponent` script is attached, and each module node has the `XXComponent` script attached on it.
+3. Configure the startup scene
 
-  In the GameFramework's Inspector window, you can adjust Unity's runtime settings and the framework's basic settings:
+   - Open the `StarryFramework/Runtime/Scene/GameFramework.unity` scene
 
-  ![image-20240611012156800](./images/README_EN/image-20240611012156800.png)
+   - Select `File > Build Settings` from the Unity menu
 
-  In the framework settings, you need to set the start scene: If the start scene is GameFramework, then the game will do nothing on game start.
+   - Add `GameFramework.unity` to the `Scenes in Build` list
 
-  The `Modules` list below, contains all the modules currently enabled in the framework. You can remove some modules that are not needed. However, please note that the **<u>Scene module should always be retained, and do not include two of the same modules in the list</u>**. The order of the modules represents their priority; modules closer to the front of the list have higher priority. Higher priority modules are initialized earlier and deregistered later, and are called earlier in each frame of the lifecycle.
+   - **Ensure the GameFramework scene has buildIndex 0** (drag it to the first position in the list)
 
-  On the Inspector window of each submodule, you can also configure some properties for certain modules, such as Scene module, Timer module, and Save module.
+   - This scene will serve as the game's startup scene and remain loaded throughout the game runtime
 
-- In the GameFramework scene, the camera is attached with the `SceneChangeCameraControl` script. This camera is used for rendering scene transition animations and is only enabled when transition animations need to be played. You can also check Is Main Camera to use it as the main camera, keeping it enabled throughout.
 
-- If your project is sensitive to the order of script execution during the lifecycle, you can control the framework scripts to be called before the default time:
+3. Adjust framework settings
 
-  ![image-20240611014457897](./images/README_EN/image-20240611014457897.png)
+   - Select `Window > StarryFramework > Settings Panel` from the Unity menu to open the framework settings panel
+   - To enable framework functionality in the game, use the `Framework Start` startup mode and set the framework's initial loading scene; for simple code functionality testing, use the `Normal Start` startup mode
+     - Framework Start: After entering play mode, the framework first loads the GameFramework scene, then loads the initial scene
+     - Normal Start: Unity's default behavior, remains in the current scene after entering play mode
+   - The Modules list contains the framework's enabled modules
+     - The order between modules represents their priority, modules closer to the front of the list have higher priority
+     - Higher priority modules initialize earlier, destroy later, and are called earlier each frame in the lifecycle
 
-  Note: Set the call order of the `MainComponent` script to precede that of other `Component` scripts.
+   - On the editor panel corresponding to each submodule, you can configure specific settings for each module (Scene module, Timer module, Save module, etc.)
 
-- <u>**Always start the game from the GameFramework scene when running.**</u> For example, if you want to run the TestSave scene, you must first select TestSave in the MainComponent:
+4. Configure scene camera
 
-  ![image-20240611015116123](./images/README_EN/image-20240611015116123.png)
+   - The `Camera` object in the `GameFramework` scene is attached with `SceneChangeCameraControl`:
+     - This camera is used to render scene transition animations and is enabled by default only when playing transition animations; check `Is Main Camera` to use it as the global main camera
 
-  Ensure the Scene module is present:
 
-  ![image-20240611015400151](./images/README_EN/image-20240611015400151.png)
+### Extension Module Configuration
 
-  The Hierarchy window should retain the only GameFramework loaded scene (other unloaded scenes are also allowed): 
+**Audio Module (Audio Extension Module)**
 
-  ![image-20240611015514090](./images/README_EN/image-20240611015514090.png)
+The audio module is an optional extension module based on the FMOD audio middleware. If your project needs to use FMOD for audio management, follow these configuration steps:
 
-  Run the game, and the framework will automatically load the initial scene TestSave:
+**Prerequisites**
 
-  ![image-20240611015654808](./images/README_EN/image-20240611015654808.png)
+1. Install FMOD for Unity
+   - Go to the [FMOD official website](https://www.fmod.com/) to download the FMOD for Unity plugin (Version 2.02.11 or later)
+   - Import the FMOD plugin into your Unity project
+   - Ensure FMOD is correctly configured and working properly
 
-- **Calling Framework Provided Methods**: All methods provided by the framework modules are accessed via the static class `Framework`, using `Framework.XXComponent`. The `StarryFramework` namespace needs to be included. For example, a call to register an event could be written as:
+2. Import the audio extension module
+   - Download `StarryFramework_AudioExtention.unitypackage`
+   - Import the extension package into your project
+   - The extension module will be automatically installed to the `/Assets/StarryFramework/Extensions/Runtime/Audio Module` directory
 
-  ``` c#
-  Framework.EventComponent.AddEventListener<Object>("Event2", Event2);
-  ```
+**Configuration Steps**
 
-  To understand the usage of the methods provided, you can refer to the script comments for each `XXComponent` script.
-
-  Additionally, some utility methods are provided in the static class `Utilities`.
-
-- **Save Module**: You can declare fields that need to be managed within the `GameSettings` and `PlayerData` classes included in the save module.
-
-### Extension Part
-
-- Building on the work mentioned above, import the FMOD Unity integration suitable for your project. Due to licensing restrictions, FMOD is not included in the distributed version.
-
-  > **FMOD Studio**: Provided by Firelight Technologies Pty Ltd, used for audio management and integration. Due to licensing restrictions, FMOD is not included in the distributed version. Visit the [FMOD official website](https://www.fmod.com/) for more information.
-
-  After importing FMOD, import the downloaded `StarryFramework_AudioExtention.unitypackage` into your project.
-
-- Add the **Audio module** under Modules Enabled in the Main Component:
-
-  ![image-20240611021907978](./images/README_EN/image-20240611021907978.png)
-
-  Also, drag the Audio prefab from the Audio Module into the GameFramework scene as a child object: 
-
-  ![image-20240611022047592](./images/README_EN/image-20240611022047592.png)
-
-- Configure the settings of the Audio Component, such as the globally loaded audio banks and the BGM for each scene.
-
-  ![image-20240611022120706](./images/README_EN/image-20240611022120706.png)
-
-- In your code, simply call the provided methods using `Framework.AudioComponent`. For specific usage of these methods, refer to the comments in the AudioComponent code.
+1. Add the audio module to the framework
+   - Open the framework settings panel (`Window > StarryFramework > Settings Panel`)
+   - Add `AudioComponent` to the Modules list
+   - Adjust the module's priority order as needed
+   - Drag the Audio prefab from the Audio Module into the GameFramework scene as a child object
+2. Configure audio module settings
+   - Configure audio settings in the AudioComponent's editor panel, such as globally loaded audio banks, BGM for each scene, etc.
 
 
 
-## License and Acknowledgements
+
+### Simple Usage
+
+**Basic Calling Method**
+
+All framework functions are accessed through the `Framework` static class, requiring the `StarryFramework` namespace:
+
+```csharp
+using StarryFramework;
+
+public class Example : MonoBehaviour
+{
+    void Start()
+    {
+        // Trigger event
+        Framework.EventComponent.InvokeEvent("GameStart");
+        // Save data
+        Framework.SaveComponent.SaveData("Manual Save");
+        // Load scene
+        Framework.SceneComponent.LoadScene("MainGame");
+    }
+}
+```
+
+
+
+**Event Module Example**
+
+```csharp
+// Add event listener
+Framework.EventComponent.AddEventListener("OnPlayerDeath", OnPlayerDeath);
+
+// Remove event listener
+Framework.EventComponent.RemoveEventListener("OnPlayerDeath", OnPlayerDeath);
+
+// Trigger event
+Framework.EventComponent.InvokeEvent<int>("OnScoreChanged", 100);
+```
+
+
+
+**Save Module Example**
+
+```csharp
+// Create new save
+Framework.SaveComponent.CreateNewData(true, "New Game");
+
+// Modify player data
+Framework.SaveComponent.PlayerData.playerName = "Player1";
+Framework.SaveComponent.PlayerData.level = 5;
+
+// Save data
+Framework.SaveComponent.SaveData("Progress Save");
+// Load save
+bool success = Framework.SaveComponent.LoadData(0);
+```
+
+
+
+**Scene Module Example**
+
+```csharp
+// Load scene with default animation
+Framework.SceneComponent.LoadSceneDefault("Level2");
+// Load scene with custom progress bar
+Framework.SceneComponent.LoadSceneProgressBar(
+    "Level2", 
+    "UI/LoadingScreen", 
+    () => Debug.Log("Loading Complete")
+);
+```
+
+
+
+**UI Module Example**
+
+```csharp
+// Open UI form
+Framework.UIComponent.OpenUIForm("MainMenu", "Menu", false);
+
+// Open settings window, pause covered UI
+Framework.UIComponent.OpenUIForm("SettingsPanel", "Dialog", true);
+
+// Close UI form
+Framework.UIComponent.CloseUIForm("SettingsPanel");
+```
+
+---
+
+## Copyright and Acknowledgments
 
 StarryFramework is licensed under the [MIT License](https://github.com/starryforest-ymxk/StarryFramework/blob/master/LICENSE.md)
 
-This project utilizes the following open-source libraries:
+This project uses the following open-source project libraries:
 
-- FMOD Studio
+- **Newtonsoft.Json**
 
-  This project employs FMOD Studio and technology provided by Firelight Technologies Pty Ltd. Visit the [FMOD official website](https://www.fmod.com/) to obtain and integrate FMOD.
+  This project uses Newtonsoft.Json (Json.NET) for JSON serialization and deserialization. Developed by Newtonsoft, licensed under MIT. See the [Newtonsoft.Json official website](https://www.newtonsoft.com/json)
 
-- Dotween (included in `StarryFramework.unitypackage`)
+- **Unity Addressables**
 
-  This project uses DOTween, developed by Daniele Giardini - Demigiant, for animation management. For more information, see the [DOTween official website](http://dotween.demigiant.com/).
+  This project uses the Addressables system provided by Unity Technologies for resource management. See the [Unity Addressables documentation](https://docs.unity3d.com/Packages/com.unity.addressables@latest)
 
-Additionally, thanks to my friend [NoSLoofah](https://github.com/NoSLoofah) for his assistance during the development of this framework.
+- **FMOD Studio**
+
+  This project uses FMOD Studio and technology provided by Firelight Technologies Pty Ltd. Visit the [FMOD official website](https://www.fmod.com/) to obtain and integrate FMOD
+
+- **DOTween** (included in `StarryFramework.unitypackage`)
+
+  This project uses DOTween, developed by Daniele Giardini - Demigiant, for animation management. See the [DOTween official website](http://dotween.demigiant.com/)
+
+Also, thanks to my friend [NoSLoofah](https://github.com/NoSLoofah) for the help provided while writing the framework.
+
+---
 
 ## Support
 
-- email：1911308683@qq.com，starryforest_ymxk@outlook.com
+**Documentation and Tutorials**
 
-- If you find this framework useful, please consider leaving a star, much appreciated!
-- If you have ideas, welcome your contributions!
+- [API Quick Reference Manual](API_QUICK_REFERENCE.md)
+
+
+
+**Issue Feedback**
+
+If you encounter problems while using StarryFramework, you can seek help through the following methods:
+
+1. **Check Documentation**: First check this document and the API Quick Reference Manual, most common issues are covered
+2. **Check Examples**: Refer to the test scenes and code examples in the `/Assets/Test` directory of the project files
+3. **GitHub Issues**: Submit an Issue on the project's GitHub repository
+
+
+
+**Contributing**
+
+We welcome contributions in any form!
+
+- 🐛 Report Bugs
+- 💡 Suggest new features
+- 📝 Improve documentation
+- 🔧 Submit code optimizations
+- ⭐ Star the project
+
+
+
+**Get Updates**
+
+- **GitHub Repository**: https://github.com/starryforest-ymxk/StarryFramework
+- **Latest Version**: Check the [Releases](https://github.com/starryforest-ymxk/StarryFramework/releases) page
+
+---
+
+**Thank you for using StarryFramework! Wishing you smooth game development!** 🌟

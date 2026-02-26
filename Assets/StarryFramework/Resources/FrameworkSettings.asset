@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 973de93cdd78c6e499c1448688a31f12, type: 3}
+  m_Name: FrameworkSettings
+  m_EditorClassIdentifier: 
+  FrameworkSceneID: 0
+  enterPlayModeWay: 1
+  frameworkScenePath: Assets/StarryFramework/Runtime/Scene/GameFramework.unity
+  debugType: 1
+  InternalEventTrigger: 1
+  StartScene: 1
+  StartSceneAnimation: 0
+  modules: 0000000002000000010000000400000005000000060000000300000007000000

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,7 +8,7 @@ namespace StarryFramework
     {
         private static readonly Dictionary<Type, IManager> managers = new();
 
-        //¼ÇÂ¼moduleÆôÓÃÒÔ¼°ÓÅÏÈ¼¶
+        //è®°å½•moduleå¯ç”¨ä»¥åŠä¼˜å…ˆçº§
         private static readonly List<Type> managerTypeList = new();
         
         private static FrameworkState state = FrameworkState.Stop;
@@ -18,21 +17,21 @@ namespace StarryFramework
         private static FrameworkSettings frameworkSetting;
         internal static FrameworkSettings Setting => frameworkSetting;
 
-        //GameFramework ÄÚ²¿ÊÂ¼ş¹ÜÀíÆ÷
+        //GameFramework å†…éƒ¨äº‹ä»¶ç®¡ç†å™¨
         private static FrameworkEventManager _eventManager;
         internal static FrameworkEventManager EventManager
         {
             get { return _eventManager ??= new FrameworkEventManager(); }
         }
 
-        //GameFramework ÄÚ²¿Debugger
+        //GameFramework å†…éƒ¨Debugger
         private static FrameworkDebugger _debugger;
         internal static FrameworkDebugger Debugger
         {
             get { return _debugger ??= new FrameworkDebugger(); }
         }
 
-        #region Setting×¢²á
+        #region Settingæ³¨å†Œ
 
         internal static void RegisterSetting(FrameworkSettings setting)
         {
@@ -41,10 +40,10 @@ namespace StarryFramework
 
         #endregion
 
-        // BeforeShutDown() ºÍ ShutDown() ÓÉFrameworkComponent.ShutDown()´¥·¢(µ÷ÓÃ´¥·¢)
-        // ÆäÓàÁ÷³ÌÓÉMainComponentµÄMonoBehaviourÇı¶¯
+        // BeforeShutDown() å’Œ ShutDown() ç”±FrameworkComponent.ShutDown()è§¦å‘(è°ƒç”¨è§¦å‘)
+        // å…¶ä½™æµç¨‹ç”±MainComponentçš„MonoBehaviouré©±åŠ¨
 
-        #region ×é¼şÁ÷³Ì
+        #region ç»„ä»¶æµç¨‹
         internal static void BeforeAwake()
         {
             state = FrameworkState.Awake;
@@ -113,9 +112,9 @@ namespace StarryFramework
         #endregion
 
 
-        #region Manager¹ÜÀí
+        #region Managerç®¡ç†
 
-        #region ÄÚ²¿·½·¨
+        #region å†…éƒ¨æ–¹æ³•
         private static bool HasManager(Type type)
         {
             if (managers.ContainsKey(type))
@@ -159,7 +158,7 @@ namespace StarryFramework
 
         #endregion
 
-        #region Íâ²¿½Ó¿Ú
+        #region å¤–éƒ¨æ¥å£
 
         internal static T GetManager<T>() where T : IManager, new()
         {

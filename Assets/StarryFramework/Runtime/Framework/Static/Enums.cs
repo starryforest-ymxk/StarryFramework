@@ -30,5 +30,5 @@ namespace StarryFramework
     public enum SaveState { Unloaded, Loaded }
 
     [Serializable]
-    public enum LoadState { Loading, Idle }
+    public enum LoadState { Idle, Loading, Completed, Failed }
 }

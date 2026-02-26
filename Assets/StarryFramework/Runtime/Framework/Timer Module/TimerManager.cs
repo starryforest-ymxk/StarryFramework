@@ -66,7 +66,7 @@ namespace StarryFramework
                 triggerTimer.Update();
             }
 
-            //Ê¹ÓÃtempAddTimersºÍtempDeleteTimersÊÇ±ÜÃâÔÚtimerÖÐµÄ»Øµ÷°ó¶¨ÁË×¢²á»òÉ¾³ýÂß¼­£¬µ¼ÖÂforeachÖÐ¸Ä±älistµÄ´íÎó
+            //ä½¿ç”¨tempAddTimerså’ŒtempDeleteTimersæ˜¯é¿å…åœ¨timerä¸­çš„å›žè°ƒç»‘å®šäº†æ³¨å†Œæˆ–åˆ é™¤é€»è¾‘ï¼Œå¯¼è‡´foreachä¸­æ”¹å˜listçš„é”™è¯¯
             if (tempAddTimers.Count > 0)
             {
                 tempAddTimers.ForEach((a) => { timers.Add(a); });

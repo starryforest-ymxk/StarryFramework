@@ -116,10 +116,10 @@ namespace StarryFramework.Editor
         }
 
         /// <summary>
-        /// 返回类型的继承树，父类在前，子类在后
+        /// 杩斿洖绫诲瀷鐨勭户鎵挎爲锛岀埗绫诲湪鍓嶏紝瀛愮被鍦ㄥ悗
         /// </summary>
-        /// <param Name="t">输入类型</param>
-        /// <returns>继承关系列表</returns>
+        /// <param Name="t">杈撳叆绫诲瀷</param>
+        /// <returns>缁ф壙鍏崇郴鍒楄〃</returns>
         public static IList<Type> GetTypeTree(this Type t)
         {
             var types = new List<Type>();

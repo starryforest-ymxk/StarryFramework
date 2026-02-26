@@ -1,9 +1,12 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace StarryFramework
 {
+    /// <summary>
+    /// UI组类，用于管理一组UI窗体的层级和状态
+    /// </summary>
     public class UIGroup
     {
         private string name;
@@ -11,7 +14,14 @@ namespace StarryFramework
         private bool pause;
         private readonly LinkedList<UIFormInfo> formInfosList;
         
+        /// <summary>
+        /// UI组名称
+        /// </summary>
         public string Name => name;
+        
+        /// <summary>
+        /// UI组中窗体数量
+        /// </summary>
         public int FormCount => formCount;
         
 #if UNITY_EDITOR
@@ -22,6 +32,9 @@ namespace StarryFramework
         public LinkedList<UIFormInfo> FormInfosList => formInfosList;
 #endif
         
+        /// <summary>
+        /// 是否暂停UI组中的所有窗体
+        /// </summary>
         public bool Pause
         {
             get => pause;
@@ -33,6 +46,9 @@ namespace StarryFramework
             }
         }
 
+        /// <summary>
+        /// 当前显示的UI窗体（位于最上层）
+        /// </summary>
         public UIForm CurrentForm => formInfosList.First?.Value.UIForm;
         
         internal UIGroup(string name)
@@ -67,6 +83,11 @@ namespace StarryFramework
 
         #region Has, Get
 
+        /// <summary>
+        /// 检查是否存在指定序列号的UI窗体
+        /// </summary>
+        /// <param name="serialId">UI窗体序列号</param>
+        /// <returns>是否存在该UI窗体</returns>
         public bool HasUIForm(int serialId)
         {
             foreach (UIFormInfo uiFormInfo in formInfosList)
@@ -79,6 +100,11 @@ namespace StarryFramework
             return false;
         }
         
+        /// <summary>
+        /// 检查是否存在指定资源名的UI窗体
+        /// </summary>
+        /// <param name="uiFormAssetName">UI窗体资源名称</param>
+        /// <returns>是否存在该UI窗体</returns>
         public bool HasUIForm(string uiFormAssetName)
         {
             if (string.IsNullOrEmpty(uiFormAssetName))
@@ -97,6 +123,11 @@ namespace StarryFramework
             return false;
         }
         
+        /// <summary>
+        /// 通过序列号获取UI窗体
+        /// </summary>
+        /// <param name="serialId">UI窗体序列号</param>
+        /// <returns>UI窗体对象，未找到返回null</returns>
         public UIForm GetUIForm(int serialId)
         {
             foreach (UIFormInfo uiFormInfo in formInfosList)
@@ -110,6 +141,11 @@ namespace StarryFramework
             return null;
         }
         
+        /// <summary>
+        /// 通过资源名称获取UI窗体
+        /// </summary>
+        /// <param name="uiFormAssetName">UI窗体资源名称</param>
+        /// <returns>UI窗体对象，未找到返回null</returns>
         public UIForm GetUIForm(string uiFormAssetName)
         {
             if (string.IsNullOrEmpty(uiFormAssetName))
@@ -128,6 +164,10 @@ namespace StarryFramework
             return null;
         }
         
+        /// <summary>
+        /// 获取UI组中的所有UI窗体
+        /// </summary>
+        /// <returns>UI窗体数组</returns>
         public UIForm[] GetAllUIForms()
         {
             List<UIForm> results = new List<UIForm>();

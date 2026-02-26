@@ -22,6 +22,13 @@ namespace StarryFramework.Extentions
 
         private System.Timers.Timer clearTimer = new System.Timers.Timer();
 
+        private static double GetClearUnusedAudioTimerIntervalMilliseconds(float intervalSeconds)
+        {
+            // AudioSettings stores this interval in seconds, while System.Timers.Timer uses milliseconds.
+            float safeSeconds = Mathf.Max(0.1f, intervalSeconds);
+            return safeSeconds * 1000d;
+        }
+
         void IManager.Awake()
         {
 
@@ -73,7 +80,7 @@ namespace StarryFramework.Extentions
                 return;
             }
 
-            clearTimer.Interval = Mathf.Max(1f, settings.clearUnusedAudioInterval);
+            clearTimer.Interval = GetClearUnusedAudioTimerIntervalMilliseconds(settings.clearUnusedAudioInterval);
             SyncGlobalBanks(settings.globalBanks);
         }
 

@@ -11,12 +11,14 @@ namespace StarryFramework
         private static readonly Dictionary<ModuleType, Type> moduleManagerTypeMap = new();
         private static readonly Dictionary<Type, ModuleType> componentModuleTypeMap = new();
         private static readonly ConcurrentQueue<Action> mainThreadActions = new();
+        private static bool strictModuleRegistration = true;
 
         //记录module启用以及优先级
         private static readonly List<Type> managerTypeList = new();
         
         private static FrameworkState state = FrameworkState.Stop;
         internal static FrameworkState FrameworkState => state;
+        internal static bool StrictModuleRegistration => strictModuleRegistration;
 
         private static FrameworkSettings frameworkSetting;
         internal static FrameworkSettings Setting => frameworkSetting;
@@ -95,6 +97,11 @@ namespace StarryFramework
             componentModuleTypeMap[componentType] = moduleType;
         }
 
+        internal static void SetStrictModuleRegistration(bool strict)
+        {
+            strictModuleRegistration = strict;
+        }
+
         internal static bool TryGetModuleType(BaseComponent component, out ModuleType moduleType)
         {
             moduleType = default;
@@ -112,6 +119,11 @@ namespace StarryFramework
                 }
 
                 currentType = currentType.BaseType;
+            }
+
+            if (strictModuleRegistration)
+            {
+                return false;
             }
 
             // Legacy fallback for custom modules not yet registered explicitly.
@@ -272,8 +284,20 @@ namespace StarryFramework
                 return mappedType;
             }
 
+            if (strictModuleRegistration)
+            {
+                Debugger.LogError($"Manager type for module [{managerType}] is not registered. Register it via FrameworkManager.RegisterModuleManagerType().");
+                return null;
+            }
+
             // Legacy fallback for unregistered/custom modules.
-            return Type.GetType("StarryFramework." + managerType + "Manager");
+            Type legacyType = Type.GetType("StarryFramework." + managerType + "Manager");
+            if (legacyType != null)
+            {
+                Debugger.LogWarning($"Using legacy reflection manager lookup fallback for module [{managerType}]. Register it explicitly via FrameworkManager.RegisterModuleManagerType().");
+            }
+
+            return legacyType;
         }
 
         #endregion

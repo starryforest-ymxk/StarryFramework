@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
@@ -12,6 +11,7 @@ namespace StarryFramework
 
         private SaveSettings settings;
         private bool isInitialized;
+        private const string SaveDataFolderName = "SaveData";
 
         // 当前游戏默认加载的存档编号，用于自动存档以及快速存档
         // 只在游戏开始前置初值为-1，在点击继续游戏按钮才会有效
@@ -57,6 +57,68 @@ namespace StarryFramework
         // 目前全部的存档信息字典
 
         internal Dictionary<int, PlayerDataInfo> infoDic = new Dictionary<int, PlayerDataInfo>();
+
+        internal static string GetSaveDataDirectoryPath()
+        {
+            // Save files are stored under Application.persistentDataPath only.
+            return Path.Combine(Application.persistentDataPath, SaveDataFolderName);
+        }
+
+        private static string GetDataFilePath(int index)
+        {
+            return Path.Combine(GetSaveDataDirectoryPath(), $"SaveData{index:000}.save");
+        }
+
+        private static string GetDataMetaFilePath(int index)
+        {
+            return GetDataFilePath(index) + ".meta";
+        }
+
+        private static string GetInfoFilePath(int index)
+        {
+            return Path.Combine(GetSaveDataDirectoryPath(), $"SaveDataInfo{index:000}.save");
+        }
+
+        private static string GetInfoMetaFilePath(int index)
+        {
+            return GetInfoFilePath(index) + ".meta";
+        }
+
+        private static string GetCorruptedFilePath(string fileName)
+        {
+            return Path.Combine(GetSaveDataDirectoryPath(), $"Corrupted{fileName}");
+        }
+
+        private static string GetUniqueFilePath(string preferredPath)
+        {
+            if (!File.Exists(preferredPath))
+            {
+                return preferredPath;
+            }
+
+            string directory = Path.GetDirectoryName(preferredPath);
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(preferredPath);
+            string extension = Path.GetExtension(preferredPath);
+            int suffix = 1;
+
+            string candidate;
+            do
+            {
+                candidate = Path.Combine(directory ?? GetSaveDataDirectoryPath(), $"{fileNameWithoutExtension}_{suffix}{extension}");
+                suffix++;
+            } while (File.Exists(candidate));
+
+            return candidate;
+        }
+
+        private static void MoveExistingFileToCorrupted(string sourceFilePath)
+        {
+            if (!File.Exists(sourceFilePath)) return;
+
+            Directory.CreateDirectory(GetSaveDataDirectoryPath());
+            string targetFilePath = GetUniqueFilePath(GetCorruptedFilePath(Path.GetFileName(sourceFilePath)));
+            File.Move(sourceFilePath, targetFilePath);
+        }
 
 
         void IManager.Awake()
@@ -167,7 +229,7 @@ namespace StarryFramework
 
         private void InitInfoDic()
         {
-            string path = Path.Combine(Application.dataPath, "SaveData");
+            string path = GetSaveDataDirectoryPath();
 
             if (!Directory.Exists(path)) return;
 
@@ -182,13 +244,11 @@ namespace StarryFramework
                 catch
                 {
                     FrameworkManager.Debugger.LogWarning("存档信息损坏");
-                    File.Move(filePath, Path.Combine(Application.dataPath, "SaveData", $"Corrupted{Path.GetFileName(filePath)}"));
-                    File.Delete(filePath);
+                    MoveExistingFileToCorrupted(filePath);
                     string metaFilePath = filePath + ".meta";
                     if (File.Exists(metaFilePath))
                     {
-                        File.Move(metaFilePath, Path.Combine(Application.dataPath, "SaveData", $"Corrupted{Path.GetFileName(filePath)}.meta"));
-                        File.Delete(metaFilePath);
+                        MoveExistingFileToCorrupted(metaFilePath);
                     }
                 }
             }
@@ -346,9 +406,9 @@ namespace StarryFramework
                 autoSaveInfo = saveInfoList.Count > 0 ? saveInfoList[0] : "";
             }
 
-            Directory.CreateDirectory(Path.Combine(Application.dataPath, "SaveData"));
-            var dataPath = Path.Combine(Application.dataPath, "SaveData", $"SaveData{newIndex:000}.save");
-            var infoPath = Path.Combine(Application.dataPath, "SaveData", $"SaveDataInfo{newIndex:000}.save");
+            Directory.CreateDirectory(GetSaveDataDirectoryPath());
+            var dataPath = GetDataFilePath(newIndex);
+            var infoPath = GetInfoFilePath(newIndex);
             var dataJs = JsonConvert.SerializeObject(playerData, Formatting.Indented);
             var infoJs = JsonConvert.SerializeObject(note != "" ? UpdateInfo(newIndex, note) : UpdateInfo(newIndex, autoSaveInfo), Formatting.Indented);
             File.WriteAllText(dataPath, dataJs, System.Text.Encoding.UTF8);
@@ -371,9 +431,9 @@ namespace StarryFramework
                 FrameworkManager.Debugger.LogError("存档尚未加载");
                 return;
             }
-            Directory.CreateDirectory(Path.Combine(Application.dataPath, "SaveData"));
-            var dataPath = Path.Combine(Application.dataPath, "SaveData", $"SaveData{currentLoadedDataIndex:000}.save");
-            var infoPath = Path.Combine(Application.dataPath, "SaveData", $"SaveDataInfo{currentLoadedDataIndex:000}.save");
+            Directory.CreateDirectory(GetSaveDataDirectoryPath());
+            var dataPath = GetDataFilePath(currentLoadedDataIndex);
+            var infoPath = GetInfoFilePath(currentLoadedDataIndex);
             var dataJs = JsonConvert.SerializeObject(playerData, Formatting.Indented);
             var infoJs = JsonConvert.SerializeObject(note != "" ? UpdateInfo(currentLoadedDataIndex, note) : UpdateInfo(currentLoadedDataIndex, autoSaveInfo), Formatting.Indented);
             File.WriteAllText(dataPath, dataJs, System.Text.Encoding.UTF8);
@@ -398,9 +458,9 @@ namespace StarryFramework
                 FrameworkManager.Debugger.LogError("存档尚未加载");
                 return;
             }
-            Directory.CreateDirectory(Path.Combine(Application.dataPath, "SaveData"));
-            var dataPath = Path.Combine(Application.dataPath, "SaveData", $"SaveData{i:000}.save");
-            var infoPath = Path.Combine(Application.dataPath, "SaveData", $"SaveDataInfo{i:000}.save");
+            Directory.CreateDirectory(GetSaveDataDirectoryPath());
+            var dataPath = GetDataFilePath(i);
+            var infoPath = GetInfoFilePath(i);
             var dataJs = JsonConvert.SerializeObject(playerData, Formatting.Indented);
             var infoJs = JsonConvert.SerializeObject(note != "" ? UpdateInfo(i, note) : UpdateInfo(i, autoSaveInfo), Formatting.Indented);
             File.WriteAllText(dataPath, dataJs, System.Text.Encoding.UTF8);
@@ -417,9 +477,9 @@ namespace StarryFramework
                 FrameworkManager.Debugger.LogError("当前存档已被删除");
                 return false;
             }
-            string dataPath = Path.Combine(Application.dataPath, "SaveData", $"SaveData{defaultDataIndex:000}.save");
-            string dataMetaPath = Path.Combine(Application.dataPath, "SaveData", $"SaveData{defaultDataIndex:000}.save.meta");
-            if (!Directory.Exists(Path.Combine(Application.dataPath, "SaveData")) || !File.Exists(dataPath)) return false;
+            string dataPath = GetDataFilePath(defaultDataIndex);
+            string dataMetaPath = GetDataMetaFilePath(defaultDataIndex);
+            if (!Directory.Exists(GetSaveDataDirectoryPath()) || !File.Exists(dataPath)) return false;
             try
             {
                 var js = File.ReadAllText(dataPath, System.Text.Encoding.UTF8);
@@ -428,12 +488,10 @@ namespace StarryFramework
             catch
             {
                 FrameworkManager.Debugger.LogError("存档损坏");
-                File.Move(dataPath, Path.Combine(Application.dataPath, "SaveData", $"CorruptedSaveData{defaultDataIndex:000}.save"));
-                File.Delete(dataPath);
+                MoveExistingFileToCorrupted(dataPath);
                 if (File.Exists(dataMetaPath))
                 {
-                    File.Move(dataPath, Path.Combine(Application.dataPath, "SaveData", $"CorruptedSaveData{defaultDataIndex:000}.save.meta"));
-                    File.Delete(dataMetaPath);
+                    MoveExistingFileToCorrupted(dataMetaPath);
                 }
                 return false;
             }
@@ -461,9 +519,9 @@ namespace StarryFramework
         /// <param name="i">存档编号</param>
         internal bool LoadData(int i)
         {
-            string dataPath = Path.Combine(Application.dataPath, "SaveData", $"SaveData{i:000}.save");
-            string dataMetaPath = Path.Combine(Application.dataPath, "SaveData", $"SaveData{i:000}.save.meta");
-            if (!Directory.Exists(Path.Combine(Application.dataPath, "SaveData")) || !File.Exists(dataPath))
+            string dataPath = GetDataFilePath(i);
+            string dataMetaPath = GetDataMetaFilePath(i);
+            if (!Directory.Exists(GetSaveDataDirectoryPath()) || !File.Exists(dataPath))
             {
                 FrameworkManager.Debugger.LogError("存档不存在");
                 return false;
@@ -476,12 +534,10 @@ namespace StarryFramework
             catch
             {
                 FrameworkManager.Debugger.LogError("存档损坏");
-                File.Move(dataPath, Path.Combine(Application.dataPath, "SaveData", $"CorruptedSaveData{i:000}.save"));
-                File.Delete(dataPath);
+                MoveExistingFileToCorrupted(dataPath);
                 if (File.Exists(dataMetaPath))
                 {
-                    File.Move(dataMetaPath, Path.Combine(Application.dataPath, "SaveData", $"CorruptedSaveData{i:000}.save.meta"));
-                    File.Delete(dataMetaPath);
+                    MoveExistingFileToCorrupted(dataMetaPath);
                 }
                 return false;
             }
@@ -531,11 +587,11 @@ namespace StarryFramework
                 FrameworkManager.Debugger.LogError("禁止删除当前正在运行的存档");
                 return false;
             }
-            string dataPath = Path.Combine(Application.dataPath, "SaveData", $"SaveData{i:000}.save");
-            string dataMetaPath = Path.Combine(Application.dataPath, "SaveData", $"SaveData{i:000}.save.meta");
-            string infoPath = Path.Combine(Application.dataPath, "SaveData", $"SaveDataInfo{i:000}.save");
-            string infoMetaPath = Path.Combine(Application.dataPath, "SaveData", $"SaveDataInfo{i:000}.save.meta");
-            if (!Directory.Exists(Path.Combine(Application.dataPath, "SaveData")) || !File.Exists(dataPath))
+            string dataPath = GetDataFilePath(i);
+            string dataMetaPath = GetDataMetaFilePath(i);
+            string infoPath = GetInfoFilePath(i);
+            string infoMetaPath = GetInfoMetaFilePath(i);
+            if (!Directory.Exists(GetSaveDataDirectoryPath()) || !File.Exists(dataPath))
             {
                 FrameworkManager.Debugger.LogWarning("被删除的存档不存在");
                 if (File.Exists(infoPath))
@@ -601,7 +657,7 @@ namespace StarryFramework
         /// </summary>
         private void LoadSetting()
         {
-            string json = PlayerPrefs.GetString("Settings", String.Empty);
+            string json = PlayerPrefs.GetString("Settings", string.Empty);
             if (json.Equals(string.Empty))
             {
                 gameSettings = new GameSettings();

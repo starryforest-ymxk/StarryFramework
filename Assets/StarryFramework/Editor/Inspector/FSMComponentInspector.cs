@@ -4,8 +4,8 @@ using UnityEngine;
 namespace StarryFramework.Editor
 {
     /// <summary>
-    /// FSMComponent的自定义Inspector面板
-    /// 运行时显示有限状态机的状态和变量信息
+    /// Custom inspector for FSMComponent.
+    /// Displays runtime FSM state and variable info.
     /// </summary>
     [CustomEditor(typeof(FSMComponent))]
     internal sealed class FSMComponentInspector : FrameworkInspector
@@ -16,7 +16,7 @@ namespace StarryFramework.Editor
 
             if (!EditorApplication.isPlaying)
             {
-                EditorGUILayout.HelpBox("仅在运行时可用", MessageType.Info);
+                EditorGUILayout.HelpBox("Available only in Play Mode.", MessageType.Info);
                 return;
             }
 

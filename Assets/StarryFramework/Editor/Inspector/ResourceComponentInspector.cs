@@ -30,18 +30,18 @@ namespace StarryFramework.Editor
 
             if (!EditorApplication.isPlaying)
             {
-                EditorGUILayout.HelpBox("仅在运行时可用", MessageType.Info);
+                EditorGUILayout.HelpBox("Available only in Play Mode.", MessageType.Info);
                 return;
             }
 
             ResourceComponent r = (ResourceComponent)target;
 
             EditorGUILayout.Space(10);
-            EditorGUILayout.LabelField("当前加载操作", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Current Load Operation", EditorStyles.boldLabel);
             EditorGUI.indentLevel++;
             
-            EditorGUILayout.LabelField("目标资源类型", r.TargetType == null ? "Null" : r.TargetType.ToString());
-            EditorGUILayout.LabelField("目标资源路径", r.ResourcePath);
+            EditorGUILayout.LabelField("Target Resource Type", r.TargetType == null ? "Null" : r.TargetType.ToString());
+            EditorGUILayout.LabelField("Target Resource Path", r.ResourcePath);
             
             GUIStyle stateStyle = new GUIStyle(EditorStyles.label);
             if (r.State == LoadState.Failed)
@@ -57,14 +57,14 @@ namespace StarryFramework.Editor
                 stateStyle.normal.textColor = Color.green;
             }
             
-            EditorGUILayout.LabelField("加载状态", r.State.ToString(), stateStyle);
+            EditorGUILayout.LabelField("Load State", r.State.ToString(), stateStyle);
             
             if (r.State == LoadState.Failed && !string.IsNullOrEmpty(r.LastError))
             {
                 EditorGUILayout.HelpBox(r.LastError, MessageType.Error);
             }
             
-            EditorGUILayout.LabelField("加载进度", r.Progress.ToString("F2"));
+            EditorGUILayout.LabelField("Load Progress", r.Progress.ToString("F2"));
             var rect = GUILayoutUtility.GetRect(18, 18, "TextField");
             
             Color progressColor = r.State == LoadState.Failed ? Color.red : 
@@ -78,11 +78,11 @@ namespace StarryFramework.Editor
             EditorGUI.indentLevel--;
 
             EditorGUILayout.Space(10);
-            EditorGUILayout.LabelField("活动异步操作", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Active Async Operations", EditorStyles.boldLabel);
             EditorGUI.indentLevel++;
             
             int activeOpCount = r.GetActiveOperationCount();
-            EditorGUILayout.LabelField("正在进行的操作数量", activeOpCount.ToString());
+            EditorGUILayout.LabelField("Active Operation Count", activeOpCount.ToString());
             
             if (activeOpCount > 0)
             {
@@ -94,17 +94,17 @@ namespace StarryFramework.Editor
                     EditorGUILayout.BeginVertical("box");
                     
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("地址:", GUILayout.Width(40));
+                    EditorGUILayout.LabelField("Addr:", GUILayout.Width(40));
                     EditorGUILayout.LabelField(kvp.Value.Address);
                     EditorGUILayout.EndHorizontal();
                     
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("类型:", GUILayout.Width(40));
+                    EditorGUILayout.LabelField("Type:", GUILayout.Width(40));
                     EditorGUILayout.LabelField(kvp.Value.AssetType?.Name ?? "Unknown");
                     EditorGUILayout.EndHorizontal();
                     
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("状态:", GUILayout.Width(40));
+                    EditorGUILayout.LabelField("State:", GUILayout.Width(40));
                     GUIStyle opStateStyle = new GUIStyle(EditorStyles.label);
                     if (kvp.Value.State == LoadState.Failed)
                         opStateStyle.normal.textColor = Color.red;
@@ -114,13 +114,13 @@ namespace StarryFramework.Editor
                     EditorGUILayout.EndHorizontal();
                     
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("进度:", GUILayout.Width(40));
+                    EditorGUILayout.LabelField("Prog:", GUILayout.Width(40));
                     var progressRect = GUILayoutUtility.GetRect(200, 18);
                     EditorGUI.ProgressBar(progressRect, kvp.Value.Progress, $"{kvp.Value.Progress * 100:F1}%");
                     EditorGUILayout.EndHorizontal();
                     
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("耗时:", GUILayout.Width(40));
+                    EditorGUILayout.LabelField("Time:", GUILayout.Width(40));
                     EditorGUILayout.LabelField($"{kvp.Value.ElapsedTime:F2}s");
                     EditorGUILayout.EndHorizontal();
                     
@@ -137,23 +137,23 @@ namespace StarryFramework.Editor
             EditorGUI.indentLevel--;
 
             EditorGUILayout.Space(10);
-            EditorGUILayout.LabelField("资源缓存统计", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Resource Cache Stats", EditorStyles.boldLabel);
             EditorGUI.indentLevel++;
             
             int loadedCount = r.GetLoadedAssetCount();
             long totalMemory = r.GetTotalMemorySize();
             
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("已加载资源总数", loadedCount.ToString(), GUILayout.Width(200));
-            EditorGUILayout.LabelField($"总内存: {FormatBytes(totalMemory)}", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Loaded Resource Count", loadedCount.ToString(), GUILayout.Width(200));
+            EditorGUILayout.LabelField($"Total Memory: {FormatBytes(totalMemory)}", EditorStyles.boldLabel);
             EditorGUILayout.EndHorizontal();
             
             var resourcesCount = r.GetResourcesByType(ResourceSourceType.Resources).Count;
             var addressablesCount = r.GetResourcesByType(ResourceSourceType.Addressables).Count;
             
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField($"Resources资源: {resourcesCount}", GUILayout.Width(200));
-            EditorGUILayout.LabelField($"Addressables资源: {addressablesCount}");
+            EditorGUILayout.LabelField($"Resources Assets: {resourcesCount}", GUILayout.Width(200));
+            EditorGUILayout.LabelField($"Addressables Assets: {addressablesCount}");
             EditorGUILayout.EndHorizontal();
             
             if (loadedCount > 0)
@@ -161,7 +161,7 @@ namespace StarryFramework.Editor
                 EditorGUILayout.Space(10);
                 
                 EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("过滤选项", EditorStyles.boldLabel);
+                EditorGUILayout.LabelField("Filters", EditorStyles.boldLabel);
                 EditorGUILayout.EndHorizontal();
                 
                 EditorGUILayout.BeginHorizontal();
@@ -170,18 +170,18 @@ namespace StarryFramework.Editor
                 EditorGUILayout.EndHorizontal();
                 
                 EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("搜索:", GUILayout.Width(50));
+                EditorGUILayout.LabelField("Search:", GUILayout.Width(50));
                 searchFilter = EditorGUILayout.TextField(searchFilter);
-                if (GUILayout.Button("清除", GUILayout.Width(50)))
+                if (GUILayout.Button("Clear", GUILayout.Width(50)))
                 {
                     searchFilter = "";
                 }
                 EditorGUILayout.EndHorizontal();
                 
                 EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("排序:", GUILayout.Width(50));
+                EditorGUILayout.LabelField("Sort:", GUILayout.Width(50));
                 sortMode = (ResourceSortMode)EditorGUILayout.EnumPopup(sortMode, GUILayout.Width(100));
-                sortDescending = EditorGUILayout.ToggleLeft("降序", sortDescending, GUILayout.Width(60));
+                sortDescending = EditorGUILayout.ToggleLeft("Desc", sortDescending, GUILayout.Width(60));
                 EditorGUILayout.EndHorizontal();
                 
                 EditorGUILayout.Space(5);
@@ -189,7 +189,7 @@ namespace StarryFramework.Editor
                 var loadedAssets = r.GetAllLoadedAssets();
                 var filteredAssets = FilterAndSortAssets(loadedAssets);
                 
-                EditorGUILayout.LabelField($"显示资源: {filteredAssets.Count}/{loadedCount}", EditorStyles.miniLabel);
+                EditorGUILayout.LabelField($"Visible Assets: {filteredAssets.Count}/{loadedCount}", EditorStyles.miniLabel);
                 EditorGUILayout.Space(3);
                 
                 foreach (var kvp in filteredAssets)
@@ -215,11 +215,11 @@ namespace StarryFramework.Editor
                     EditorGUILayout.EndHorizontal();
                     
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField($"引用: {kvp.Value.RefCount}", GUILayout.Width(70));
-                    EditorGUILayout.LabelField($"时间: {kvp.Value.LoadTime:HH:mm:ss}", GUILayout.Width(100));
-                    EditorGUILayout.LabelField($"内存: {FormatBytes(kvp.Value.GetMemorySize())}", GUILayout.Width(100));
+                    EditorGUILayout.LabelField($"Refs: {kvp.Value.RefCount}", GUILayout.Width(70));
+                    EditorGUILayout.LabelField($"Time: {kvp.Value.LoadTime:HH:mm:ss}", GUILayout.Width(100));
+                    EditorGUILayout.LabelField($"Memory: {FormatBytes(kvp.Value.GetMemorySize())}", GUILayout.Width(100));
                     
-                    if (GUILayout.Button("释放", GUILayout.Width(50)))
+                    if (GUILayout.Button("Release", GUILayout.Width(50)))
                     {
                         r.ReleaseResource(kvp.Key);
                     }
@@ -232,7 +232,7 @@ namespace StarryFramework.Editor
                 EditorGUILayout.Space(5);
                 
                 EditorGUILayout.BeginHorizontal();
-                if (GUILayout.Button("释放所有Resources资源"))
+                if (GUILayout.Button("Release All Resources"))
                 {
                     var resAssets = r.GetResourcesByType(ResourceSourceType.Resources);
                     foreach (var kvp in resAssets)
@@ -241,7 +241,7 @@ namespace StarryFramework.Editor
                     }
                 }
                 
-                if (GUILayout.Button("释放所有Addressables资源"))
+                if (GUILayout.Button("Release All Addressables"))
                 {
                     r.ReleaseAllAddressableHandles();
                 }

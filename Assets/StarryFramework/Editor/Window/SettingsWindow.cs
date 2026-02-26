@@ -78,7 +78,7 @@ namespace StarryFramework.Editor
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
             
             EditorGUILayout.Space(10);
-            EditorGUILayout.LabelField("框架设置/Framework Settings", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Framework Settings", EditorStyles.boldLabel);
             EditorGUILayout.Space(5);
             
             if (_frameworkSettings == null)
@@ -120,9 +120,9 @@ namespace StarryFramework.Editor
                 EditorGUILayout.EndHorizontal();
                 
                 EditorGUILayout.BeginVertical("box");
-                EditorGUILayout.LabelField("全局框架设置 / Global Framework Settings", EditorStyles.miniBoldLabel);
+                EditorGUILayout.LabelField("Global Framework Settings", EditorStyles.miniBoldLabel);
                 string assetPath = AssetDatabase.GetAssetPath(_frameworkSettings);
-                EditorGUILayout.LabelField("路径 / Path:", assetPath, EditorStyles.wordWrappedLabel);
+                EditorGUILayout.LabelField("Path:", assetPath, EditorStyles.wordWrappedLabel);
                 EditorGUILayout.EndVertical();
                 
                 EditorGUILayout.Space(10);
@@ -180,7 +180,7 @@ namespace StarryFramework.Editor
             linkStyle.active.textColor = new Color(0.3f, 0.5f, 0.9f);
             linkStyle.fontSize = 12;
             
-            if (GUILayout.Button("📖 快速开始 / Quick Start", linkStyle, GUILayout.ExpandWidth(false)))
+            if (GUILayout.Button("Quick Start", linkStyle, GUILayout.ExpandWidth(false)))
             {
                 Application.OpenURL(QuickStart_URL);
             }
@@ -189,7 +189,7 @@ namespace StarryFramework.Editor
             
             GUILayout.Label("   | ", GUILayout.ExpandWidth(false));
             
-            if (GUILayout.Button("📚 API 速查手册 / API Quick Reference", linkStyle, GUILayout.ExpandWidth(false)))
+            if (GUILayout.Button("API Quick Reference", linkStyle, GUILayout.ExpandWidth(false)))
             {
                 Application.OpenURL(APIReference_URL);
             }
@@ -216,7 +216,15 @@ namespace StarryFramework.Editor
                     MessageType messageType = issue.Severity == FrameworkSettingsValidationSeverity.Error
                         ? MessageType.Error
                         : MessageType.Warning;
-                    EditorGUILayout.HelpBox(issue.Message, messageType);
+
+                    string codePrefix = string.IsNullOrEmpty(issue.Code) ? string.Empty : $"[{issue.Code}] ";
+                    string displayText = $"{codePrefix}{issue.Message}";
+                    if (!string.IsNullOrEmpty(issue.SuggestedFix))
+                    {
+                        displayText += $"\nSuggestion: {issue.SuggestedFix}";
+                    }
+
+                    EditorGUILayout.HelpBox(displayText, messageType);
                 }
                 EditorGUILayout.Space(5);
             }
@@ -234,7 +242,7 @@ namespace StarryFramework.Editor
             SerializedProperty startSceneAnimationProp = _settingsSerializedObject.FindProperty("StartSceneAnimation");
             SerializedProperty modulesProp = _settingsSerializedObject.FindProperty("modules");
             
-            EditorGUILayout.PropertyField(enterPlayModeWayProp, new GUIContent("Enter PlayMode Way", "进入Play模式的方式。Enter Play Mode behavior."));
+            EditorGUILayout.PropertyField(enterPlayModeWayProp, new GUIContent("Enter PlayMode Way", "Enter Play Mode behavior."));
             
             EditorGUI.BeginChangeCheck();
             SceneAsset sceneAsset = null;
@@ -242,7 +250,7 @@ namespace StarryFramework.Editor
             {
                 sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(_frameworkSettings.frameworkScenePath);
             }
-            SceneAsset newSceneAsset = (SceneAsset)EditorGUILayout.ObjectField(new GUIContent("GameFramework Scene", "GameFramework场景路径。Path to GameFramework scene."), sceneAsset, typeof(SceneAsset), false);
+            SceneAsset newSceneAsset = (SceneAsset)EditorGUILayout.ObjectField(new GUIContent("GameFramework Scene", "Path to the GameFramework scene."), sceneAsset, typeof(SceneAsset), false);
             if (EditorGUI.EndChangeCheck())
             {
                 frameworkScenePathProp.stringValue = newSceneAsset != null ? AssetDatabase.GetAssetPath(newSceneAsset) : "";
@@ -250,9 +258,9 @@ namespace StarryFramework.Editor
             
             if (_frameworkSettings.enterPlayModeWay == EnterPlayModeWay.FrameworkStart && string.IsNullOrEmpty(_frameworkSettings.frameworkScenePath))
             {
-                EditorGUILayout.HelpBox("选择了FrameworkStart模式，但未配置GameFramework场景引用。请配置场景路径。FrameworkStart mode is selected, but GameFramework scene reference is not set. Please configure the scene path.", MessageType.Warning);
+                EditorGUILayout.HelpBox("FrameworkStart mode is selected, but the GameFramework scene reference is not set. Please configure the scene path.", MessageType.Warning);
                 
-                if (GUILayout.Button("自动查找GameFramework场景 / Auto Find GameFramework Scene"))
+                if (GUILayout.Button("Auto Find GameFramework Scene"))
                 {
                     FindAndSetGameFrameworkScene(frameworkScenePathProp);
                 }
@@ -264,16 +272,16 @@ namespace StarryFramework.Editor
             
             EditorGUILayout.Space(10);
             
-            EditorGUILayout.PropertyField(internalEventTriggerProp, new GUIContent("Internal Event Trigger", "框架内部事件被触发时，是否会同时触发外部同名事件。When an internal framework event is triggered, whether an external event with the same name will also be triggered simultaneously."));
+            EditorGUILayout.PropertyField(internalEventTriggerProp, new GUIContent("Internal Event Trigger", "When an internal framework event is triggered, also trigger an external event with the same name."));
             
             EditorGUILayout.Space(10);
             
-            EditorGUILayout.PropertyField(startSceneProp, new GUIContent("Start Scene", "游戏启动加载的初始场景，如果是GameFramework则不加载。If the initial scene to load is the GameFramework, then it does nothing."));
-            EditorGUILayout.PropertyField(startSceneAnimationProp, new GUIContent("Start Scene Animation", "初始场景加载是否启用默认动画。Whether the initial scene loading enable the default animation."));
+            EditorGUILayout.PropertyField(startSceneProp, new GUIContent("Start Scene", "Initial scene to load when the game starts. If it is the GameFramework scene, no extra scene is loaded."));
+            EditorGUILayout.PropertyField(startSceneAnimationProp, new GUIContent("Start Scene Animation", "Whether to use the default transition animation when loading the initial scene."));
             
             EditorGUILayout.Space(10);
             
-            EditorGUILayout.HelpBox("游戏框架各模块是否启用以及优先级，越靠近列表前端优先级越高。Whether each module of the game framework is enabled and its priority, with higher priority given to those closer to the top of the list.", MessageType.Info);
+            EditorGUILayout.HelpBox("Enable/disable framework modules and define their priority order. Modules closer to the top have higher priority.", MessageType.Info);
             EditorGUILayout.HelpBox(
                 "This panel edits framework-level settings only (startup flow, module enable list/order, logging). " +
                 "Per-module detailed settings (Scene/Save/Timer/UI/Audio etc.) are configured on the corresponding module components in the GameFramework scene.",
@@ -294,9 +302,9 @@ namespace StarryFramework.Editor
             
             if (guids.Length == 0)
             {
-                EditorUtility.DisplayDialog("未找到场景 / Scene Not Found", 
-                    "未在项目中找到名为'GameFramework'的场景。\nGameFramework scene not found in the project.", 
-                    "确定 / OK");
+                EditorUtility.DisplayDialog("Scene Not Found", 
+                    "No scene named 'GameFramework' was found in the project.", 
+                    "OK");
                 return;
             }
             
@@ -308,9 +316,9 @@ namespace StarryFramework.Editor
                 EditorUtility.SetDirty(_frameworkSettings);
                 AssetDatabase.SaveAssets();
                 
-                EditorUtility.DisplayDialog("设置成功 / Success", 
-                    $"已自动设置GameFramework场景路径：\n{scenePath}\n\nGameFramework scene path has been set to:\n{scenePath}", 
-                    "确定 / OK");
+                EditorUtility.DisplayDialog("Success", 
+                    $"GameFramework scene path has been set to:\n{scenePath}", 
+                    "OK");
             }
             else
             {

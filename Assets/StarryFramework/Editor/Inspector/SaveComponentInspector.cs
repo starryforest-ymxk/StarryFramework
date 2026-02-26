@@ -59,7 +59,7 @@ namespace StarryFramework.Editor
             if (!s.PlayerDataLoaded) return;
             PlayerData data = s.PlayerData;
 
-            playerDataFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(playerDataFoldout, "玩家数据（运行时）", EditorStyles.boldLabel);
+            playerDataFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(playerDataFoldout, "Player Data (Runtime)", EditorStyles.boldLabel);
             
             if (playerDataFoldout)
             {
@@ -76,7 +76,7 @@ namespace StarryFramework.Editor
             if (!s.GameSettingsLoaded) return;
             GameSettings settings = s.GameSettings;
 
-            gameSettingsFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(gameSettingsFoldout, "游戏设置（运行时）", EditorStyles.boldLabel);
+            gameSettingsFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(gameSettingsFoldout, "Game Settings (Runtime)", EditorStyles.boldLabel);
             
             if (gameSettingsFoldout)
             {
@@ -233,32 +233,32 @@ namespace StarryFramework.Editor
 
         private void DrawInfos(SaveComponent s)
         {
-            dataLoadFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(dataLoadFoldout, "存档状态", EditorStyles.boldLabel);
+            dataLoadFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(dataLoadFoldout, "Save State", EditorStyles.boldLabel);
             
             if(dataLoadFoldout)
             {
-                string dataState = s.PlayerDataLoaded ? "已加载" : "未加载" ;
-                EditorGUILayout.LabelField("存档状态", dataState);
-                if (s.CurrentLoadedDataIndex != -1) // 存档已加载的另一种表示
+                string dataState = s.PlayerDataLoaded ? "Loaded" : "Not Loaded";
+                EditorGUILayout.LabelField("Save State", dataState);
+                if (s.CurrentLoadedDataIndex != -1) // Alternative indicator that a save is currently loaded.
                 {
                     EditorGUILayout.BeginVertical("box");
-                    EditorGUILayout.LabelField("存档索引", s.CurrentLoadedDataIndex.ToString());
+                    EditorGUILayout.LabelField("Current Save Index", s.CurrentLoadedDataIndex.ToString());
                     EditorGUILayout.EndVertical();
                 }
 
-                string defaultLoad = s.DefaultDataIndex == -1 ? "禁止" : "启用";
-                EditorGUILayout.LabelField("默认加载", defaultLoad);
+                string defaultLoad = s.DefaultDataIndex == -1 ? "Disabled" : "Enabled";
+                EditorGUILayout.LabelField("Default Load", defaultLoad);
                 if (s.DefaultDataIndex != -1)
                 {
                     EditorGUILayout.BeginVertical("box");
-                    EditorGUILayout.LabelField("默认加载存档索引", s.DefaultDataIndex.ToString());
+                    EditorGUILayout.LabelField("Default Save Index", s.DefaultDataIndex.ToString());
                     EditorGUILayout.EndVertical();
                 }
 
-                string autoSave = s.AutoSave ? "启用" : "关闭";
-                EditorGUILayout.LabelField("自动存档", autoSave);
-                EditorGUILayout.LabelField("自动存档间隔", s.AutoSaveDataInterval.ToString("F2") + "s");
-                EditorGUILayout.LabelField("上次自动保存时间", s.LastAutoSaveTime.ToString("F2") + "s");
+                string autoSave = s.AutoSave ? "Enabled" : "Disabled";
+                EditorGUILayout.LabelField("Auto Save", autoSave);
+                EditorGUILayout.LabelField("Auto Save Interval", s.AutoSaveDataInterval.ToString("F2") + "s");
+                EditorGUILayout.LabelField("Last Auto Save Time", s.LastAutoSaveTime.ToString("F2") + "s");
             }
 
             EditorGUILayout.EndFoldoutHeaderGroup();
@@ -266,11 +266,11 @@ namespace StarryFramework.Editor
 
         private void DrawSaveInfo(SaveComponent s)
         {
-            saveInfoFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(saveInfoFoldout, "存档注释", EditorStyles.boldLabel);
+            saveInfoFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(saveInfoFoldout, "Save Notes", EditorStyles.boldLabel);
             if(saveInfoFoldout)
             {
-                EditorGUILayout.LabelField("当前默认存档注释", s.AutoSaveInfo);
-                saveInfoListFoldout = EditorGUILayout.Foldout(saveInfoListFoldout, "存档注释列表");
+                EditorGUILayout.LabelField("Current Default Save Note", s.AutoSaveInfo);
+                saveInfoListFoldout = EditorGUILayout.Foldout(saveInfoListFoldout, "Save Note List");
                 if (saveInfoListFoldout)
                 {
                     EditorGUILayout.BeginVertical("box");
@@ -289,10 +289,10 @@ namespace StarryFramework.Editor
 
         private void DrawPlayerDataInfo(SaveComponent s)
         {
-            dataInfoFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(dataInfoFoldout, "存档信息", EditorStyles.boldLabel);
+            dataInfoFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(dataInfoFoldout, "Save Data Info", EditorStyles.boldLabel);
             if(dataInfoFoldout)
             {
-                EditorGUILayout.LabelField("存档信息列表", s.AutoSaveInfo);
+                EditorGUILayout.LabelField("Save Info List", s.AutoSaveInfo);
                 EditorGUILayout.BeginVertical("box");
                 {
                     if (s.DataInfoDic != null && s.DataInfoDic.Count != 0)

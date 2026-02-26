@@ -41,6 +41,14 @@
 
 ---
 
+## 2.2 Status Update (2026-02-26, P2)
+
+- `P2-1` Completed: migrated save-file storage root from `Application.dataPath/SaveData` to `Application.persistentDataPath/SaveData`, added one-time legacy folder migration, and extracted save path helpers in `SaveManager`.
+- `P2-2` Completed (low-risk helper-base path): added `ConfigurableComponent` helper base to remove duplicated `Awake/OnValidate` settings binding templates in `Save/Timer/UI/Audio` components.
+- `P2-3` Completed (SceneComponent-local path): clarified `SceneSettings` is consumed locally by `SceneComponent`, centralized default animation timing reads inside `SceneComponent`, and added inspector messaging in `SceneComponentInspector`.
+
+---
+
 ## 3. 重构优先级总览
 
 ### P0（优先处理：正确性/稳定性风险）

@@ -6,8 +6,8 @@ using UnityEngine;
 namespace StarryFramework.Editor
 {
     /// <summary>
-    /// TimerComponent的自定义Inspector面板
-    /// 运行时显示各种计时器的状态和信息
+    /// Custom inspector for TimerComponent.
+    /// Displays runtime timer state and diagnostic information.
     /// </summary>
     [CustomEditor(typeof(TimerComponent))]
     public class TimerComponentInspector : FrameworkInspector
@@ -47,7 +47,7 @@ namespace StarryFramework.Editor
 
         public void DrawTimers(TimerComponent t)
         {
-            foldoutTimers = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutTimers, "计时器信息");
+            foldoutTimers = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutTimers, "Timers");
 
             if (foldoutTimers)
             {
@@ -57,7 +57,7 @@ namespace StarryFramework.Editor
                     EditorGUILayout.Space(2);
                     foreach (var timer in t.Timers)
                     {
-                        string name = timer.Name == "" ? "Unamed" : timer.Name;
+                        string name = timer.Name == "" ? "Unnamed" : timer.Name;
                         string timerState = timer.TimerState.ToString();
                         Rect r = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none);
 
@@ -87,7 +87,7 @@ namespace StarryFramework.Editor
 
         public void DrawTriggerTimers(TimerComponent t)
         {
-            foldoutTriggerTimers = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutTriggerTimers, "触发器计时器信息");
+            foldoutTriggerTimers = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutTriggerTimers, "Trigger Timers");
 
             if (foldoutTriggerTimers)
             {
@@ -97,7 +97,7 @@ namespace StarryFramework.Editor
                     EditorGUILayout.Space(2);
                     foreach (var timer in t.TriggerTimers)
                     {
-                        string name = timer.Name == "" ? "Unamed" : timer.Name;
+                        string name = timer.Name == "" ? "Unnamed" : timer.Name;
                         string timerState = timer.TimerState.ToString();
                         Rect r = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none);
 
@@ -129,7 +129,7 @@ namespace StarryFramework.Editor
 
         public void DrawAsyncTimers(TimerComponent t)
         {
-            foldoutAsyncTimers = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutAsyncTimers, "异步计时器信息");
+            foldoutAsyncTimers = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutAsyncTimers, "Async Timers");
 
             if (foldoutAsyncTimers)
             {
@@ -139,7 +139,7 @@ namespace StarryFramework.Editor
                     EditorGUILayout.Space(2);
                     foreach (var timer in t.AsyncTimers)
                     {
-                        string name = timer.Name == "" ? "Unamed" : timer.Name;
+                        string name = timer.Name == "" ? "Unnamed" : timer.Name;
                         string timerState = timer.TimerState.ToString();
                         EditorGUILayout.LabelField(name, timerState);
                     }
@@ -152,7 +152,7 @@ namespace StarryFramework.Editor
 
         public void DrawAutoClear(TimerComponent t)
         {
-            foldoutClear = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutClear, "计时器自动清理");
+            foldoutClear = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutClear, "Auto Cleanup");
             if(foldoutClear)
             {
                 EditorGUILayout.BeginVertical("box");

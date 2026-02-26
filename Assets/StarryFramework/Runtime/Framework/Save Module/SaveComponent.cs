@@ -6,7 +6,7 @@ using UnityEngine.Events;
 namespace StarryFramework
 {
     [DisallowMultipleComponent]
-    public class SaveComponent: BaseComponent
+    public class SaveComponent: ConfigurableComponent
     {
         private SaveManager _manager;
         private SaveManager Manager => _manager ??= FrameworkManager.GetManager<SaveManager>();
@@ -57,11 +57,7 @@ namespace StarryFramework
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            settings ??= new SaveSettings();
-            if(EditorApplication.isPlaying && _manager != null )
-            {
-                (_manager as IConfigurableManager)?.SetSettings(settings);
-            }
+            HotApplyConfigurableSettingsInPlayMode(_manager, ref settings);
         }
 #endif
 
@@ -69,9 +65,7 @@ namespace StarryFramework
         protected override void Awake()
         {
             base.Awake();
-            settings ??= new SaveSettings();
-            _manager ??= FrameworkManager.GetManager<SaveManager>();
-            (_manager as IConfigurableManager)?.SetSettings(settings);
+            ResolveAndApplyConfigurableSettings(ref _manager, ref settings, FrameworkManager.GetManager<SaveManager>);
             
             onLeaveMainGame = () => { UnloadData();};
         }

@@ -6,8 +6,8 @@ using UnityEditor;
 namespace StarryFramework.Extentions.Editor
 {
     /// <summary>
-    /// AudioComponent的自定义Inspector面板
-    /// 运行时显示背景音乐状态和播放列表信息
+    /// Custom inspector for AudioComponent.
+    /// Displays runtime BGM status and playlist information.
     /// </summary>
     [CustomEditor(typeof(AudioComponent))]
     public class AudioComponentInspector : FrameworkInspector

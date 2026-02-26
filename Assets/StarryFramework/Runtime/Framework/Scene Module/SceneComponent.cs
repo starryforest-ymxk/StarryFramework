@@ -14,6 +14,8 @@ namespace StarryFramework
         private SceneManager _manager;
         private SceneManager Manager => _manager ??= FrameworkManager.GetManager<SceneManager>();
 
+        // SceneSettings is scene-local and consumed directly by SceneComponent
+        // (currently used by default scene transition animation timing).
         [SerializeField] private SceneSettings settings = new();
 
         private int sceneIndex;
@@ -24,6 +26,9 @@ namespace StarryFramework
         public Scene CurrentActiveScene => currentActiveScene;
         public float SceneLoadedTime => sceneLoadedTime;
         public float SceneTime => sceneTime;
+        private float DefaultAnimationFadeInTime => settings != null ? settings.defaultAnimationFadeInTime : 0f;
+        private float DefaultAnimationFadeOutTime => settings != null ? settings.defaultAnimationFadeOutTime : 0f;
+        private const string DefaultAnimationCanvasResourcePath = "DefaultAnimationCanvas";
 
 #if UNITY_EDITOR
         private void OnValidate()
@@ -241,6 +246,48 @@ namespace StarryFramework
 
         #region LoadWithAnimation
 
+        private void StartDefaultSceneTransition(System.Func<UnityAction, AsyncOperation> sceneOperationFactory, UnityAction callback = null)
+        {
+            StartCoroutine(DefaultSceneTransitionCoroutine(sceneOperationFactory, callback));
+        }
+
+        private IEnumerator DefaultSceneTransitionCoroutine(System.Func<UnityAction, AsyncOperation> sceneOperationFactory, UnityAction callback)
+        {
+            if (sceneOperationFactory == null)
+            {
+                FrameworkManager.Debugger.LogError("Scene operation factory can not be null.");
+                yield break;
+            }
+
+            ResourceRequest request = Resources.LoadAsync<GameObject>(DefaultAnimationCanvasResourcePath);
+            yield return request;
+            if (request.asset == null)
+            {
+                FrameworkManager.Debugger.LogError("Default animation object has been deleted.");
+                yield break;
+            }
+
+            GameObject animationCanvas = Instantiate(request.asset, transform) as GameObject;
+            CanvasGroup group = animationCanvas.GetComponent<CanvasGroup>();
+
+            float beforeTime = DefaultAnimationFadeInTime;
+            float afterTime = DefaultAnimationFadeOutTime;
+            WaitForSecondsRealtime beforeWait = new WaitForSecondsRealtime(beforeTime);
+            WaitForSecondsRealtime afterWait = new WaitForSecondsRealtime(afterTime);
+
+            DOTween.To(() => group.alpha, x => group.alpha = x, 1, beforeTime);
+            yield return beforeWait;
+            FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.StartSceneLoadAnim);
+
+            UnityAction wrappedCallback = callback;
+            wrappedCallback += () => FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.EndSceneLoadAnim);
+            yield return sceneOperationFactory(wrappedCallback);
+
+            DOTween.To(() => group.alpha, x => group.alpha = x, 0, afterTime);
+            yield return afterWait;
+            Destroy(animationCanvas);
+        }
+
         /// <summary>
         /// 以默认动画加载场景
         /// </summary>
@@ -248,32 +295,7 @@ namespace StarryFramework
         /// <param Name="callback"></param>
         public void LoadSceneDefault(int buildIndex, UnityAction callback = null)
         {
-            StartCoroutine(defaultLoad());
-            IEnumerator defaultLoad()
-            {
-                ResourceRequest r = Resources.LoadAsync<GameObject>("DefaultAnimationCanvas");
-                yield return r;
-                if (r.asset == null)
-                {
-                    FrameworkManager.Debugger.LogError("Default animation object has been deleted.");
-                    yield break;
-                }
-                GameObject obj = Instantiate(r.asset, transform) as GameObject;
-                CanvasGroup group = obj.GetComponent<CanvasGroup>();
-                float beforeTime = settings.defaultAnimationFadeInTime;
-                float afterTime = settings.defaultAnimationFadeOutTime;
-                WaitForSecondsRealtime beforeW = new WaitForSecondsRealtime(beforeTime);
-                WaitForSecondsRealtime afterW = new WaitForSecondsRealtime(afterTime);
-                DOTween.To(() => group.alpha, x => group.alpha = x, 1, beforeTime);
-                yield return beforeW;
-                FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.StartSceneLoadAnim);
-                callback += ()=> FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.EndSceneLoadAnim);
-                yield return LoadScene(buildIndex, callback);
-                DOTween.To(() => group.alpha, x => group.alpha = x, 0, afterTime);
-                yield return afterW;
-                Destroy(obj);
-            }
-
+            StartDefaultSceneTransition(c => LoadScene(buildIndex, c), callback);
         }
 
         /// <summary>
@@ -283,32 +305,7 @@ namespace StarryFramework
         /// <param Name="callback"></param>
         public void LoadSceneDefault(string _sceneName, UnityAction callback = null)
         {
-            StartCoroutine(defaultLoad());
-            IEnumerator defaultLoad()
-            {
-                ResourceRequest r = Resources.LoadAsync<GameObject>("DefaultAnimationCanvas");
-                yield return r;
-                if (r.asset == null)
-                {
-                    FrameworkManager.Debugger.LogError("Default animation object has been deleted.");
-                    yield break;
-                }
-                GameObject obj = Instantiate(r.asset, transform) as GameObject;
-                CanvasGroup group = obj.GetComponent<CanvasGroup>();
-                float beforeTime = settings.defaultAnimationFadeInTime;
-                float afterTime = settings.defaultAnimationFadeOutTime;
-                WaitForSecondsRealtime beforeW = new WaitForSecondsRealtime(beforeTime);
-                WaitForSecondsRealtime afterW = new WaitForSecondsRealtime(afterTime);
-                DOTween.To(() => group.alpha, x => group.alpha = x, 1, beforeTime);
-                yield return beforeW;
-                FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.StartSceneLoadAnim);
-                callback += ()=> FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.EndSceneLoadAnim);
-                yield return LoadScene(_sceneName, callback);
-                DOTween.To(() => group.alpha, x => group.alpha = x, 0, afterTime);
-                yield return afterW;
-                Destroy(obj);
-            }
-
+            StartDefaultSceneTransition(c => LoadScene(_sceneName, c), callback);
         }
 
         /// <summary>
@@ -430,32 +427,7 @@ namespace StarryFramework
         /// <param Name="callback"></param>
         public void ChangeSceneDefault(int to, int from = -1, UnityAction callback = null)
         {
-            StartCoroutine(defaultChange());
-            IEnumerator defaultChange()
-            {
-                ResourceRequest r = Resources.LoadAsync<GameObject>("DefaultAnimationCanvas");
-                yield return r;
-                if (r.asset == null)
-                {
-                    FrameworkManager.Debugger.LogError("Default animation object has been deleted.");
-                    yield break;
-                }
-                GameObject obj = Instantiate(r.asset, transform) as GameObject;
-                CanvasGroup group = obj.GetComponent<CanvasGroup>();
-                float beforeTime = settings.defaultAnimationFadeInTime;
-                float afterTime = settings.defaultAnimationFadeOutTime;
-                WaitForSecondsRealtime beforeW = new WaitForSecondsRealtime(beforeTime);
-                WaitForSecondsRealtime afterW = new WaitForSecondsRealtime(afterTime);
-                DOTween.To(() => group.alpha, x => group.alpha = x, 1, beforeTime);
-                yield return beforeW;
-                FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.StartSceneLoadAnim);
-                callback += ()=> FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.EndSceneLoadAnim);
-                yield return ChangeScene(to, from, callback);
-                DOTween.To(() => group.alpha, x => group.alpha = x, 0, afterTime);
-                yield return afterW;
-                Destroy(obj);
-            }
-
+            StartDefaultSceneTransition(c => ChangeScene(to, from, c), callback);
         }
 
         /// <summary>
@@ -466,32 +438,7 @@ namespace StarryFramework
         /// <param Name="callback"></param>
         public void ChangeSceneDefault(string to, string from = "", UnityAction callback = null)
         {
-            StartCoroutine(defaultChange());
-            IEnumerator defaultChange()
-            {
-                ResourceRequest r = Resources.LoadAsync<GameObject>("DefaultAnimationCanvas");
-                yield return r;
-                if (r.asset == null)
-                {
-                    FrameworkManager.Debugger.LogError("Default animation object has been deleted.");
-                    yield break;
-                }
-                GameObject obj = Instantiate(r.asset, transform) as GameObject;
-                CanvasGroup group = obj.GetComponent<CanvasGroup>();
-                float beforeTime = settings.defaultAnimationFadeInTime;
-                float afterTime = settings.defaultAnimationFadeOutTime;
-                WaitForSecondsRealtime beforeW = new WaitForSecondsRealtime(beforeTime);
-                WaitForSecondsRealtime afterW = new WaitForSecondsRealtime(afterTime);
-                DOTween.To(() => group.alpha, x => group.alpha = x, 1, beforeTime);
-                yield return beforeW;
-                FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.StartSceneLoadAnim);
-                callback += ()=> FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.EndSceneLoadAnim);
-                yield return ChangeScene(to, from, callback);
-                DOTween.To(() => group.alpha, x => group.alpha = x, 0, afterTime);
-                yield return afterW;
-                Destroy(obj);
-            }
-
+            StartDefaultSceneTransition(c => ChangeScene(to, from, c), callback);
         }
 
         /// <summary>

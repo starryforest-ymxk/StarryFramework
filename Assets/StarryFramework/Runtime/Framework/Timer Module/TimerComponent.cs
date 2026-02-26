@@ -9,7 +9,7 @@ namespace StarryFramework
 {
 
     [DisallowMultipleComponent]
-    public class TimerComponent : BaseComponent
+    public class TimerComponent : ConfigurableComponent
     {
         private TimerManager _manager;
         private TimerManager Manager => _manager ??= FrameworkManager.GetManager<TimerManager>();
@@ -24,18 +24,14 @@ namespace StarryFramework
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            settings ??= new TimerSettings();
-            if(EditorApplication.isPlaying && _manager != null)
-                (_manager as IConfigurableManager)?.SetSettings(settings);
+            HotApplyConfigurableSettingsInPlayMode(_manager, ref settings);
         }
 #endif
 
         protected override void Awake()
         {
             base.Awake();
-            settings ??= new TimerSettings();
-            _manager ??= FrameworkManager.GetManager<TimerManager>();
-            (_manager as IConfigurableManager)?.SetSettings(settings);
+            ResolveAndApplyConfigurableSettings(ref _manager, ref settings, FrameworkManager.GetManager<TimerManager>);
         }
 
 

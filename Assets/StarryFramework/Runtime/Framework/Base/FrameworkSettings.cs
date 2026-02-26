@@ -132,13 +132,19 @@ namespace StarryFramework
         {
             foreach (var issue in FrameworkSettingsValidator.Validate(this))
             {
+                string codePrefix = string.IsNullOrEmpty(issue.Code) ? string.Empty : $"[{issue.Code}] ";
+                string suggestionSuffix = string.IsNullOrEmpty(issue.SuggestedFix)
+                    ? string.Empty
+                    : $" Suggested fix: {issue.SuggestedFix}";
+                string displayMessage = $"{codePrefix}{issue.Message}{suggestionSuffix}";
+
                 if (issue.Severity == FrameworkSettingsValidationSeverity.Error)
                 {
-                    Debug.LogError(issue.Message);
+                    Debug.LogError(displayMessage);
                 }
                 else
                 {
-                    Debug.LogWarning(issue.Message);
+                    Debug.LogWarning(displayMessage);
                 }
             }
         }

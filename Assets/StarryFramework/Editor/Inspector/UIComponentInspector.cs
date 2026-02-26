@@ -6,8 +6,8 @@ using UnityEngine;
 namespace StarryFramework.Editor
 {
     /// <summary>
-    /// UIComponent的自定义Inspector面板
-    /// 运行时显示UI窗体缓存和UI组信息
+    /// Custom inspector for UIComponent.
+    /// Displays runtime UI form cache and UI group information.
     /// </summary>
     [CustomEditor(typeof(UIComponent))]
     public class UIComponentInspector : FrameworkInspector
@@ -39,7 +39,7 @@ namespace StarryFramework.Editor
         
         private void DrawUIFormsCache(UIComponent ui)
         {
-            foldoutUIFormsCache = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutUIFormsCache, "UI Form 缓存");
+            foldoutUIFormsCache = EditorGUILayout.BeginFoldoutHeaderGroup(foldoutUIFormsCache, "UI Form Cache");
 
             if (foldoutUIFormsCache)
             {

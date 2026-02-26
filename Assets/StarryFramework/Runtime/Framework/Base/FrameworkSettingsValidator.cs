@@ -13,12 +13,18 @@ namespace StarryFramework
         internal FrameworkSettingsValidationSeverity Severity { get; }
         internal string Code { get; }
         internal string Message { get; }
+        internal string SuggestedFix { get; }
 
-        internal FrameworkSettingsValidationIssue(FrameworkSettingsValidationSeverity severity, string code, string message)
+        internal FrameworkSettingsValidationIssue(
+            FrameworkSettingsValidationSeverity severity,
+            string code,
+            string message,
+            string suggestedFix = null)
         {
             Severity = severity;
             Code = code;
             Message = message;
+            SuggestedFix = suggestedFix;
         }
     }
 
@@ -33,7 +39,8 @@ namespace StarryFramework
                 issues.Add(new FrameworkSettingsValidationIssue(
                     FrameworkSettingsValidationSeverity.Error,
                     "FW_SETTINGS_NULL",
-                    "FrameworkSettings is null."));
+                    "FrameworkSettings is null.",
+                    "Select an existing FrameworkSettings asset or create one from the Settings window."));
                 return issues;
             }
 
@@ -43,7 +50,8 @@ namespace StarryFramework
                 issues.Add(new FrameworkSettingsValidationIssue(
                     FrameworkSettingsValidationSeverity.Error,
                     "FW_MODULE_LIST_NULL",
-                    "Module list can not be null."));
+                    "Module list can not be null.",
+                    "Recreate the settings asset with defaults or initialize the Modules List in FrameworkSettings."));
                 modules = new List<ModuleType>();
             }
 
@@ -55,7 +63,8 @@ namespace StarryFramework
                     issues.Add(new FrameworkSettingsValidationIssue(
                         FrameworkSettingsValidationSeverity.Error,
                         "FW_MODULE_DUPLICATE",
-                        $"Duplicate module in the list: {module}."));
+                        $"Duplicate module in the list: {module}.",
+                        $"Remove duplicate '{module}' entries and keep only one instance in the Modules List."));
                     break;
                 }
             }
@@ -65,7 +74,8 @@ namespace StarryFramework
                 issues.Add(new FrameworkSettingsValidationIssue(
                     FrameworkSettingsValidationSeverity.Error,
                     "FW_INTERNAL_EVENT_WITHOUT_EVENT_MODULE",
-                    "Internal Event Trigger is enabled but Event module is not in the list."));
+                    "Internal Event Trigger is enabled but Event module is not in the list.",
+                    "Enable the Event module in Modules List, or disable Internal Event Trigger."));
             }
 
             if (settings.StartScene != 0 && !modules.Contains(ModuleType.Scene))
@@ -73,7 +83,8 @@ namespace StarryFramework
                 issues.Add(new FrameworkSettingsValidationIssue(
                     FrameworkSettingsValidationSeverity.Error,
                     "FW_START_SCENE_WITHOUT_SCENE_MODULE",
-                    "Start Scene is set but Scene module is not in the list."));
+                    "Start Scene is set but Scene module is not in the list.",
+                    "Enable the Scene module in Modules List, or reset Start Scene to the framework scene."));
             }
 
             return issues;

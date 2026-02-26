@@ -6,8 +6,8 @@ using UnityEngine;
 namespace StarryFramework.Editor
 {
     /// <summary>
-    /// SceneComponent的自定义Inspector面板
-    /// 运行时显示当前场景信息和场景运行时间
+    /// Custom inspector for SceneComponent.
+    /// Displays current scene information and runtime timing.
     /// </summary>
     [CustomEditor(typeof(SceneComponent))]
     public class SceneComponentInspector : FrameworkInspector
@@ -19,8 +19,12 @@ namespace StarryFramework.Editor
             SceneComponent s = (SceneComponent)target;
             
             serializedObject.Update();
-            
+             
             SerializedProperty mySerializableProperty = serializedObject.FindProperty("settings");
+            EditorGUILayout.HelpBox(
+                "SceneSettings is consumed locally by SceneComponent (default scene transition animation timing). " +
+                "It is scene-level configuration and is not injected into SceneManager.",
+                MessageType.Info);
             EditorGUILayout.PropertyField(mySerializableProperty, true);
             
             serializedObject.ApplyModifiedProperties();

@@ -6,8 +6,8 @@ using UnityEngine;
 namespace StarryFramework.Editor
 {
     /// <summary>
-    /// ObjectPoolComponent的自定义Inspector面板
-    /// 运行时显示对象池的信息和配置
+    /// Custom inspector for ObjectPoolComponent.
+    /// Displays runtime object pool information and configuration.
     /// </summary>
     [CustomEditor(typeof(ObjectPoolComponent))]
     public class ObjectPoolComponentInspector : FrameworkInspector
@@ -18,7 +18,7 @@ namespace StarryFramework.Editor
 
             if (!EditorApplication.isPlaying)
             {
-                EditorGUILayout.HelpBox("仅在运行时可用", MessageType.Info);
+                EditorGUILayout.HelpBox("Available only in Play Mode.", MessageType.Info);
                 return;
             }
 
@@ -38,7 +38,7 @@ namespace StarryFramework.Editor
                     EditorGUILayout.LabelField("Auto Release Interval", pool.AutoReleaseInterval.ToString("F2"));
                     EditorGUILayout.LabelField("Last Release Time", pool.LastReleaseTime.ToString("F2"));
                     EditorGUILayout.LabelField("Object Expire Time", pool.ExpireTime.ToString("F2"));
-                    EditorGUILayout.LabelField("Loocked", pool.Locked.ToString());
+                    EditorGUILayout.LabelField("Locked", pool.Locked.ToString());
                     EditorGUILayout.EndVertical();
                 }
             }

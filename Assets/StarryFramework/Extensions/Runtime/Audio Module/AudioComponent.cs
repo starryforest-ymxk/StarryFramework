@@ -7,7 +7,7 @@ using GUID = FMOD.GUID;
 
 namespace StarryFramework.Extentions
 {
-    public class AudioComponent : BaseComponent
+    public class AudioComponent : ConfigurableComponent
     {
         private AudioManager _manager;
         private AudioManager Manager => _manager ??= FrameworkManager.GetManager<AudioManager>();
@@ -26,18 +26,14 @@ namespace StarryFramework.Extentions
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            settings ??= new AudioSettings();
-            if(EditorApplication.isPlaying && _manager != null)
-                (_manager as IConfigurableManager)?.SetSettings(settings);
+            HotApplyConfigurableSettingsInPlayMode(_manager, ref settings);
         }
 #endif
 
         protected override void Awake()
         {
             base.Awake();
-            settings ??= new AudioSettings();
-            _manager ??= FrameworkManager.GetManager<AudioManager>();
-            (_manager as IConfigurableManager)?.SetSettings(settings);
+            ResolveAndApplyConfigurableSettings(ref _manager, ref settings, FrameworkManager.GetManager<AudioManager>);
         }
 
         private void Start()

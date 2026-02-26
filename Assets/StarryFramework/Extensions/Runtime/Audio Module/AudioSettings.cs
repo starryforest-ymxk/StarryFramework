@@ -1,28 +1,26 @@
 using FMOD.Studio;
 using FMODUnity;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace StarryFramework.Extentions
 {
-
     [Serializable]
     internal class AudioSettings : IManagerSettings
     {
         [BankRef]
         [SerializeField]
-        [Tooltip("全局音频库，库里的音频资源会在开启游戏时加载")]
+        [Tooltip("Global banks preloaded at framework startup.")]
         internal List<string> globalBanks = new List<string>();
 
         [SerializeField]
         [Min(10)]
-        [Tooltip("自动清除非使用状态下的非标签音频的事件间隔")]
+        [Tooltip("Automatically clear unused unnamed audio interval (seconds).")]
         internal float clearUnusedAudioInterval = 120f;
 
         [SerializeField]
-        [Tooltip("不同场景的音频设置")]
+        [Tooltip("Per-scene audio settings.")]
         internal List<SceneAudioSettings> sceneAudioSettings = new List<SceneAudioSettings>();
     }
 
@@ -30,35 +28,36 @@ namespace StarryFramework.Extentions
     internal class SceneAudioSettings
     {
         [SerializeField]
-        [Tooltip("场景")]
+        [Tooltip("Scene build index.")]
         [SceneIndex]
         internal int scene;
+
         [SerializeField]
-        [Tooltip("自动播放BGM（默认播放第一首）")]
+        [Tooltip("Auto play the first BGM item when entering the scene.")]
         internal bool autoPlayBGM;
+
         [SerializeField]
-        [Tooltip("场景的BGM列表")]
+        [Tooltip("BGM candidates for the scene.")]
         internal List<EventReference> BGMList = new List<EventReference>();
+
         [SerializeField]
-        [Tooltip("随场景加载一起预先加载的音频资源")]
+        [Tooltip("Audio events to preload when entering the scene.")]
         internal List<EventReference> preloadedAudios = new List<EventReference>();
+
         [SerializeField]
-        [Tooltip("场景加载好以后除BGM以外自动播放的音频列表")]
+        [Tooltip("Audio events to auto-play after scene load (excluding BGM).")]
         internal List<AutoPlayAudio> autoPlayAudios = new List<AutoPlayAudio>();
     }
-
 
     [Serializable]
     internal class AutoPlayAudio
     {
         [SerializeField]
-        [Tooltip("自动播放的音频")]
+        [Tooltip("Audio event to auto-play.")]
         internal EventReference eventReference;
 
         [SerializeField]
-        [Tooltip("音频标签，如果为空则没有标签")]
+        [Tooltip("Optional audio tag; empty means untagged.")]
         internal string tag = "";
     }
-
 }
-

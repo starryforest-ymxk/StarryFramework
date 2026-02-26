@@ -40,7 +40,7 @@ namespace StarryFramework.Editor
             if (currentSettings != null)
             {
                 EditorGUILayout.BeginVertical("box");
-                EditorGUILayout.LabelField("全局框架设置 / Global Framework Settings", EditorStyles.miniBoldLabel);
+                EditorGUILayout.LabelField("Global Framework Settings", EditorStyles.miniBoldLabel);
                 
                 EditorGUI.BeginChangeCheck();
                 FrameworkSettings newSettings = EditorGUILayout.ObjectField("Settings Asset", currentSettings, typeof(FrameworkSettings), false) as FrameworkSettings;
@@ -48,12 +48,12 @@ namespace StarryFramework.Editor
                 if (EditorGUI.EndChangeCheck() && newSettings != null && newSettings != currentSettings)
                 {
                     FrameworkSettings.SetInstance(newSettings);
-                    Debug.Log($"<color=cyan>[Framework Settings]</color> 全局设置已更新为: {AssetDatabase.GetAssetPath(newSettings)}");
+                    Debug.Log($"<color=cyan>[Framework Settings]</color> Global settings updated: {AssetDatabase.GetAssetPath(newSettings)}");
                     GUIUtility.ExitGUI();
                 }
                 
                 string assetPath = AssetDatabase.GetAssetPath(currentSettings);
-                EditorGUILayout.LabelField("路径 / Path:", assetPath, EditorStyles.wordWrappedLabel);
+                EditorGUILayout.LabelField("Path:", assetPath, EditorStyles.wordWrappedLabel);
                 
                 EditorGUILayout.Space(5);
                 EditorGUILayout.HelpBox(
@@ -62,7 +62,7 @@ namespace StarryFramework.Editor
                     MessageType.Info);
 
                 EditorGUILayout.BeginHorizontal();
-                if (GUILayout.Button("在 Settings Panel 中编辑 / Edit in Settings Panel"))
+                if (GUILayout.Button("Edit in Settings Panel"))
                 {
                     SettingsWindow.ShowWindow();
                 }
@@ -78,8 +78,8 @@ namespace StarryFramework.Editor
             }
             else
             {
-                EditorGUILayout.HelpBox("未找到 FrameworkSettings！请创建一个。\nFrameworkSettings not found! Please create one.", MessageType.Warning);
-                if (GUILayout.Button("创建 FrameworkSettings / Create FrameworkSettings"))
+                EditorGUILayout.HelpBox("FrameworkSettings not found. Please create one.", MessageType.Warning);
+                if (GUILayout.Button("Create FrameworkSettings"))
                 {
                     FrameworkSettings.ClearCache();
                     var newSettings = FrameworkSettings.Instance;

@@ -7,7 +7,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 namespace StarryFramework
 {
     [DisallowMultipleComponent]
-    public class UIComponent : BaseComponent
+    public class UIComponent : ConfigurableComponent
     {
         private UIManager _manager;
         private UIManager Manager => _manager ??= FrameworkManager.GetManager<UIManager>();
@@ -20,18 +20,14 @@ namespace StarryFramework
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            settings ??= new UISettings();
-            if(EditorApplication.isPlaying && _manager != null)
-                (_manager as IConfigurableManager)?.SetSettings(settings);
+            HotApplyConfigurableSettingsInPlayMode(_manager, ref settings);
         }
 #endif
 
         protected override void Awake()
         {
             base.Awake();
-            settings ??= new UISettings();
-            _manager ??= FrameworkManager.GetManager<UIManager>();
-            (_manager as IConfigurableManager)?.SetSettings(settings);
+            ResolveAndApplyConfigurableSettings(ref _manager, ref settings, FrameworkManager.GetManager<UIManager>);
         }
         
         

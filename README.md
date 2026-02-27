@@ -259,14 +259,37 @@ Framework.SceneComponent.LoadSceneProgressBar(
 **UI 模块示例**
 
 ```csharp
-// 打开 UI 窗体
-Framework.UIComponent.OpenUIForm("MainMenu", "Menu", false);
+// 使用选项对象打开 UI（请求策略优先）
+Framework.UIComponent.OpenUIForm(new OpenUIFormOptions
+{
+    AssetName = "SettingsPanel",
+    GroupName = "Dialog",
+    PauseCoveredUIForm = true,
+    OpenPolicy = UIOpenPolicy.SingleInstancePerGroup,
+    InstanceKey = "Main"
+});
 
-// 打开设置窗口，暂停被覆盖的 UI
-Framework.UIComponent.OpenUIForm("SettingsPanel", "Dialog", true);
+// 同资源多实例（全局多开）
+Framework.UIComponent.OpenUIForm(new OpenUIFormOptions
+{
+    AssetName = "RewardPanel",
+    GroupName = "Dialog",
+    OpenPolicy = UIOpenPolicy.MultiInstanceGlobal,
+    InstanceKey = "reward_001"
+});
 
-// 关闭 UI 窗体
-Framework.UIComponent.CloseUIForm("SettingsPanel");
+// 通过 serialId 精确关闭
+UIForm[] rewardForms = Framework.UIComponent.GetUIFormsByInstanceKey("RewardPanel", "reward_001");
+if (rewardForms.Length > 0)
+{
+    Framework.UIComponent.CloseUIForm(rewardForms[0].SerialID);
+}
+
+// 通过资源名 + InstanceKey 关闭 Topmost
+Framework.UIComponent.CloseUIForm("SettingsPanel", "Main");
+
+// 关闭同资源名所有实例
+Framework.UIComponent.CloseAllUIForms("RewardPanel");
 ```
 
 ---

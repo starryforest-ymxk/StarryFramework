@@ -579,12 +579,22 @@ public class Bullet : GameObjectBase
 
 **入口**: `Framework.UIComponent`
 
-### 📊 属性
+### 📊 运行时属性（推荐）
 
 | 属性 | 类型 | 说明 |
 |------|------|------|
-| `UIGroupsDic` | Dictionary<string, UIGroup> | UI组字典 |
-| `UIFormsCacheList` | LinkedList<UIForm> | UI窗体缓存列表 |
+| `UIGroups` | IReadOnlyDictionary<string, UIGroup> | UI组只读视图 |
+| `UIFormsCacheSnapshot` | IReadOnlyList<UIForm> | UI缓存快照 |
+| `OpeningRequestCount` | int | 正在打开请求数量 |
+| `ActiveFormCount` | int | 活跃UI实例数量 |
+| `ActiveAssetKeyCount` | int | 活跃资源名键数量 |
+
+### 🔍 诊断快照
+
+| 方法 | 说明 | 返回值 |
+|------|------|--------|
+| `GetAllActiveUIFormsSnapshot()` | 获取所有活跃UI实例（Topmost优先排序） | UIForm[] |
+| `GetOpeningRequestKeysSnapshot()` | 获取 opening request key 快照 | string[] |
 
 ### 🔑 核心API - UIGroup
 
@@ -596,17 +606,57 @@ public class Bullet : GameObjectBase
 | `AddUIGroup(string)` | 添加UI组 | void |
 | `RemoveUIGroup(string)` | 移除UI组 | void |
 
-### 🔑 核心API - UIForm
+### 🔑 核心API - UIForm 查询
 
 | 方法 | 说明 | 返回值 |
 |------|------|--------|
-| `HasUIForm(string)` | 检查是否存在UI窗体 | bool |
-| `GetUIForm(string)` | 获取指定UI窗体 | UIForm |
-| `OpenUIForm(string, string, bool)` | 打开UI窗体 | AsyncOperationHandle<UIForm> |
-| `CloseUIForm(string)` | 关闭UI窗体（资源名） | void |
-| `CloseUIForm(UIForm)` | 关闭UI窗体（对象） | void |
-| `RefocusUIForm(string)` | 重新聚焦UI窗体（资源名） | void |
-| `RefocusUIForm(UIForm)` | 重新聚焦UI窗体（对象） | void |
+| `HasUIForm(string)` | 是否存在该资源名的活跃实例 | bool |
+| `HasUIForm(string, string)` | 是否存在该资源名 + InstanceKey 的活跃实例 | bool |
+| `HasUIForm(int)` | 是否存在该 serialId 的活跃实例 | bool |
+| `GetUIForm(int)` | 通过 serialId 获取实例 | UIForm |
+| `GetUIForm(string, string)` | 获取该资源名 + InstanceKey 的 Topmost 实例 | UIForm |
+| `GetTopUIForm(string)` | 获取该资源名的 Topmost 实例 | UIForm |
+| `GetUIForms(string)` | 获取该资源名的全部活跃实例（Topmost优先） | UIForm[] |
+| `GetUIForms(string, string)` | 获取该资源名在指定组的活跃实例 | UIForm[] |
+| `GetUIFormsByInstanceKey(string, string)` | 获取该资源名 + InstanceKey 的全部活跃实例 | UIForm[] |
+| `GetUIFormCount(string)` | 获取该资源名活跃实例数 | int |
+
+### 🔑 核心API - UIForm 打开
+
+| 方法 | 说明 | 返回值 |
+|------|------|--------|
+| `OpenUIForm(OpenUIFormOptions)` | 按请求策略与InstanceKey打开UI | AsyncOperationHandle<UIForm> |
+
+`OpenUIFormOptions` 字段：
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `AssetName` | string | UI资源名（Addressables key） |
+| `GroupName` | string | UI组名称 |
+| `PauseCoveredUIForm` | bool | 是否暂停被覆盖窗体 |
+| `OpenPolicy` | UIOpenPolicy | 打开策略 |
+| `RefocusIfExists` | bool | 单实例命中时是否自动聚焦 |
+| `InstanceKey` | string | 实例业务标识键（Ordinal、大小写敏感） |
+
+`UIOpenPolicy` 枚举：
+
+| 枚举值 | 说明 |
+|------|------|
+| `SingleInstanceGlobal` | 同资源名全局单实例 |
+| `SingleInstancePerGroup` | 同资源名同组单实例，不同组可各有一个 |
+| `MultiInstanceGlobal` | 同资源名全局多实例（同组可多开） |
+
+### 🔑 核心API - UIForm 关闭与聚焦
+
+| 方法 | 说明 | 返回值 |
+|------|------|--------|
+| `CloseUIForm(int)` | 通过 serialId 关闭指定实例 | void |
+| `CloseUIForm(string, string)` | 关闭资源名 + InstanceKey 的 Topmost 实例 | void |
+| `CloseAllUIForms(string)` | 关闭该资源名所有实例（跨组） | void |
+| `CloseAllUIFormsInGroup(string, string)` | 关闭该资源名在指定组的所有实例 | void |
+| `CloseAllUIFormsByInstanceKey(string, string)` | 关闭该资源名 + InstanceKey 的所有实例 | void |
+| `RefocusUIForm(int)` | 通过 serialId 聚焦实例 | void |
+| `RefocusUIForm(string, string)` | 聚焦资源名 + InstanceKey 的 Topmost 实例 | void |
 | `CloseAndReleaseAllForms()` | 关闭并释放所有UI窗体 | void |
 
 ### 🧩 重要接口/基类

@@ -579,12 +579,22 @@ public class Bullet : GameObjectBase
 
 **Entry**: `Framework.UIComponent`
 
-### 📊 Properties
+### 📊 Runtime Properties (Recommended)
 
 | Property | Type | Description |
 |------|------|------|
-| `UIGroupsDic` | Dictionary<string, UIGroup> | UI groups dictionary |
-| `UIFormsCacheList` | LinkedList<UIForm> | UI forms cache list |
+| `UIGroups` | IReadOnlyDictionary<string, UIGroup> | Read-only UI group view |
+| `UIFormsCacheSnapshot` | IReadOnlyList<UIForm> | UI cache snapshot |
+| `OpeningRequestCount` | int | Number of in-flight open requests |
+| `ActiveFormCount` | int | Number of active UI instances |
+| `ActiveAssetKeyCount` | int | Number of active asset-name keys |
+
+### 🔍 Diagnostic Snapshots
+
+| Method | Description | Return Type |
+|------|------|--------|
+| `GetAllActiveUIFormsSnapshot()` | Get all active instances (Topmost-first order) | UIForm[] |
+| `GetOpeningRequestKeysSnapshot()` | Get opening request key snapshot | string[] |
 
 ### 🔑 Core API - UIGroup
 
@@ -596,17 +606,57 @@ public class Bullet : GameObjectBase
 | `AddUIGroup(string)` | Add UI group | void |
 | `RemoveUIGroup(string)` | Remove UI group | void |
 
-### 🔑 Core API - UIForm
+### 🔑 Core API - UIForm Query
 
 | Method | Description | Return Type |
 |------|------|--------|
-| `HasUIForm(string)` | Check if UI form exists | bool |
-| `GetUIForm(string)` | Get specified UI form | UIForm |
-| `OpenUIForm(string, string, bool)` | Open UI form | AsyncOperationHandle<UIForm> |
-| `CloseUIForm(string)` | Close UI form (asset name) | void |
-| `CloseUIForm(UIForm)` | Close UI form (object) | void |
-| `RefocusUIForm(string)` | Refocus UI form (asset name) | void |
-| `RefocusUIForm(UIForm)` | Refocus UI form (object) | void |
+| `HasUIForm(string)` | Whether any active instance exists for the asset | bool |
+| `HasUIForm(string, string)` | Whether any active instance exists for asset + InstanceKey | bool |
+| `HasUIForm(int)` | Whether the serialId instance exists and is active | bool |
+| `GetUIForm(int)` | Get instance by serialId | UIForm |
+| `GetUIForm(string, string)` | Get topmost active instance by asset + InstanceKey | UIForm |
+| `GetTopUIForm(string)` | Get topmost active instance by asset | UIForm |
+| `GetUIForms(string)` | Get all active instances by asset (Topmost-first) | UIForm[] |
+| `GetUIForms(string, string)` | Get all active instances by asset in a specific group | UIForm[] |
+| `GetUIFormsByInstanceKey(string, string)` | Get all active instances by asset + InstanceKey | UIForm[] |
+| `GetUIFormCount(string)` | Get active instance count by asset | int |
+
+### 🔑 Core API - UIForm Open
+
+| Method | Description | Return Type |
+|------|------|--------|
+| `OpenUIForm(OpenUIFormOptions)` | Open UI by request policy and InstanceKey | AsyncOperationHandle<UIForm> |
+
+`OpenUIFormOptions` fields:
+
+| Field | Type | Description |
+|------|------|------|
+| `AssetName` | string | UI asset name (Addressables key) |
+| `GroupName` | string | UI group name |
+| `PauseCoveredUIForm` | bool | Whether to pause covered forms |
+| `OpenPolicy` | UIOpenPolicy | Open policy |
+| `RefocusIfExists` | bool | Auto-refocus when single-instance policy hits an existing form |
+| `InstanceKey` | string | Business instance key (Ordinal, case-sensitive) |
+
+`UIOpenPolicy` enum:
+
+| Enum Value | Description |
+|------|------|
+| `SingleInstanceGlobal` | Single instance per asset globally |
+| `SingleInstancePerGroup` | Single instance per asset within each group |
+| `MultiInstanceGlobal` | Multi-instance globally (including same group) |
+
+### 🔑 Core API - UIForm Close/Refocus
+
+| Method | Description | Return Type |
+|------|------|--------|
+| `CloseUIForm(int)` | Close exact instance by serialId | void |
+| `CloseUIForm(string, string)` | Close topmost instance by asset + InstanceKey | void |
+| `CloseAllUIForms(string)` | Close all instances by asset (cross-group) | void |
+| `CloseAllUIFormsInGroup(string, string)` | Close all instances by asset in one group | void |
+| `CloseAllUIFormsByInstanceKey(string, string)` | Close all instances by asset + InstanceKey | void |
+| `RefocusUIForm(int)` | Refocus exact instance by serialId | void |
+| `RefocusUIForm(string, string)` | Refocus topmost instance by asset + InstanceKey | void |
 | `CloseAndReleaseAllForms()` | Close and release all UI forms | void |
 
 ### 🧩 Important Interfaces/Base Classes

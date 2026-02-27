@@ -260,14 +260,37 @@ Framework.SceneComponent.LoadSceneProgressBar(
 **UI Module Example**
 
 ```csharp
-// Open UI form
-Framework.UIComponent.OpenUIForm("MainMenu", "Menu", false);
+// Open UI using options (request policy first)
+Framework.UIComponent.OpenUIForm(new OpenUIFormOptions
+{
+    AssetName = "SettingsPanel",
+    GroupName = "Dialog",
+    PauseCoveredUIForm = true,
+    OpenPolicy = UIOpenPolicy.SingleInstancePerGroup,
+    InstanceKey = "Main"
+});
 
-// Open settings window, pause covered UI
-Framework.UIComponent.OpenUIForm("SettingsPanel", "Dialog", true);
+// Multi-instance open for the same asset
+Framework.UIComponent.OpenUIForm(new OpenUIFormOptions
+{
+    AssetName = "RewardPanel",
+    GroupName = "Dialog",
+    OpenPolicy = UIOpenPolicy.MultiInstanceGlobal,
+    InstanceKey = "reward_001"
+});
 
-// Close UI form
-Framework.UIComponent.CloseUIForm("SettingsPanel");
+// Close a specific instance by serialId
+UIForm[] rewardForms = Framework.UIComponent.GetUIFormsByInstanceKey("RewardPanel", "reward_001");
+if (rewardForms.Length > 0)
+{
+    Framework.UIComponent.CloseUIForm(rewardForms[0].SerialID);
+}
+
+// Close topmost instance by asset + InstanceKey
+Framework.UIComponent.CloseUIForm("SettingsPanel", "Main");
+
+// Close all instances with the same asset name
+Framework.UIComponent.CloseAllUIForms("RewardPanel");
 ```
 
 ---

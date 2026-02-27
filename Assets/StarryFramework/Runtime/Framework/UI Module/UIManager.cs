@@ -352,7 +352,7 @@ namespace StarryFramework
             if (TryTakeUIFormFromCache(uiFormName, out UIForm uiForm))
             {
                 int serialIdForThisOpen = serial++;
-                if (!uiForm.PrepareForOpenSession(serialIdForThisOpen, uiGroup, pauseCoveredUIForm, instanceKey))
+                if (!uiForm.PrepareForOpenSession(serialIdForThisOpen, uiGroup, pauseCoveredUIForm, instanceKey, openPolicy))
                 {
                     var errorString = $"UI Form '{uiFormName}' from cache failed to prepare open session.";
                     FrameworkManager.Debugger.LogError(errorString);
@@ -377,7 +377,7 @@ namespace StarryFramework
                 GameObject uiObject = Object.Instantiate(uiPrefab);
                 UIFormLogic uiFormLogic = uiObject.GetComponent<UIFormLogic>();
                 UIForm newForm = new UIForm();
-                newForm.OnInit(serial++, uiFormName, uiGroup, pauseCoveredUIForm, uiFormLogic, uiPrefab, instanceKey);
+                newForm.OnInit(serial++, uiFormName, uiGroup, pauseCoveredUIForm, uiFormLogic, uiPrefab, instanceKey, openPolicy);
                 uiGroup.AddAndOpenUIForm(newForm);
                 RegisterActiveUIForm(newForm);
                 uiGroup.Refresh();

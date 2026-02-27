@@ -10,6 +10,7 @@ namespace StarryFramework
         private int serialID;
         private string uiFormAssetName;
         private string instanceKey;
+        private UIOpenPolicy openPolicy;
         private UIGroup uiGroup;
         private int depthInUIGroup;
         private bool pauseCoveredUiForm;
@@ -32,6 +33,11 @@ namespace StarryFramework
         /// 业务层实例标识键（多实例模式使用）。
         /// </summary>
         public string InstanceKey => instanceKey;
+
+        /// <summary>
+        /// 本次打开会话采用的打开策略。
+        /// </summary>
+        public UIOpenPolicy OpenPolicy => openPolicy;
         
         /// <summary>
         /// UI窗体所属的UI组
@@ -79,7 +85,7 @@ namespace StarryFramework
         /// </summary>
         internal void BindOpenContext(UIGroup group, bool pauseCoveredUIForm)
         {
-            BindOpenContext(group, pauseCoveredUIForm, null);
+            BindOpenContext(group, pauseCoveredUIForm, null, UIOpenPolicy.SingleInstanceGlobal);
         }
 
         /// <summary>
@@ -87,6 +93,15 @@ namespace StarryFramework
         /// 用于缓存复用时更新运行时上下文，不触发资源初始化逻辑。
         /// </summary>
         internal void BindOpenContext(UIGroup group, bool pauseCoveredUIForm, string newInstanceKey)
+        {
+            BindOpenContext(group, pauseCoveredUIForm, newInstanceKey, UIOpenPolicy.SingleInstanceGlobal);
+        }
+
+        /// <summary>
+        /// 绑定本次打开上下文（所属组、覆盖暂停策略、业务实例标识、打开策略）。
+        /// 用于缓存复用时更新运行时上下文，不触发资源初始化逻辑。
+        /// </summary>
+        internal void BindOpenContext(UIGroup group, bool pauseCoveredUIForm, string newInstanceKey, UIOpenPolicy newOpenPolicy)
         {
             if (group == null)
             {
@@ -97,12 +112,13 @@ namespace StarryFramework
             uiGroup = group;
             pauseCoveredUiForm = pauseCoveredUIForm;
             instanceKey = string.IsNullOrEmpty(newInstanceKey) ? null : newInstanceKey;
+            openPolicy = newOpenPolicy;
         }
 
         /// <summary>
         /// Prepare one open session for this form (serial id is session-scoped and reallocated on every open).
         /// </summary>
-        internal bool PrepareForOpenSession(int newSerialId, UIGroup group, bool pauseCoveredUIForm, string newInstanceKey)
+        internal bool PrepareForOpenSession(int newSerialId, UIGroup group, bool pauseCoveredUIForm, string newInstanceKey, UIOpenPolicy newOpenPolicy)
         {
             if (releaseTag)
             {
@@ -117,7 +133,7 @@ namespace StarryFramework
             }
 
             serialID = newSerialId;
-            BindOpenContext(group, pauseCoveredUIForm, newInstanceKey);
+            BindOpenContext(group, pauseCoveredUIForm, newInstanceKey, newOpenPolicy);
             lastFocusSequence = 0;
             return true;
         }
@@ -138,10 +154,11 @@ namespace StarryFramework
         /// </summary>
         public void OnInit(
             int serialId, string assetName, UIGroup group, bool pauseCoveredUIForm, 
-            UIFormLogic logic, GameObject handle, string newInstanceKey = null)
+            UIFormLogic logic, GameObject handle, string newInstanceKey = null,
+            UIOpenPolicy newOpenPolicy = UIOpenPolicy.SingleInstanceGlobal)
         {
             uiFormAssetName = assetName;
-            if (!PrepareForOpenSession(serialId, group, pauseCoveredUIForm, newInstanceKey))
+            if (!PrepareForOpenSession(serialId, group, pauseCoveredUIForm, newInstanceKey, newOpenPolicy))
             {
                 return;
             }

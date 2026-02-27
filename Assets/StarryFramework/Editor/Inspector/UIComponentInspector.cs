@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -18,6 +19,9 @@ namespace StarryFramework.Editor
         private bool foldoutOpeningRequests;
         private string topmostQueryAssetName;
         private string topmostQueryResult = "N/A";
+        private readonly Dictionary<string, bool> uiGroupFoldouts = new();
+        private readonly Dictionary<string, bool> uiFormFoldouts = new();
+        private readonly Dictionary<string, bool> uiFormInfoFoldouts = new();
         
         public override void OnInspectorGUI()
         {
@@ -106,11 +110,11 @@ namespace StarryFramework.Editor
                             EditorGUILayout.LabelField("Instance Count", forms.Length.ToString());
                             EditorGUILayout.LabelField(
                                 "Topmost",
-                                $"[{topmost.SerialID}] Group={topmost.UIGroup?.Name ?? "null"}, InstanceKey={FormatInstanceKey(topmost.InstanceKey)}");
+                                $"[{topmost.SerialID}] Group={topmost.UIGroup?.Name ?? "null"}, Policy={topmost.OpenPolicy}, InstanceKey={FormatInstanceKey(topmost.InstanceKey)}");
 
                             foreach (UIForm form in forms)
                             {
-                                DrawUIForm(form);
+                                DrawUIForm(form, $"active:{assetGroup.Key}");
                             }
                         }
                         EditorGUILayout.EndVertical();
@@ -160,7 +164,7 @@ namespace StarryFramework.Editor
                     EditorGUILayout.Space(2);
                     foreach (var uiForm in ui.UIFormsCacheSnapshot)
                     {
-                        DrawUIForm(uiForm, true);
+                        DrawUIForm(uiForm, "cache");
                     }
                 }
                 EditorGUILayout.EndVertical();
@@ -192,14 +196,18 @@ namespace StarryFramework.Editor
         private void DrawUIGroup(UIGroup uiGroup)
         {
             string groupName = uiGroup.Name;
+            string foldoutKey = BuildUIGroupFoldoutKey(groupName);
+            bool isExpanded = GetFoldoutState(uiGroupFoldouts, foldoutKey);
             Rect r = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none);
             EditorGUILayout.BeginHorizontal();
             {
-                uiGroup.Foldout = EditorGUI.Foldout(r, uiGroup.Foldout, GUIContent.none);
+                isExpanded = EditorGUI.Foldout(r, isExpanded, GUIContent.none);
                 EditorGUI.LabelField(r, groupName);
             }
             EditorGUILayout.EndHorizontal();
-            if (uiGroup.Foldout)
+            uiGroupFoldouts[foldoutKey] = isExpanded;
+
+            if (isExpanded)
             {
                 EditorGUILayout.BeginVertical(StyleFramework.box);
                 {
@@ -209,7 +217,7 @@ namespace StarryFramework.Editor
                     {
                         EditorGUILayout.LabelField("Current Form");
                         EditorGUILayout.BeginVertical(StyleFramework.box);
-                        DrawUIForm(uiGroup.CurrentForm);
+                        DrawUIForm(uiGroup.CurrentForm, $"group:{groupName}:current");
                         EditorGUILayout.EndVertical();
                     }
                     else
@@ -220,7 +228,7 @@ namespace StarryFramework.Editor
                     EditorGUILayout.BeginVertical(StyleFramework.box);
                     foreach (var uiFormInfo in uiGroup.FormInfosList)
                     {
-                        DrawUIFormInfo(uiFormInfo);
+                        DrawUIFormInfo(uiFormInfo, $"group:{groupName}:all");
                     }
                     EditorGUILayout.EndVertical();
                 }
@@ -228,26 +236,22 @@ namespace StarryFramework.Editor
             }
         }
         
-        private void DrawUIForm(UIForm uiForm, bool showInCache = false)
+        private void DrawUIForm(UIForm uiForm, string scope)
         {
             string assetName = uiForm.UIFormAssetName;
+            string foldoutKey = BuildUIFormFoldoutKey(scope, uiForm);
+            bool isExpanded = GetFoldoutState(uiFormFoldouts, foldoutKey);
             Rect r = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none);
 
             EditorGUILayout.BeginHorizontal();
             {
-                if (showInCache)
-                {
-                    uiForm.FoldoutInCache = EditorGUI.Foldout(r, uiForm.FoldoutInCache, GUIContent.none);
-                }
-                else
-                {
-                    uiForm.Foldout = EditorGUI.Foldout(r, uiForm.Foldout, GUIContent.none);
-                }
+                isExpanded = EditorGUI.Foldout(r, isExpanded, GUIContent.none);
                 EditorGUI.LabelField(r, assetName);
             }
             EditorGUILayout.EndHorizontal();
+            uiFormFoldouts[foldoutKey] = isExpanded;
 
-            if (showInCache?uiForm.FoldoutInCache:uiForm.Foldout)
+            if (isExpanded)
             {
                 EditorGUILayout.BeginVertical(StyleFramework.box);
                 {
@@ -255,6 +259,7 @@ namespace StarryFramework.Editor
                     EditorGUILayout.LabelField("UI Group", uiForm.UIGroup != null ? uiForm.UIGroup.Name : "null");
                     EditorGUILayout.LabelField("Depth in group", uiForm.DepthInUIGroup.ToString());
                     EditorGUILayout.LabelField("Pause Covered", uiForm.PauseCoveredUIForm.ToString());
+                    EditorGUILayout.LabelField("Open Policy", uiForm.OpenPolicy.ToString());
                     EditorGUILayout.LabelField("Instance Key", FormatInstanceKey(uiForm.InstanceKey));
                     EditorGUILayout.LabelField("Last Focus Sequence", uiForm.LastFocusSequence.ToString());
                     EditorGUILayout.LabelField("Is Opened", uiForm.IsOpened.ToString());
@@ -271,20 +276,23 @@ namespace StarryFramework.Editor
             }
         }
         
-        private void DrawUIFormInfo(UIFormInfo uiFormInfo)
+        private void DrawUIFormInfo(UIFormInfo uiFormInfo, string scope)
         {
             UIForm uiForm = uiFormInfo.UIForm;
             string assetName = uiForm.UIFormAssetName;
+            string foldoutKey = BuildUIFormInfoFoldoutKey(scope, uiFormInfo);
+            bool isExpanded = GetFoldoutState(uiFormInfoFoldouts, foldoutKey);
             Rect r = GUILayoutUtility.GetRect(GUIContent.none, GUIStyle.none);
 
             EditorGUILayout.BeginHorizontal();
             {
-                uiFormInfo.Foldout = EditorGUI.Foldout(r, uiFormInfo.Foldout, GUIContent.none);
+                isExpanded = EditorGUI.Foldout(r, isExpanded, GUIContent.none);
                 EditorGUI.LabelField(r, assetName);
             }
             EditorGUILayout.EndHorizontal();
+            uiFormInfoFoldouts[foldoutKey] = isExpanded;
 
-            if (uiFormInfo.Foldout)
+            if (isExpanded)
             {
                 EditorGUILayout.BeginVertical(StyleFramework.box);
                 {
@@ -293,6 +301,7 @@ namespace StarryFramework.Editor
                     EditorGUILayout.LabelField("Paused", uiFormInfo.Paused.ToString());
                     EditorGUILayout.LabelField("Covered", uiFormInfo.Covered.ToString());
                     EditorGUILayout.LabelField("Pause Covered", uiForm.PauseCoveredUIForm.ToString());
+                    EditorGUILayout.LabelField("Open Policy", uiForm.OpenPolicy.ToString());
                     EditorGUILayout.LabelField("Instance Key", FormatInstanceKey(uiForm.InstanceKey));
                     EditorGUILayout.LabelField("Last Focus Sequence", uiForm.LastFocusSequence.ToString());
                     EditorGUILayout.LabelField("Is Opened", uiForm.IsOpened.ToString());
@@ -307,6 +316,44 @@ namespace StarryFramework.Editor
                 }
                 EditorGUILayout.EndVertical();
             }
+        }
+
+        private static bool GetFoldoutState(Dictionary<string, bool> foldouts, string key)
+        {
+            if (foldouts == null || key == null)
+            {
+                return false;
+            }
+
+            return foldouts.TryGetValue(key, out bool state) && state;
+        }
+
+        private static string BuildUIGroupFoldoutKey(string groupName)
+        {
+            return $"group:{groupName ?? string.Empty}";
+        }
+
+        private static string BuildUIFormFoldoutKey(string scope, UIForm uiForm)
+        {
+            if (uiForm == null)
+            {
+                return $"{scope}|null";
+            }
+
+            string groupName = uiForm.UIGroup?.Name ?? string.Empty;
+            return $"{scope}|{uiForm.SerialID}|{uiForm.UIFormAssetName ?? string.Empty}|{groupName}|{uiForm.InstanceKey ?? string.Empty}";
+        }
+
+        private static string BuildUIFormInfoFoldoutKey(string scope, UIFormInfo uiFormInfo)
+        {
+            UIForm uiForm = uiFormInfo?.UIForm;
+            if (uiForm == null)
+            {
+                return $"{scope}|null";
+            }
+
+            string groupName = uiForm.UIGroup?.Name ?? string.Empty;
+            return $"{scope}|{uiForm.SerialID}|{uiForm.UIFormAssetName ?? string.Empty}|{groupName}|{uiForm.InstanceKey ?? string.Empty}";
         }
 
         private static string FormatInstanceKey(string instanceKey)

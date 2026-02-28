@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -9,6 +10,7 @@ namespace StarryFramework
     internal static class FrameworkPathUtility
     {
         internal const string RootMarkerFileName = "StarryFrameworkRoot.marker";
+        private const string PathUtilityScriptSuffix = "/Runtime/Framework/Base/FrameworkPathUtility.cs";
 
 #if UNITY_EDITOR
         private static string _cachedPluginRootPath;
@@ -22,7 +24,7 @@ namespace StarryFramework
                     return _cachedPluginRootPath;
                 }
 
-                string[] guids = AssetDatabase.FindAssets(RootMarkerFileName);
+                string[] guids = AssetDatabase.FindAssets("StarryFrameworkRoot t:DefaultAsset");
                 string foundRootPath = null;
                 int matchCount = 0;
 
@@ -60,6 +62,26 @@ namespace StarryFramework
                 if (matchCount > 1)
                 {
                     throw new InvalidOperationException($"Found multiple plugin root markers '{RootMarkerFileName}'. Please keep only one.");
+                }
+
+                string[] scriptGuids = AssetDatabase.FindAssets("FrameworkPathUtility t:MonoScript");
+                foreach (string scriptGuid in scriptGuids)
+                {
+                    string scriptPath = AssetDatabase.GUIDToAssetPath(scriptGuid);
+                    if (!scriptPath.EndsWith(PathUtilityScriptSuffix, StringComparison.Ordinal))
+                    {
+                        continue;
+                    }
+
+                    string rootPath = scriptPath.Substring(0, scriptPath.Length - PathUtilityScriptSuffix.Length);
+                    string markerPath = $"{rootPath}/{RootMarkerFileName}";
+                    if (string.IsNullOrEmpty(AssetDatabase.AssetPathToGUID(markerPath)))
+                    {
+                        Debug.LogWarning($"[StarryFramework] Root marker not found at expected path: {markerPath}. Using script-relative root path fallback.");
+                    }
+
+                    _cachedPluginRootPath = rootPath;
+                    return _cachedPluginRootPath;
                 }
 
                 throw new InvalidOperationException("Unable to locate StarryFramework plugin root path.");

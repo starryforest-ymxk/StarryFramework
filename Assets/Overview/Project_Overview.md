@@ -635,7 +635,7 @@ Framework.UIComponent.GetUIForm(string formAssetName)
 - 多音频通道管理（BGM、音效、UI音效）
 - 音频动态附着到GameObject
 - 场景BGM自动播放
-- 音频预加载
+- 音频预加载与全量卸载（Data/Bank）
 
 **说明**: 
 该模块为可选扩展，需要项目使用FMOD音频中间件。由于许可限制，FMOD不包含在框架分发版本中，需自行下载FMOD Unity Integration。
@@ -1008,6 +1008,10 @@ Player:
 
 **Audio 模块兼容修复**
 - ✅ 修复 FMOD `AttachInstanceToGameObject` 旧签名调用，改用 `GameObject` 重载，消除 CS0618 过时警告
+- ✅ 恢复 `AudioComponent` 的 `Preload/Unload/UnloadAll`（Data/Bank）对外 API
+- ✅ `AudioManager` 增加 `UnloadAllData()` / `UnloadAllBankData()` 与手动预加载引用计数
+- ✅ `AudioManager.ShutDown()` 改为先停止并释放实例，再清理采样数据，避免残留句柄
+- ✅ 修复 `PlayOneShot(..., Vector3 pos)` 忽略位置参数的问题
 
 ### 历史更新 (2024年12月)
 

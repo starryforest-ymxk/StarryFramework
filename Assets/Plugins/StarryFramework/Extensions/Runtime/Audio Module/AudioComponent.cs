@@ -41,6 +41,7 @@ namespace StarryFramework.Extensions
             FrameworkManager.EventManager.AddEventListener<int>(FrameworkEvent.SetNewActiveScene, OnNewActiveScene);
             FrameworkManager.EventManager.AddEventListener<int>(FrameworkEvent.SetCurrentActiveSceneNotActive, InActiveCurrentScene);
         }
+        
         internal override void Shutdown() 
         {
             FrameworkManager.EventManager.RemoveEventListener<int>(FrameworkEvent.SetNewActiveScene, OnNewActiveScene);
@@ -84,14 +85,70 @@ namespace StarryFramework.Extensions
             }
         }
 
+        #region AudioData
+
+        /// <summary>
+        /// 预加载音频事件采样数据。
+        /// </summary>
+        /// <param name="events">待预加载的音频事件集合。</param>
+        public void PreloadData(IEnumerable<EventReference> events)
+        {
+            Manager.PreloadData(events);
+        }
+
+        /// <summary>
+        /// 卸载音频事件采样数据。
+        /// </summary>
+        /// <param name="events">待卸载的音频事件集合。</param>
+        public void UnloadData(IEnumerable<EventReference> events)
+        {
+            Manager.UnloadData(events);
+        }
+
+        /// <summary>
+        /// 卸载当前组件追踪到的全部音频事件采样数据。
+        /// </summary>
+        public void UnloadAllData()
+        {
+            Manager.UnloadAllData();
+        }
+
+        /// <summary>
+        /// 预加载Bank采样数据。
+        /// </summary>
+        /// <param name="banks">待预加载的Bank名称集合。</param>
+        public void PreloadBankData(IEnumerable<string> banks)
+        {
+            Manager.PreloadBankData(banks);
+        }
+
+        /// <summary>
+        /// 卸载Bank采样数据。
+        /// </summary>
+        /// <param name="banks">待卸载的Bank名称集合。</param>
+        public void UnloadBankData(IEnumerable<string> banks)
+        {
+            Manager.UnloadBankData(banks);
+        }
+
+        /// <summary>
+        /// 卸载当前组件追踪到的全部Bank采样数据。
+        /// </summary>
+        public void UnloadAllBankData()
+        {
+            Manager.UnloadAllBankData();
+        }
+
+        #endregion
+
         #region PlayOneShot
 
         /// <summary>
         /// 触发一次声音，音频资源在触发完立即卸载
         /// 频繁使用将带来性能开销，常用于不怎么使用的音频资源
         /// </summary>
-        /// <param Name="reference">音频事件</param>
-        /// <param Name="pos">播放位置（3D）</param>
+        /// <param name="reference">音频事件</param>
+        /// <param name="pos">播放位置（3D）</param>
         public void PlayOneShot(EventReference reference, Vector3 pos = default)
         {
             Manager.PlayOneShot(reference, pos);
@@ -101,8 +158,8 @@ namespace StarryFramework.Extensions
         /// 触发一次声音，音频资源在触发完立即卸载
         /// 频繁使用将带来性能开销，常用于不怎么使用的音频资源
         /// </summary>
-        /// <param Name="path">音频事件路径</param>
-        /// <param Name="pos">播放位置（3D）</param>
+        /// <param name="path">音频事件路径</param>
+        /// <param name="pos">播放位置（3D）</param>
         public void PlayOneShot(string path, Vector3 pos = default)
         {
             Manager.PlayOneShot(path, pos);
@@ -112,8 +169,8 @@ namespace StarryFramework.Extensions
         /// 触发一次声音，将声源附着到某个物体上，音频资源在触发完立即卸载
         /// 频繁使用将带来性能开销，常用于不怎么使用的音频资源
         /// </summary>
-        /// <param Name="reference">音频事件</param>
-        /// <param Name="gameObject">附着物</param>
+        /// <param name="reference">音频事件</param>
+        /// <param name="gameObject">附着物</param>
         public void PlayOneShotAttached(EventReference reference, GameObject gameObject)
         {
             Manager.PlayOneShotAttached(reference, gameObject);
@@ -123,8 +180,8 @@ namespace StarryFramework.Extensions
         /// 触发一次声音，将声源附着到某个物体上，音频资源在触发完立即卸载
         /// 频繁使用将带来性能开销，常用于不怎么使用的音频资源
         /// </summary>
-        /// <param Name="path">音频事件路径</param>
-        /// <param Name="gameObject">附着物</param>
+        /// <param name="path">音频事件路径</param>
+        /// <param name="gameObject">附着物</param>
         public void PlayOneShotAttached(string path, GameObject gameObject)
         {
             Manager.PlayOneShotAttached(path, gameObject);
@@ -137,8 +194,8 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 设置VCA音频组声音大小
         /// </summary>
-        /// <param Name="VCAPath"></param>
-        /// <param Name="value"></param>
+        /// <param name="VCAPath"></param>
+        /// <param name="value"></param>
         public void SetVolume(string VCAPath, float value)
         {
             Manager.SetVolume(VCAPath, value);
@@ -147,7 +204,7 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 获得VCA音频组声音大小
         /// </summary>
-        /// <param Name="VCAPath"></param>
+        /// <param name="VCAPath"></param>
         /// <returns></returns>
         public float GetVolume(string VCAPath)
         {
@@ -161,7 +218,7 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 播放BGM
         /// </summary>
-        /// <param Name="index">框架设置里的BGM编号</param>
+        /// <param name="index">框架设置里的BGM编号</param>
         public void PlayBGM(int index)
         {
             if(index>=0 && index< currentBGMList.Count)
@@ -181,7 +238,7 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 停止BGM
         /// </summary>
-        /// <param Name="mode">FMOD.Studio.STOP_MODE枚举，用于声明停止类型</param>
+        /// <param name="mode">FMOD.Studio.STOP_MODE枚举，用于声明停止类型</param>
         public void StopBGM(FMOD.Studio.STOP_MODE mode)
         {
             Manager.StopBGM(mode);
@@ -191,8 +248,8 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 切换BGM
         /// </summary>
-        /// <param Name="index">要播放的BGM编号</param>
-        /// <param Name="mode">FMOD.Studio.STOP_MODE枚举，用于声明停止类型</param>
+        /// <param name="index">要播放的BGM编号</param>
+        /// <param name="mode">FMOD.Studio.STOP_MODE枚举，用于声明停止类型</param>
         public void ChangeBGM(int index, FMOD.Studio.STOP_MODE mode)
         {
             if (index >= 0 && index < currentBGMList.Count)
@@ -212,7 +269,7 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 设置BGM播放、暂停状态
         /// </summary>
-        /// <param Name="value">true为暂停，false为继续播放</param>
+        /// <param name="value">true为暂停，false为继续播放</param>
         public void SetBGMPause(bool value)
         {
             Manager.SetBGMPause(value);
@@ -231,9 +288,9 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 设置BGM的参数
         /// </summary>
-        /// <param Name="ID"></param>
-        /// <param Name="value"></param>
-        /// <param Name="ignoreSeekSpeed"></param>
+        /// <param name="ID"></param>
+        /// <param name="value"></param>
+        /// <param name="ignoreSeekSpeed"></param>
         public void SetBGMParameter(PARAMETER_ID ID, float value, bool ignoreSeekSpeed = false)
         {
             Manager.SetBGMParameter(ID, value, ignoreSeekSpeed);    
@@ -242,9 +299,9 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 设置BGM参数
         /// </summary>
-        /// <param Name="name"></param>
-        /// <param Name="value"></param>
-        /// <param Name="ignoreSeekSpeed"></param>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <param name="ignoreSeekSpeed"></param>
         public void SetBGMParameter(string name, float value, bool ignoreSeekSpeed = false)
         {
             Manager.SetBGMParameter(name, value, ignoreSeekSpeed);
@@ -253,10 +310,10 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 设置BGM一组参数值
         /// </summary>
-        /// <param Name="IDs"></param>
-        /// <param Name="values"></param>
-        /// <param Name="Count"></param>
-        /// <param Name="ignoreSeekSpeed"></param>
+        /// <param name="IDs"></param>
+        /// <param name="values"></param>
+        /// <param name="Count"></param>
+        /// <param name="ignoreSeekSpeed"></param>
         public void SetBGMParameters(PARAMETER_ID[] IDs, float[] values, int count, bool ignoreSeekSpeed = false)
         {
             Manager.SetBGMParameters(IDs, values, count, ignoreSeekSpeed);  
@@ -265,9 +322,9 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 用标签设置BGM参数
         /// </summary>
-        /// <param Name="ID"></param>
-        /// <param Name="valueLable"></param>
-        /// <param Name="ignoreSeekSpeed"></param>
+        /// <param name="ID"></param>
+        /// <param name="valueLable"></param>
+        /// <param name="ignoreSeekSpeed"></param>
         public void SetBGMParameterWithLabel(PARAMETER_ID ID, string valueLable, bool ignoreSeekSpeed = false)
         {
             Manager.SetBGMParameterWithLabel(ID, valueLable, ignoreSeekSpeed);
@@ -276,9 +333,9 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 用标签设置BGM参数
         /// </summary>
-        /// <param Name="name"></param>
-        /// <param Name="valueLable"></param>
-        /// <param Name="ignoreSeekSpeed"></param>
+        /// <param name="name"></param>
+        /// <param name="valueLable"></param>
+        /// <param name="ignoreSeekSpeed"></param>
         public void SetBGMParameterWithLabel(string name, string valueLable, bool ignoreSeekSpeed = false)
         {
             Manager.SetBGMParameterWithLabel(name, valueLable, ignoreSeekSpeed);    
@@ -287,7 +344,7 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 获得BGM参数值
         /// </summary>
-        /// <param Name="name"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
         public float GetBGMParameter(string name)
         {
@@ -297,7 +354,7 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 获得BGM参数值
         /// </summary>
-        /// <param Name="ID"></param>
+        /// <param name="ID"></param>
         /// <returns></returns>
         public float GetBGMParameter(PARAMETER_ID ID)
         {
@@ -307,8 +364,8 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 设置BGM属性
         /// </summary>
-        /// <param Name="property"></param>
-        /// <param Name="value"></param>
+        /// <param name="property"></param>
+        /// <param name="value"></param>
         public void SetBGMProperty(EVENT_PROPERTY property, float value)
         {
             Manager.SetBGMProperty(property, value);
@@ -317,7 +374,7 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 获得BGM属性值
         /// </summary>
-        /// <param Name="property"></param>
+        /// <param name="property"></param>
         /// <returns></returns>
         public float GetBGMProperty(EVENT_PROPERTY property)
         {
@@ -398,8 +455,8 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 停止播放未标记的音频
         /// </summary>
-        /// <param Name="path"></param>
-        /// <param Name="mode"></param>
+        /// <param name="path"></param>
+        /// <param name="mode"></param>
         public void StopUntaggedAudio(string path, FMOD.Studio.STOP_MODE mode)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
@@ -408,8 +465,8 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 停止播放未标记的音频
         /// </summary>
-        /// <param Name="eventReference"></param>
-        /// <param Name="mode"></param>
+        /// <param name="eventReference"></param>
+        /// <param name="mode"></param>
         public void StopUntaggedAudio(EventReference eventReference, FMOD.Studio.STOP_MODE mode)
         {
             GUID guid = eventReference.Guid;
@@ -418,8 +475,8 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 停止并释放未标记的音频
         /// </summary>
-        /// <param Name="path"></param>
-        /// <param Name="mode"></param>
+        /// <param name="path"></param>
+        /// <param name="mode"></param>
         public void StopAndReleaseUntaggedAudio(string path, FMOD.Studio.STOP_MODE mode)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
@@ -429,8 +486,8 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 停止并释放未标记的音频
         /// </summary>
-        /// <param Name="eventReference"></param>
-        /// <param Name="mode"></param>
+        /// <param name="eventReference"></param>
+        /// <param name="mode"></param>
         public void StopAndReleaseUntaggedAudio(EventReference eventReference, FMOD.Studio.STOP_MODE mode)
         {
             GUID guid = eventReference.Guid;
@@ -440,8 +497,8 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 设置未标记的音频暂停/播放状态
         /// </summary>
-        /// <param Name="path"></param>
-        /// <param Name="pause">true为暂停，false为继续播放</param>
+        /// <param name="path"></param>
+        /// <param name="pause">true为暂停，false为继续播放</param>
         public void SetUntaggedAudioPaused(string path, bool pause)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
@@ -450,8 +507,8 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 设置未标记的音频暂停/播放状态
         /// </summary>
-        /// <param Name="eventReference"></param>
-        /// <param Name="pause">true为暂停，false为继续播放</param>
+        /// <param name="eventReference"></param>
+        /// <param name="pause">true为暂停，false为继续播放</param>
         public void SetUntaggedAudioPaused(EventReference eventReference, bool pause)
         {
             GUID guid = eventReference.Guid;
@@ -460,8 +517,8 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 设置未标记的音频音量
         /// </summary>
-        /// <param Name="path"></param>
-        /// <param Name="volume"></param>
+        /// <param name="path"></param>
+        /// <param name="volume"></param>
         public void SetUntaggedAudioVolume(string path, float volume)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
@@ -470,8 +527,8 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 设置未标记的音频音量
         /// </summary>
-        /// <param Name="eventReference"></param>
-        /// <param Name="volume"></param>
+        /// <param name="eventReference"></param>
+        /// <param name="volume"></param>
         public void SetUntaggedAudioVolume(EventReference eventReference, float volume)
         {
             GUID guid = eventReference.Guid;
@@ -489,7 +546,7 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 停止并释放所有未标记的音频
         /// </summary>
-        /// <param Name="mode"></param>
+        /// <param name="mode"></param>
         public void StopAndReleaseAllUntaggedAudio(FMOD.Studio.STOP_MODE mode)
         {
             Manager.StopAndReleaseAllUntaggedAudio(mode);
@@ -600,9 +657,9 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 创建音频
         /// </summary>
-        /// <param Name="path">音频事件路径</param>
-        /// <param Name="tag">音频标记</param>
-        /// <param Name="play">是否立刻播放</param>
+        /// <param name="path">音频事件路径</param>
+        /// <param name="tag">音频标记</param>
+        /// <param name="play">是否立刻播放</param>
         public void CreateAudio(string path, string tag, bool play = true)
         {
             GUID guid = RuntimeManager.PathToGUID(path);
@@ -612,9 +669,9 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 创建音频
         /// </summary>
-        /// <param Name="eventReference">音频事件</param>
-        /// <param Name="tag">音频标记</param>
-        /// <param Name="play">是否立刻播放</param>
+        /// <param name="eventReference">音频事件</param>
+        /// <param name="tag">音频标记</param>
+        /// <param name="play">是否立刻播放</param>
         public void CreateAudio(EventReference eventReference, string tag, bool play = true)
         {
             GUID guid = eventReference.Guid;
@@ -664,8 +721,8 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 设置已标记的音频的位置
         /// </summary>
-        /// <param Name="tag"></param>
-        /// <param Name="transform"></param>
+        /// <param name="tag"></param>
+        /// <param name="transform"></param>
         public void AttachedTaggedAudio(string tag, Transform transform)
         {
             Manager.AttachedTaggedAudio(tag, transform);
@@ -674,9 +731,9 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 附着已标记的音频到物体上
         /// </summary>
-        /// <param Name="tag"></param>
-        /// <param Name="transform"></param>
-        /// <param Name="body"></param>
+        /// <param name="tag"></param>
+        /// <param name="transform"></param>
+        /// <param name="body"></param>
         public void AttachedTaggedAudio(string tag, Transform transform, Rigidbody body)
         {
             Manager.AttachedTaggedAudio(tag, transform, body);    
@@ -685,9 +742,9 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 附着已标记的音频到3D物体上
         /// </summary>
-        /// <param Name="tag"></param>
-        /// <param Name="transform"></param>
-        /// <param Name="body2d"></param>
+        /// <param name="tag"></param>
+        /// <param name="transform"></param>
+        /// <param name="body2d"></param>
         public void AttachTaggedAudio(string tag, Transform transform, Rigidbody2D body2d)
         {
             Manager.AttachTaggedAudio(tag, transform, body2d);
@@ -696,7 +753,7 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 取消音频的附着物体及位置
         /// </summary>
-        /// <param Name="tag"></param>
+        /// <param name="tag"></param>
         public void DetachTaggedAudio(string tag)
         {
             Manager.DetachTaggedAudio(tag);
@@ -705,8 +762,8 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 设置已标记的音频暂停/播放状态
         /// </summary>
-        /// <param Name="tag"></param>
-        /// <param Name="pause">true为暂停，false为继续播放</param>
+        /// <param name="tag"></param>
+        /// <param name="pause">true为暂停，false为继续播放</param>
         public void SetTaggedAudioPaused(string tag, bool pause)
         {
             Manager.SetTaggedAudioPaused(tag, pause);
@@ -715,7 +772,7 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 获得已标记的音频暂停/播放状态
         /// </summary>
-        /// <param Name="tag"></param>
+        /// <param name="tag"></param>
         /// <returns></returns>
         public bool GetTaggedAudioPaused(string tag)
         {
@@ -725,7 +782,7 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 获得已标记的音频状态
         /// </summary>
-        /// <param Name="tag"></param>
+        /// <param name="tag"></param>
         /// <returns></returns>
         public PLAYBACK_STATE GetTaggedAudioStage(string tag)
         {
@@ -735,8 +792,8 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 设置已标记的音频音量
         /// </summary>
-        /// <param Name="tag"></param>
-        /// <param Name="value"></param>
+        /// <param name="tag"></param>
+        /// <param name="value"></param>
         public void SetTaggedAudioVolume(string tag, float value)
         {
             Manager.SetTaggedAudioVolume(tag, value);
@@ -745,7 +802,7 @@ namespace StarryFramework.Extensions
         /// <summary>
         /// 获得已标记的音频音量
         /// </summary>
-        /// <param Name="tag"></param>
+        /// <param name="tag"></param>
         /// <returns></returns>
         public float GetTaggedAudioVolume(string tag)
         {

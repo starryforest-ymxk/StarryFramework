@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FrameworkSceneID: 0
   enterPlayModeWay: 1
-  frameworkScenePath: Assets/StarryFramework/Runtime/Scene/GameFramework.unity
+  frameworkScenePath: Assets/Plugins/StarryFramework/Runtime/Scene/GameFramework.unity
   debugType: 1
   InternalEventTrigger: 1
   StartScene: 11

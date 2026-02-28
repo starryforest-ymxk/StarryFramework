@@ -1,0 +1,2 @@
+StarryFramework plugin root marker.
+Do not delete: used by FrameworkPathUtility to locate plugin root dynamically.

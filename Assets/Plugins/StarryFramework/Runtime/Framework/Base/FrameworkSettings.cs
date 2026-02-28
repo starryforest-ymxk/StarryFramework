@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -24,7 +23,7 @@ namespace StarryFramework
 #if UNITY_EDITOR
                     if (_instance == null)
                     {
-                        Debug.LogWarning($"FrameworkSettings not found in Resources folder. Creating default settings at 'Assets/StarryFramework/Resources/{SETTINGS_PATH}.asset'");
+                        Debug.LogWarning($"FrameworkSettings not found in Resources folder. Creating default settings at '{DefaultSettingsAssetPath}'");
                         _instance = CreateDefaultSettings();
                     }
 #else
@@ -150,20 +149,12 @@ namespace StarryFramework
         }
 
 #if UNITY_EDITOR
-        internal static string DefaultSettingsFolderPath => "Assets/StarryFramework/Resources";
+        internal static string DefaultSettingsFolderPath => FrameworkPathUtility.ResourcesFolderPath;
         internal static string DefaultSettingsAssetPath => $"{DefaultSettingsFolderPath}/{SETTINGS_PATH}.asset";
 
         internal static void EnsureDefaultSettingsFolder()
         {
-            if (!AssetDatabase.IsValidFolder(DefaultSettingsFolderPath))
-            {
-                const string parentFolder = "Assets/StarryFramework";
-                if (!AssetDatabase.IsValidFolder(parentFolder))
-                {
-                    AssetDatabase.CreateFolder("Assets", "StarryFramework");
-                }
-                AssetDatabase.CreateFolder(parentFolder, "Resources");
-            }
+            FrameworkPathUtility.EnsureFolderExists(DefaultSettingsFolderPath);
         }
 
         internal static FrameworkSettings LoadDefaultSettingsAsset()
@@ -176,6 +167,7 @@ namespace StarryFramework
             EnsureDefaultSettingsFolder();
             FrameworkSettings settings = CreateInstance<FrameworkSettings>();
             settings.modules = CreateDefaultModules();
+            settings.frameworkScenePath = FrameworkPathUtility.FrameworkScenePath;
 
             AssetDatabase.CreateAsset(settings, assetPath);
             AssetDatabase.SaveAssets();

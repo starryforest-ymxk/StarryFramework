@@ -12,10 +12,6 @@ namespace StarryFramework.Editor
         private Vector2 _scrollPosition;
         private FrameworkSettings _frameworkSettings;
         private Texture2D _logoTexture;
-        
-        private const string LOGO_PATH = "Assets/Plugins/StarryFramework/Info/images/StarryFramework-Logo.png";
-        private const string QuickStart_URL = "https://github.com/starryforest-ymxk/StarryFramework/blob/master/Assets/StarryFramework/Info/README.md#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B";
-        private const string APIReference_URL = "https://github.com/starryforest-ymxk/StarryFramework/blob/master/Assets/StarryFramework/Info/API%E9%80%9F%E6%9F%A5%E6%89%8B%E5%86%8C.md";
     
         [MenuItem("Tools/StarryFramework/Settings Panel", priority = 0)] 
         private static void ShowSettingWindow()
@@ -55,10 +51,11 @@ namespace StarryFramework.Editor
         
         private void LoadLogo()
         {
-            _logoTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(LOGO_PATH);
+            string logoPath = FrameworkPathUtility.LogoPath;
+            _logoTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(logoPath);
             if (_logoTexture == null)
             {
-                Debug.LogWarning($"StarryFramework Logo not found at: {LOGO_PATH}");
+                Debug.LogWarning($"StarryFramework Logo not found at: {logoPath}");
             }
         }
         
@@ -182,7 +179,7 @@ namespace StarryFramework.Editor
             
             if (GUILayout.Button("Quick Start", linkStyle, GUILayout.ExpandWidth(false)))
             {
-                Application.OpenURL(QuickStart_URL);
+                OpenDocAsset(FrameworkPathUtility.ReadmePath, "https://github.com/starryforest-ymxk/StarryFramework");
             }
             
             EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
@@ -191,7 +188,7 @@ namespace StarryFramework.Editor
             
             if (GUILayout.Button("API Quick Reference", linkStyle, GUILayout.ExpandWidth(false)))
             {
-                Application.OpenURL(APIReference_URL);
+                OpenDocAsset(FrameworkPathUtility.ApiReferencePath, "https://github.com/starryforest-ymxk/StarryFramework");
             }
             
             EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
@@ -203,6 +200,19 @@ namespace StarryFramework.Editor
             EditorGUILayout.EndVertical();
             
             EditorGUILayout.Space(5);
+        }
+
+        private static void OpenDocAsset(string assetPath, string fallbackUrl)
+        {
+            Object doc = AssetDatabase.LoadAssetAtPath<Object>(assetPath);
+            if (doc != null)
+            {
+                AssetDatabase.OpenAsset(doc);
+            }
+            else
+            {
+                Application.OpenURL(fallbackUrl);
+            }
         }
         
         private void DrawValidationMessages()

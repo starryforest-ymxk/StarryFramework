@@ -34,12 +34,12 @@ StarryFramework 是一个轻量化的Unity开发框架，提供了一系列开�
 
 ```
 /Assets
-├── /StarryFramework           # 框架核心目录
-│   ├── /Runtime               # 运行时代码
-│   ├── /Editor                # 编辑器扩展代码
-│   ├── /Extensions            # 框架扩展模块
-│   └── /Info                  # 框架文档和资源
-├── /Plugins                   # 第三方插件
+├── /Plugins                   # 插件目录
+│   ├── /StarryFramework       # 框架核心目录
+│   │   ├── /Runtime           # 运行时代码
+│   │   ├── /Editor            # 编辑器扩展代码
+│   │   ├── /Extensions        # 框架扩展模块
+│   │   └── /Info              # 框架文档和资源
 │   ├── /Demigiant/DOTween     # 动画补间插件
 │   ├── /FMOD                  # 音频中间件
 │   └── /Borodar/RainbowFolders # 编辑器工具
@@ -54,7 +54,7 @@ StarryFramework 是一个轻量化的Unity开发框架，提供了一系列开�
 ### StarryFramework 详细结构
 
 ```
-/Assets/StarryFramework
+/Assets/Plugins/StarryFramework
 ├── /Runtime                    # 运行时核心代码
 │   ├── /Attributes             # 自定义特性
 │   │   ├── FoldOutGroupAttribute.cs
@@ -600,7 +600,7 @@ Framework.UIComponent.GetUIForm(string formAssetName)
 
 ### Audio Module（音频扩展模块）
 
-**位置**: `/Assets/StarryFramework/Extensions/Runtime/Audio Module`
+**位置**: `/Assets/Plugins/StarryFramework/Extensions/Runtime/Audio Module`
 
 **核心文件**: `AudioComponent.cs`, `AudioManager.cs`, `AudioSettings.cs`
 
@@ -722,7 +722,11 @@ Utilities.ScenePathToName(string scenePath)
 
 **类型**: ScriptableObject
 
-**存储位置**: `Assets/StarryFramework/Resources/FrameworkSettings.asset`
+**存储位置**: `Assets/Plugins/StarryFramework/Resources/FrameworkSettings.asset`
+
+**路径机制说明**:
+- 框架在编辑器下基于插件脚本自身位置动态定位插件根目录（而非硬编码固定路径）
+- 用户移动插件目录后，框架会按新的根目录解析资源、场景和文档路径
 
 **访问方式**:
 - 静态单例：`FrameworkSettings.Instance` - 全局唯一的框架设置

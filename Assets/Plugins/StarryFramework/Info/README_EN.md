@@ -40,18 +40,25 @@ StarryFramework is a lightweight Unity game development framework designed to pr
 
 ```
 /Assets
-├── /StarryFramework           		
-│   ├── /Runtime               		
-│   │   ├── /Attributes        			# Custom Attributes
-│   │   ├── /Framework         			# Framework Core
-│   │   └── /Scene             		
-│   │       └── GameFramework.unity 	# Framework startup scene
-│   ├── /Editor                			# Module Editors
-│   ├── /Extensions            			# Extension Modules
-│   ├── /Info                  			# Framework Documentation
-│   └── /Resources             		
-└── /Plugins                   		
+├── /Plugins
+│   └── /StarryFramework
+│       ├── /Runtime
+│       │   ├── /Attributes        # Custom Attributes
+│       │   ├── /Framework         # Framework Core
+│       │   └── /Scene
+│       │       └── GameFramework.unity # Framework startup scene
+│       ├── /Editor                # Module Editors
+│       ├── /Extensions            # Extension Modules
+│       ├── /Info                  # Framework Documentation
+│       ├── /Resources
+│       └── StarryFrameworkRoot.marker # Plugin root marker
 ```
+
+### Plugin Root Discovery
+
+- The framework locates its root directory via `StarryFrameworkRoot.marker` at the plugin root.
+- Users can move the plugin folder to any `Assets` subfolder and paths will be resolved automatically.
+- Do not remove this marker file, otherwise editor tools cannot determine the plugin root.
 
 ### Basic Modules Introduction
 
@@ -86,10 +93,13 @@ StarryFramework depends on the following Unity Package Manager (UPM) packages an
 - Required Dependencies
   - Newtonsoft.Json (`com.unity.nuget.newtonsoft-json`)
   - Addressables (`com.unity.addressables`)
+  - Unity UI (`com.unity.ugui`)
   - DOTween (third-party plugin, integrated in the framework package)
 
 - Optional Dependencies
   - FMOD for Unity
+
+After import, the editor automatically checks and installs missing required UPM dependencies (Addressables / Newtonsoft.Json / Unity UI).
 
 ---
 
@@ -117,14 +127,14 @@ StarryFramework depends on the following Unity Package Manager (UPM) packages an
 
 1. Import framework dependencies
 
-   - Import the framework's dependency packages into your project: `Newtonsoft.Json`, `Addressables`
+  - If required dependencies are missing (`Newtonsoft.Json`, `Addressables`, `Unity UI`), the framework installs them automatically
 
 2. Import the framework
    - Import the downloaded `StarryFramework.unitypackage` into your project
 
 3. Configure the startup scene
 
-   - Open the `StarryFramework/Runtime/Scene/GameFramework.unity` scene
+  - Open the `Plugins/StarryFramework/Runtime/Scene/GameFramework.unity` scene
 
    - Select `File > Build Settings` from the Unity menu
 
@@ -137,7 +147,7 @@ StarryFramework depends on the following Unity Package Manager (UPM) packages an
 
 3. Adjust framework settings
 
-   - Select `Window > StarryFramework > Settings Panel` from the Unity menu to open the framework settings panel
+  - Select `Tools > StarryFramework > Settings Panel` from the Unity menu to open the framework settings panel
    - To enable framework functionality in the game, use the `Framework Start` startup mode and set the framework's initial loading scene; for simple code functionality testing, use the `Normal Start` startup mode
      - Framework Start: After entering play mode, the framework first loads the GameFramework scene, then loads the initial scene
      - Normal Start: Unity's default behavior, remains in the current scene after entering play mode
@@ -169,12 +179,12 @@ The audio module is an optional extension module based on the FMOD audio middlew
 2. Import the audio extension module
    - Download `StarryFramework_AudioExtention.unitypackage`
    - Import the extension package into your project
-   - The extension module will be automatically installed to the `/Assets/StarryFramework/Extensions/Runtime/Audio Module` directory
+  - The extension module will be automatically installed under the plugin root at `/Extensions/Runtime/Audio Module`
 
 **Configuration Steps**
 
 1. Add the audio module to the framework
-   - Open the framework settings panel (`Window > StarryFramework > Settings Panel`)
+  - Open the framework settings panel (`Tools > StarryFramework > Settings Panel`)
    - Add `AudioComponent` to the Modules list
    - Adjust the module's priority order as needed
    - Drag the Audio prefab from the Audio Module into the GameFramework scene as a child object

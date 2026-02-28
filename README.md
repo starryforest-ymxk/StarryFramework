@@ -1,11 +1,11 @@
-<p align="center"><img width="501" height="106" src="./Assets/StarryFramework/Info/images/StarryFramework-Logo.png"></p>
+<p align="center"><img width="501" height="106" src="./Assets/Plugins/StarryFramework/Info/images/StarryFramework-Logo.png"></p>
 
 <p align="center">
 	<a href="https://github.com/starryforest-ymxk/StarryFramework/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-blue.svg" title="license-mit" /></a>
     <a href="https://github.com/starryforest-ymxk/StarryFramework/releases"><img src="https://img.shields.io/github/v/release/starryforest-ymxk/StarryFramework?color=green"/></a>
 </p>
 
-|[中文](./Assets/StarryFramework/Info/README.md)|[English](./Assets/StarryFramework/Info/README_EN.md)|
+|[中文](./Assets/Plugins/StarryFramework/Info/README.md)|[English](./Assets/Plugins/StarryFramework/Info/README_EN.md)|
 
 - [关于StarryFramework](#关于starryframework)
   - [核心特性](#核心特性)
@@ -40,18 +40,25 @@ StarryFramework 是一个轻量化的 Unity 游戏开发框架，旨在提供一
 
 ```
 /Assets
-├── /StarryFramework           		
-│   ├── /Runtime               		
-│   │   ├── /Attributes        			# 自定义特性
-│   │   ├── /Framework         			# 框架核心，包括核心类和模块
-│   │   └── /Scene             		
-│   │       └── GameFramework.unity 	# 框架启动场景
-│   ├── /Editor                			# 模块编辑器
-│   ├── /Extensions            			# 扩展模块
-│   ├── /Info                  			# 框架文档
-│   └── /Resources             		
-└── /Plugins                   		
+├── /Plugins
+│   └── /StarryFramework
+│       ├── /Runtime
+│       │   ├── /Attributes        # 自定义特性
+│       │   ├── /Framework         # 框架核心，包括核心类和模块
+│       │   └── /Scene
+│       │       └── GameFramework.unity # 框架启动场景
+│       ├── /Editor                # 模块编辑器
+│       ├── /Extensions            # 扩展模块
+│       ├── /Info                  # 框架文档
+│       ├── /Resources
+│       └── StarryFrameworkRoot.marker # 插件根目录定位标记
 ```
+
+### 插件根目录定位
+
+- 框架通过插件根目录下的 `StarryFrameworkRoot.marker` 自动定位根目录。
+- 用户可将插件目录移动到任意 `Assets` 子目录，路径会自动重新解析。
+- 请勿删除该标记文件，否则编辑器工具无法确定插件根目录。
 
 ### 基础模块介绍
 
@@ -86,10 +93,13 @@ StarryFramework 依赖以下 Unity Package Manager (UPM) 包和第三方插件�
 - 必需依赖
   - Newtonsoft.Json (`com.unity.nuget.newtonsoft-json`)
   - Addressables (`com.unity.addressables`)
+  - Unity UI (`com.unity.ugui`)
   - DOTween (第三方插件，已集成在框架包中)
 
 - 可选依赖
   - FMOD for Unity
+
+导入框架后，编辑器会自动检查并安装缺失的 UPM 必需依赖（Addressables / Newtonsoft.Json / Unity UI）。
 
 ---
 
@@ -116,14 +126,14 @@ StarryFramework 依赖以下 Unity Package Manager (UPM) 包和第三方插件�
 ### 基础配置
 
 1. 导入框架依赖
-   - 将框架的依赖包导入到项目中：`Newtonsoft.Json`、`Addressables`
+  - 若项目缺失必需依赖（`Newtonsoft.Json`、`Addressables`、`Unity UI`），框架会自动安装
 
 2. 导入框架
    - 将下载的`StarryFramework.unitypackage`导入到项目中
 
 3. 配置启动场景
 
-   - 打开 `StarryFramework/Runtime/Scene/GameFramework.unity` 场景
+  - 打开 `Plugins/StarryFramework/Runtime/Scene/GameFramework.unity` 场景
 
    - 在 Unity 菜单中选择 `File > Build Settings`
 
@@ -136,7 +146,7 @@ StarryFramework 依赖以下 Unity Package Manager (UPM) 包和第三方插件�
 
 3. 调整框架设置
 
-   - 在 Unity 菜单中选择 `Window > StarryFramework > Settings Panel` 打开框架设置面板
+  - 在 Unity 菜单中选择 `Tools > StarryFramework > Settings Panel` 打开框架设置面板
    - 如果在游戏中启用框架的功能，则需要选用`Framework Start`的启动方式，并设置框架初始的加载场景；如果只是简单测试一些代码功能，只使用`Normal Start` 的启动方式
      - Framework Start：进入运行模式后，框架先加载GameFramework场景，再加载初始场景
      - Normal Start：Unity的默认行为，进入运行模式后保留在当前场景
@@ -168,12 +178,12 @@ StarryFramework 依赖以下 Unity Package Manager (UPM) 包和第三方插件�
 2. 导入音频扩展模块
    - 下载 `StarryFramework_AudioExtention.unitypackage`
    - 将扩展包导入到项目中
-   - 扩展模块会自动安装到 `/Assets/StarryFramework/Extensions/Runtime/Audio Module` 目录
+  - 扩展模块会自动安装到插件根目录下的 `/Extensions/Runtime/Audio Module` 目录
 
 **配置步骤**
 
 1. 添加音频模块到框架
-   - 打开框架设置面板（`Window > StarryFramework > Settings Panel`）
+  - 打开框架设置面板（`Tools > StarryFramework > Settings Panel`）
    - 在 Modules 列表中添加 `AudioComponent`
    - 根据需要调整模块的优先级顺序
    - 将Audio Module中的Audio预制体拖入到场景GameFramework物体下面，作为子物体
@@ -324,7 +334,7 @@ StarryFramework采用[MIT协议](https://github.com/starryforest-ymxk/StarryFram
 
 **文档与教程**
 
-- [API速查手册](./Assets/StarryFramework/Info/API速查手册.md)
+- [API速查手册](./Assets/Plugins/StarryFramework/Info/API速查手册.md)
 
 
 

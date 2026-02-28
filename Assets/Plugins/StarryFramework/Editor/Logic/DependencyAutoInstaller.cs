@@ -15,7 +15,8 @@ namespace StarryFramework.Editor
         private static readonly PackageRequirement[] RequiredPackages =
         {
             new("com.unity.addressables", "1.21.21"),
-            new("com.unity.nuget.newtonsoft-json", "3.2.2")
+            new("com.unity.nuget.newtonsoft-json", "3.2.2"),
+            new("com.unity.ugui", "1.0.0")
         };
 
         private static ListRequest _listRequest;

@@ -241,8 +241,12 @@ Framework.EventComponent.InvokeEvent<int>("OnScoreChanged", 100);
 Framework.SaveComponent.CreateNewData(true, "New Game");
 
 // Modify player data
-Framework.SaveComponent.PlayerData.playerName = "Player1";
-Framework.SaveComponent.PlayerData.level = 5;
+PlayerData playerData = Framework.SaveComponent.GetPlayerData<PlayerData>();
+if (playerData != null)
+{
+  playerData.playerName = "Player1";
+  playerData.level = 5;
+}
 
 // Save data
 Framework.SaveComponent.SaveData("Progress Save");

@@ -49,6 +49,7 @@ StarryFramework 是一个轻量化的Unity开发框架，提供了一系列开�
 ├── /Overview                  # 项目文档目录
 │   ├── PROJECT_OVERVIEW.md    # 项目概览文档（当前文档）
 │   └── API_QUICK_REFERENCE.md # API 速查手册
+│   └── SaveModule_Refactor_Plan.md # Save模块数据模型解耦重构计划
 └── /Scenes                    # 游戏场景
 
 ```
@@ -180,12 +181,14 @@ Framework.EventComponent.ClearAllEventLinsteners(string eventName)
 
 ### 2. Save Module（存档模块）
 
-**核心文件**: `SaveComponent.cs`, `SaveManager.cs`, `PlayerData.cs`, `GameSettings.cs`
+**核心文件**: `SaveComponent.cs`, `SaveManager.cs`, `SaveDataProviderAsset.cs`, `PlayerData.cs`, `GameSettings.cs`
 
 **功能特性**:
 - 自动存档和手动存档
 - 多存档管理（创建、删除、覆盖）
 - 存档注释和信息管理
+- **数据模型解耦**: 通过 `SaveDataProviderAsset` 支持自定义存档数据类型（兼容内置 `PlayerData`/`GameSettings`）
+- **迁移策略**: 默认推荐 `GetPlayerData<T>()` / `GetGameSettings<T>()` 与对象入口；旧强类型属性保留兼容并已进入弃用预警
 - **JSON序列化**: 使用 Newtonsoft.Json 进行序列化（支持 Dictionary、多态、Nullable、自定义转换器）
 - **UTF-8编码**: 所有文件读写使用 UTF-8 编码
 - PlayerPrefs存储游戏设置
@@ -199,12 +202,25 @@ Framework.SaveComponent.DeleteData(int index)
 Framework.SaveComponent.StartAutoSaveTimer()
 Framework.SaveComponent.PlayerData
 Framework.SaveComponent.GameSettings
+Framework.SaveComponent.GetPlayerData<T>()
+Framework.SaveComponent.GetGameSettings<T>()
+Framework.SaveComponent.GetPlayerDataObject()
+Framework.SaveComponent.GetGameSettingsObject()
 ```
+
+> 兼容说明：`PlayerData` / `GameSettings` 入口已进入弃用预警阶段（`[Obsolete]` warning），当前版本仍可用，建议迁移到泛型或对象入口。
 
 **数据结构**:
 - **PlayerData**: 可序列化类，存储玩家游戏数据（用户自定义）
 - **GameSettings**: 可序列化类，存储游戏设置（用户自定义）
 - **PlayerDataInfo**: 存档元信息（时间、注释等）
+- **SaveDataProviderAsset**: 数据提供器抽象，建议在框架外定义自定义数据模型并通过该资产接入
+
+**外置自定义模型示例**:
+- 示例脚本：`/Assets/Test/SaveModule/CustomSaveDataProviderExample.cs`
+- 通过菜单 `Assets/Create/StarryFramework/Save/Custom Save Data Provider (Demo)` 创建 Provider 资产
+- 将创建好的资产拖入 `SaveComponent -> Settings -> Save Data Provider`
+- 运行时通过 `Framework.SaveComponent.GetPlayerData<T>()`、`GetGameSettings<T>()` 访问自定义模型
 
 **Inspector功能**:
 - 运行时通过反射动态显示和编辑 `PlayerData` 和 `GameSettings` 的所有字段

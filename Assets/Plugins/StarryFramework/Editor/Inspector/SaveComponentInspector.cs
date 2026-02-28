@@ -75,6 +75,7 @@ namespace StarryFramework.Editor
             DrawSettingsChildProperty(settingsProperty, "AutoSave");
             DrawSettingsChildProperty(settingsProperty, "AutoSaveDataInterval");
             DrawEditorSaveDataDirectoryPathField(settingsProperty.FindPropertyRelative("EditorSaveDataDirectoryPath"));
+            DrawSettingsChildProperty(settingsProperty, "SaveDataProvider");
             DrawSettingsChildProperty(settingsProperty, "SaveInfoList", includeChildren: true);
 
             EditorGUI.indentLevel--;
@@ -229,7 +230,8 @@ namespace StarryFramework.Editor
         {
             
             if (!s.PlayerDataLoaded) return;
-            PlayerData data = s.PlayerData;
+            object data = s.GetPlayerDataObject();
+            if (data == null) return;
 
             playerDataFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(playerDataFoldout, "Player Data (Runtime)", EditorStyles.boldLabel);
             
@@ -246,7 +248,8 @@ namespace StarryFramework.Editor
         private void DrawGameSettingsRuntime(SaveComponent s)
         {
             if (!s.GameSettingsLoaded) return;
-            GameSettings settings = s.GameSettings;
+            object settings = s.GetGameSettingsObject();
+            if (settings == null) return;
 
             gameSettingsFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(gameSettingsFoldout, "Game Settings (Runtime)", EditorStyles.boldLabel);
             

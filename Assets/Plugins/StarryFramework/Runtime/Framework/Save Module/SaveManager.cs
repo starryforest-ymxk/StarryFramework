@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
@@ -10,6 +11,7 @@ namespace StarryFramework
     {
 
         private SaveSettings settings;
+        private ISaveDataProvider dataProvider;
         private bool isInitialized;
         private const string SaveDataFolderName = "SaveData";
 #if UNITY_EDITOR
@@ -34,9 +36,9 @@ namespace StarryFramework
 
         private List<string> saveInfoList = new();
 
-        private PlayerData playerData;
+        private object playerData;
 
-        private GameSettings gameSettings;
+        private object gameSettings;
 
         private static readonly JsonSerializerSettings deserializeSettings = new JsonSerializerSettings
         {
@@ -52,8 +54,10 @@ namespace StarryFramework
         internal bool AutoSave => startAutoSave;
         internal string AutoSaveInfo => autoSaveInfo;
         internal List<string> SaveInfoList => saveInfoList;
-        internal PlayerData PlayerData => playerData;
-        internal GameSettings GameSettings => gameSettings;
+        internal object PlayerDataObject => playerData;
+        internal object GameSettingsObject => gameSettings;
+        internal PlayerData PlayerData => playerData as PlayerData;
+        internal GameSettings GameSettings => gameSettings as GameSettings;
         internal bool PlayerDataLoaded => playerData != null;
         internal bool GameSettingsLoaded => gameSettings != null;
 
@@ -180,11 +184,55 @@ namespace StarryFramework
         void IConfigurableManager.SetSettings(IManagerSettings settings)
         {
             this.settings = settings as SaveSettings;
+            dataProvider = null;
             ApplyEditorSaveDataPathOverride(this.settings);
             if (isInitialized)
             {
                 ApplySettings();
             }
+        }
+
+        private sealed class BuiltinSaveDataProvider : ISaveDataProvider
+        {
+            internal static readonly BuiltinSaveDataProvider Instance = new BuiltinSaveDataProvider();
+
+            public Type PlayerDataType => typeof(PlayerData);
+            public Type GameSettingsType => typeof(GameSettings);
+
+            public object CreateDefaultPlayerData()
+            {
+                return new PlayerData();
+            }
+
+            public object CreateDefaultGameSettings()
+            {
+                return new GameSettings();
+            }
+        }
+
+        private ISaveDataProvider GetDataProvider()
+        {
+            if (dataProvider != null)
+            {
+                return dataProvider;
+            }
+
+            if (settings != null && settings.SaveDataProvider != null)
+            {
+                dataProvider = settings.SaveDataProvider;
+            }
+            else
+            {
+                dataProvider = BuiltinSaveDataProvider.Instance;
+            }
+
+            if (dataProvider.PlayerDataType == null || dataProvider.GameSettingsType == null)
+            {
+                FrameworkManager.Debugger.LogError("SaveDataProvider 返回了空类型，已回退内置数据提供器。");
+                dataProvider = BuiltinSaveDataProvider.Instance;
+            }
+
+            return dataProvider;
         }
 
         #region 内部方法
@@ -261,9 +309,9 @@ namespace StarryFramework
                     PlayerDataInfo info = JsonConvert.DeserializeObject<PlayerDataInfo>(js, deserializeSettings);
                     infoDic.Add(info.index, info);
                 }
-                catch
+                catch (System.Exception exception)
                 {
-                    FrameworkManager.Debugger.LogWarning("存档信息损坏");
+                    FrameworkManager.Debugger.LogWarning($"存档信息损坏，已移动到损坏目录。原因: {exception.Message}");
                     MoveExistingFileToCorrupted(filePath);
                     string metaFilePath = filePath + ".meta";
                     if (File.Exists(metaFilePath))
@@ -420,10 +468,20 @@ namespace StarryFramework
             }
             if(isNewGame)
             {
-                playerData = new PlayerData();
+                playerData = GetDataProvider().CreateDefaultPlayerData();
+                if (playerData == null)
+                {
+                    FrameworkManager.Debugger.LogError("SaveDataProvider 未返回有效的玩家数据默认实例。创建新存档失败。");
+                    return;
+                }
                 SetDefaultDataIndex(newIndex);
                 SetCurrentLoadedDataIndex(newIndex);
                 autoSaveInfo = saveInfoList.Count > 0 ? saveInfoList[0] : "";
+            }
+            else if (playerData == null)
+            {
+                FrameworkManager.Debugger.LogError("当前未加载可保存的存档数据，无法执行 CreateNewData(false)。");
+                return;
             }
 
             Directory.CreateDirectory(GetSaveDataDirectoryPath());
@@ -503,11 +561,16 @@ namespace StarryFramework
             try
             {
                 var js = File.ReadAllText(dataPath, System.Text.Encoding.UTF8);
-                playerData = JsonConvert.DeserializeObject<PlayerData>(js, deserializeSettings);
+                playerData = JsonConvert.DeserializeObject(js, GetDataProvider().PlayerDataType, deserializeSettings);
+                if (playerData == null)
+                {
+                    FrameworkManager.Debugger.LogError("存档反序列化结果为空");
+                    return false;
+                }
             }
-            catch
+            catch (System.Exception exception)
             {
-                FrameworkManager.Debugger.LogError("存档损坏");
+                FrameworkManager.Debugger.LogError($"存档损坏，已移动到损坏目录。原因: {exception.Message}");
                 MoveExistingFileToCorrupted(dataPath);
                 if (File.Exists(dataMetaPath))
                 {
@@ -539,6 +602,12 @@ namespace StarryFramework
         /// <param name="i">存档编号</param>
         internal bool LoadData(int i)
         {
+            if (i >= 1000 || i < 0)
+            {
+                FrameworkManager.Debugger.LogError("存档编号不合法(0-999)");
+                return false;
+            }
+
             string dataPath = GetDataFilePath(i);
             string dataMetaPath = GetDataMetaFilePath(i);
             if (!Directory.Exists(GetSaveDataDirectoryPath()) || !File.Exists(dataPath))
@@ -549,11 +618,16 @@ namespace StarryFramework
             try
             {
                 string js = File.ReadAllText(dataPath, System.Text.Encoding.UTF8);
-                playerData = JsonConvert.DeserializeObject<PlayerData>(js, deserializeSettings);
+                playerData = JsonConvert.DeserializeObject(js, GetDataProvider().PlayerDataType, deserializeSettings);
+                if (playerData == null)
+                {
+                    FrameworkManager.Debugger.LogError("存档反序列化结果为空");
+                    return false;
+                }
             }
-            catch
+            catch (System.Exception exception)
             {
-                FrameworkManager.Debugger.LogError("存档损坏");
+                FrameworkManager.Debugger.LogError($"存档损坏，已移动到损坏目录。原因: {exception.Message}");
                 MoveExistingFileToCorrupted(dataPath);
                 if (File.Exists(dataMetaPath))
                 {
@@ -680,11 +754,37 @@ namespace StarryFramework
             string json = PlayerPrefs.GetString("Settings", string.Empty);
             if (json.Equals(string.Empty))
             {
-                gameSettings = new GameSettings();
+                gameSettings = GetDataProvider().CreateDefaultGameSettings();
+                if (gameSettings == null)
+                {
+                    FrameworkManager.Debugger.LogError("SaveDataProvider 未返回有效的游戏设置默认实例，已回退内置默认值。");
+                    gameSettings = BuiltinSaveDataProvider.Instance.CreateDefaultGameSettings();
+                }
             }
             else
             {
-                gameSettings = JsonConvert.DeserializeObject<GameSettings>(json, deserializeSettings);
+                try
+                {
+                    gameSettings = JsonConvert.DeserializeObject(json, GetDataProvider().GameSettingsType, deserializeSettings);
+                    if (gameSettings == null)
+                    {
+                        FrameworkManager.Debugger.LogWarning("游戏设置反序列化结果为空，已回退为默认设置。");
+                        gameSettings = GetDataProvider().CreateDefaultGameSettings();
+                        if (gameSettings == null)
+                        {
+                            gameSettings = BuiltinSaveDataProvider.Instance.CreateDefaultGameSettings();
+                        }
+                    }
+                }
+                catch (System.Exception exception)
+                {
+                    FrameworkManager.Debugger.LogError($"游戏设置读取失败，已回退默认设置。原因: {exception.Message}");
+                    gameSettings = GetDataProvider().CreateDefaultGameSettings();
+                    if (gameSettings == null)
+                    {
+                        gameSettings = BuiltinSaveDataProvider.Instance.CreateDefaultGameSettings();
+                    }
+                }
             }
             
         }

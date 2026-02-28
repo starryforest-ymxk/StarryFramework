@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using UnityEditor;
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -27,31 +27,68 @@ namespace StarryFramework
         public bool PlayerDataLoaded => Manager.PlayerDataLoaded;
         public bool GameSettingsLoaded => Manager.GameSettingsLoaded;
 
+        public object PlayerDataObject => Manager.PlayerDataObject;
+        public object GameSettingsObject => Manager.GameSettingsObject;
+
+        [Obsolete("兼容入口：将于后续大版本移除。请改用 GetGameSettings<T>() 或 GetGameSettingsObject().", false)]
         public GameSettings GameSettings
         {
             get
             {
                 if (Manager.GameSettings == null)
                 {
-                    FrameworkManager.Debugger.LogError("游戏设置数据错误/游戏设置对象尚未加载");
+                    FrameworkManager.Debugger.LogError("当前数据提供器未使用内置 GameSettings 类型，请改用 GetGameSettings<T>() 或 GameSettingsObject。");
                     return null;
                 }
 
                 return Manager.GameSettings;
             }
         }
+        [Obsolete("兼容入口：将于后续大版本移除。请改用 GetPlayerData<T>() 或 GetPlayerDataObject().", false)]
         public PlayerData PlayerData
         { 
             get
             {
                 if(Manager.PlayerData == null)
                 {
-                    FrameworkManager.Debugger.LogError("存档对象尚未加载");
+                    FrameworkManager.Debugger.LogError("当前数据提供器未使用内置 PlayerData 类型，请改用 GetPlayerData<T>() 或 PlayerDataObject。");
                     return null;
                 }
 
                 return Manager.PlayerData;
             } 
+        }
+
+        public T GetPlayerData<T>() where T : class
+        {
+            T data = Manager.PlayerDataObject as T;
+            if (data == null)
+            {
+                FrameworkManager.Debugger.LogError($"玩家数据类型不匹配或未加载，期望类型: {typeof(T).FullName}");
+            }
+
+            return data;
+        }
+
+        public T GetGameSettings<T>() where T : class
+        {
+            T data = Manager.GameSettingsObject as T;
+            if (data == null)
+            {
+                FrameworkManager.Debugger.LogError($"游戏设置类型不匹配或未加载，期望类型: {typeof(T).FullName}");
+            }
+
+            return data;
+        }
+
+        public object GetPlayerDataObject()
+        {
+            return Manager.PlayerDataObject;
+        }
+
+        public object GetGameSettingsObject()
+        {
+            return Manager.GameSettingsObject;
         }
         
 #if UNITY_EDITOR

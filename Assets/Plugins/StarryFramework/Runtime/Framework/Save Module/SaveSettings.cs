@@ -24,5 +24,9 @@ namespace StarryFramework
         [SerializeField]
         [Multiline]
         internal List<string> SaveInfoList = new List<string>();
+
+        [Tooltip("Optional data provider for custom PlayerData/GameSettings models. Leave null to use built-in models.")]
+        [SerializeField]
+        internal SaveDataProviderAsset SaveDataProvider;
     }
 }

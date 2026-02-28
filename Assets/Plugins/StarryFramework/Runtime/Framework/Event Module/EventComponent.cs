@@ -49,7 +49,12 @@ namespace StarryFramework
             {
                 UnloadPlayerData();
             }
-            PlayerData data = FrameworkManager.GetManager<SaveManager>().PlayerData;
+            object data = FrameworkManager.GetManager<SaveManager>().PlayerDataObject;
+            if (data == null)
+            {
+                FrameworkManager.Debugger.LogWarning("玩家数据对象为空，跳过事件布尔字段联动绑定。");
+                return;
+            }
             InitActionsDic(data);
             BindTriggerActions();
         }
@@ -62,14 +67,26 @@ namespace StarryFramework
 
             hasBoundTriggers = true;
         }
-        private void InitActionsDic(PlayerData data)
+        private void InitActionsDic(object data)
         {
-            foreach (System.Reflection.FieldInfo info in data.GetType().GetFields())
+            foreach (System.Reflection.FieldInfo info in data.GetType().GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance))
             {
                 if (info.FieldType == typeof(bool))
                 {
                     if (!triggerActions.ContainsKey(info.Name))
-                        triggerActions.Add(info.Name, () => info.SetValue(data, true));
+                    {
+                        triggerActions.Add(info.Name, () =>
+                        {
+                            try
+                            {
+                                info.SetValue(data, true);
+                            }
+                            catch (Exception exception)
+                            {
+                                FrameworkManager.Debugger.LogError($"事件布尔字段绑定写入失败。字段: {info.Name}，原因: {exception.Message}");
+                            }
+                        });
+                    }
                 }
             }
         }

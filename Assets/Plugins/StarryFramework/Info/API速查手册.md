@@ -103,8 +103,10 @@ Framework.ShutDown(ShutdownType.Restart);
 
 | 属性 | 类型 | 说明 |
 |------|------|------|
-| `PlayerData` | PlayerData | 玩家游戏数据（需先加载） |
-| `GameSettings` | GameSettings | 游戏设置数据 |
+| `PlayerData` | PlayerData | 旧版兼容属性（已标记 Obsolete warning，当前仍可用） |
+| `GameSettings` | GameSettings | 旧版兼容属性（已标记 Obsolete warning，当前仍可用） |
+| `PlayerDataObject` | object | 玩家数据对象入口（推荐自定义模型使用） |
+| `GameSettingsObject` | object | 游戏设置对象入口（推荐自定义模型使用） |
 | `DefaultDataIndex` | int | 默认存档索引 |
 | `CurrentLoadedDataIndex` | int | 当前加载的存档索引 |
 | `AutoSaveDataInterval` | float | 自动存档间隔时间 |
@@ -134,6 +136,10 @@ Framework.ShutDown(ShutdownType.Restart);
 | `StopAutoSaveTimer()` | 停止自动存档计时器 | void |
 | `SetSaveInfo(int)` | 设置存档注释索引 | void |
 | `SetSaveInfo(string)` | 设置存档注释字符串 | void |
+| `GetPlayerData<T>()` | 使用泛型安全获取玩家数据 | T |
+| `GetGameSettings<T>()` | 使用泛型安全获取游戏设置 | T |
+| `GetPlayerDataObject()` | 获取玩家数据对象 | object |
+| `GetGameSettingsObject()` | 获取游戏设置对象 | object |
 
 ### 🧩 重要类
 
@@ -1057,8 +1063,8 @@ public class GameManager : MonoBehaviour
 // ❌ 错误：使用Lambda表达式添加事件监听
 Framework.EventComponent.AddEventListener("Test", () => Debug.Log("Test"));
 
-// ❌ 错误：未加载存档就访问PlayerData
-int gold = Framework.SaveComponent.PlayerData.gold;  // 错误！
+// ❌ 错误：未做空值/类型检查就直接转换对象入口
+int gold = ((PlayerData)Framework.SaveComponent.GetPlayerDataObject()).gold;  // 错误！
 
 // ❌ 错误：Addressables资源未释放
 var handle = Framework.ResourceComponent.LoadAddressableAsync<Sprite>("Icon", null);
@@ -1078,7 +1084,11 @@ void OnTest() { Debug.Log("Test"); }
 // ✅ 正确：先加载存档
 if (Framework.SaveComponent.LoadData(0))
 {
-    int gold = Framework.SaveComponent.PlayerData.gold;
+    PlayerData playerData = Framework.SaveComponent.GetPlayerData<PlayerData>();
+    if (playerData != null)
+    {
+        int gold = playerData.gold;
+    }
 }
 
 // ✅ 正确：释放Addressables资源

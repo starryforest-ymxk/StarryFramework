@@ -86,7 +86,11 @@ public class TestSave : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.D))
         {
             Debug.Log("PlayerData.test++");
-            Framework.SaveComponent.PlayerData.test++;
+            PlayerData playerData = Framework.SaveComponent.GetPlayerData<PlayerData>();
+            if (playerData != null)
+            {
+                playerData.test++;
+            }
         }
 
         if (Input.GetKeyUp(KeyCode.E))

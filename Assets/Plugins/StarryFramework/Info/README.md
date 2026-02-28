@@ -240,8 +240,12 @@ Framework.EventComponent.InvokeEvent<int>("OnScoreChanged", 100);
 Framework.SaveComponent.CreateNewData(true, "新游戏");
 
 // 修改玩家数据
-Framework.SaveComponent.PlayerData.playerName = "玩家1";
-Framework.SaveComponent.PlayerData.level = 5;
+PlayerData playerData = Framework.SaveComponent.GetPlayerData<PlayerData>();
+if (playerData != null)
+{
+  playerData.playerName = "玩家1";
+  playerData.level = 5;
+}
 
 // 保存数据
 Framework.SaveComponent.SaveData("进度保存");

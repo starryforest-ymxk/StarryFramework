@@ -103,8 +103,10 @@ Framework.ShutDown(ShutdownType.Restart);
 
 | Property | Type | Description |
 |------|------|------|
-| `PlayerData` | PlayerData | Player game data (must load first) |
-| `GameSettings` | GameSettings | Game settings data |
+| `PlayerData` | PlayerData | Legacy compatibility property (Obsolete warning, still available) |
+| `GameSettings` | GameSettings | Legacy compatibility property (Obsolete warning, still available) |
+| `PlayerDataObject` | object | Player data object entry (recommended for custom models) |
+| `GameSettingsObject` | object | Game settings object entry (recommended for custom models) |
 | `DefaultDataIndex` | int | Default save index |
 | `CurrentLoadedDataIndex` | int | Currently loaded save index |
 | `AutoSaveDataInterval` | float | Auto-save interval time |
@@ -134,6 +136,10 @@ Framework.ShutDown(ShutdownType.Restart);
 | `StopAutoSaveTimer()` | Stop auto-save timer | void |
 | `SetSaveInfo(int)` | Set save comment index | void |
 | `SetSaveInfo(string)` | Set save comment string | void |
+| `GetPlayerData<T>()` | Get player data with type-safe generic API | T |
+| `GetGameSettings<T>()` | Get game settings with type-safe generic API | T |
+| `GetPlayerDataObject()` | Get player data object | object |
+| `GetGameSettingsObject()` | Get game settings object | object |
 
 ### 🧩 Important Classes
 
@@ -1057,8 +1063,8 @@ public class GameManager : MonoBehaviour
 // ❌ Wrong: Using Lambda expressions to add event listeners
 Framework.EventComponent.AddEventListener("Test", () => Debug.Log("Test"));
 
-// ❌ Wrong: Accessing PlayerData without loading save
-int gold = Framework.SaveComponent.PlayerData.gold;  // Error!
+// ❌ Wrong: Accessing player data object without null/type checks
+int gold = ((PlayerData)Framework.SaveComponent.GetPlayerDataObject()).gold;  // Error!
 
 // ❌ Wrong: Addressables resource not released
 var handle = Framework.ResourceComponent.LoadAddressableAsync<Sprite>("Icon", null);
@@ -1078,7 +1084,11 @@ void OnTest() { Debug.Log("Test"); }
 // ✅ Correct: Load save first
 if (Framework.SaveComponent.LoadData(0))
 {
-    int gold = Framework.SaveComponent.PlayerData.gold;
+    PlayerData playerData = Framework.SaveComponent.GetPlayerData<PlayerData>();
+    if (playerData != null)
+    {
+        int gold = playerData.gold;
+    }
 }
 
 // ✅ Correct: Release Addressables resources

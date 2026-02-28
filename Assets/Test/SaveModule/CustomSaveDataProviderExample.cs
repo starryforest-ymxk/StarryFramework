@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace StarryFramework.Test
 {
@@ -22,16 +21,16 @@ namespace StarryFramework.Test
         public int ResolutionIndex;
     }
 
-    [CreateAssetMenu(menuName = "StarryFramework/Save/Custom Save Data Provider (Demo)", fileName = "DemoSaveDataProvider")]
-    public class DemoSaveDataProvider : SaveDataProviderAsset
+    [SaveDataProvider(priority: 100)]
+    public class DemoSaveDataProvider : ISaveDataProvider
     {
-        public override Type PlayerDataType => typeof(DemoPlayerData);
-        public override Type GameSettingsType => typeof(DemoGameSettings);
+        public Type PlayerDataType => typeof(DemoPlayerData);
+        public Type GameSettingsType => typeof(DemoGameSettings);
 
         /// <summary>
         /// 创建默认玩家存档数据。
         /// </summary>
-        public override object CreateDefaultPlayerData()
+        public object CreateDefaultPlayerData()
         {
             return new DemoPlayerData();
         }
@@ -39,7 +38,7 @@ namespace StarryFramework.Test
         /// <summary>
         /// 创建默认游戏设置数据。
         /// </summary>
-        public override object CreateDefaultGameSettings()
+        public object CreateDefaultGameSettings()
         {
             return new DemoGameSettings();
         }

@@ -147,6 +147,7 @@ namespace StarryFramework
         void IManager.Awake()
         {
             InitInfoDic();
+            ResolveDataProvider();
             LoadSetting();
             InitCurrentDataIndex();
         }
@@ -184,7 +185,6 @@ namespace StarryFramework
         void IConfigurableManager.SetSettings(IManagerSettings settings)
         {
             this.settings = settings as SaveSettings;
-            dataProvider = null;
             ApplyEditorSaveDataPathOverride(this.settings);
             if (isInitialized)
             {
@@ -210,19 +210,12 @@ namespace StarryFramework
             }
         }
 
-        private ISaveDataProvider GetDataProvider()
+        private void ResolveDataProvider()
         {
-            if (dataProvider != null)
+            dataProvider = SaveDataProviderResolver.Resolve(BuiltinSaveDataProvider.Instance);
+            if (dataProvider == null)
             {
-                return dataProvider;
-            }
-
-            if (settings != null && settings.SaveDataProvider != null)
-            {
-                dataProvider = settings.SaveDataProvider;
-            }
-            else
-            {
+                FrameworkManager.Debugger.LogError("SaveDataProvider 解析失败，已回退内置数据提供器。");
                 dataProvider = BuiltinSaveDataProvider.Instance;
             }
 
@@ -230,6 +223,16 @@ namespace StarryFramework
             {
                 FrameworkManager.Debugger.LogError("SaveDataProvider 返回了空类型，已回退内置数据提供器。");
                 dataProvider = BuiltinSaveDataProvider.Instance;
+            }
+
+            FrameworkManager.Debugger.Log($"当前 SaveDataProvider: {dataProvider.GetType().FullName}");
+        }
+
+        private ISaveDataProvider GetDataProvider()
+        {
+            if (dataProvider == null)
+            {
+                ResolveDataProvider();
             }
 
             return dataProvider;
@@ -291,6 +294,11 @@ namespace StarryFramework
             {
                 StartAutoSaveTimer();
             }
+        }
+
+        private bool IsAutoSaveEnabled()
+        {
+            return settings != null && settings.AutoSave;
         }
 
         #region 存档信息管理
@@ -493,7 +501,7 @@ namespace StarryFramework
             File.WriteAllText(infoPath, infoJs, System.Text.Encoding.UTF8);
             if (isNewGame)
             {
-                if (settings.AutoSave) StartAutoSaveTimer();
+                if (IsAutoSaveEnabled()) StartAutoSaveTimer();
                 FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.OnLoadData);
             }
             else
@@ -579,7 +587,7 @@ namespace StarryFramework
                 return false;
             }
             SetCurrentLoadedDataIndex(defaultDataIndex);
-            if (settings.AutoSave) StartAutoSaveTimer();
+            if (IsAutoSaveEnabled()) StartAutoSaveTimer();
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.OnLoadData);
             return true;
         }
@@ -637,7 +645,7 @@ namespace StarryFramework
             }
             SetDefaultDataIndex(i);
             SetCurrentLoadedDataIndex(i);
-            if (settings.AutoSave) StartAutoSaveTimer();
+            if (IsAutoSaveEnabled()) StartAutoSaveTimer();
             FrameworkManager.EventManager.InvokeEvent(FrameworkEvent.OnLoadData);
             return true;
         }

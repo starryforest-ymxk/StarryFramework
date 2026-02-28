@@ -75,8 +75,8 @@ namespace StarryFramework.Editor
             DrawSettingsChildProperty(settingsProperty, "AutoSave");
             DrawSettingsChildProperty(settingsProperty, "AutoSaveDataInterval");
             DrawEditorSaveDataDirectoryPathField(settingsProperty.FindPropertyRelative("EditorSaveDataDirectoryPath"));
-            DrawSettingsChildProperty(settingsProperty, "SaveDataProvider");
             DrawSettingsChildProperty(settingsProperty, "SaveInfoList", includeChildren: true);
+            EditorGUILayout.HelpBox("SaveDataProvider is discovered automatically via [SaveDataProvider] attribute.", MessageType.Info);
 
             EditorGUI.indentLevel--;
         }

@@ -1,0 +1,21 @@
+{
+    "name": "StarryFramework.SaveModule.Tests",
+    "rootNamespace": "StarryFramework.Tests",
+    "references": [
+        "GUID:a389c918a09848e419d0e94cb731045c"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false,
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}

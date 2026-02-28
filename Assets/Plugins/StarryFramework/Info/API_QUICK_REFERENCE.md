@@ -235,34 +235,31 @@ public class MyGameSettings
 }
 ```
 
-**Step 2: Create a SaveDataProvider asset**
+**Step 2: Implement an auto-discovered provider**
 
-Inherit from `SaveDataProviderAsset` — also placed outside the framework directory:
+Implement `ISaveDataProvider` and add `[SaveDataProvider]` (recommended outside the framework directory):
 
 ```csharp
 using System;
-using UnityEngine;
 using StarryFramework;
 
-[CreateAssetMenu(menuName = "MyGame/Save Data Provider", fileName = "MySaveDataProvider")]
-public class MySaveDataProvider : SaveDataProviderAsset
+[SaveDataProvider(priority: 100)]
+public class MySaveDataProvider : ISaveDataProvider
 {
-    public override Type PlayerDataType => typeof(MyPlayerData);
-    public override Type GameSettingsType => typeof(MyGameSettings);
+    public Type PlayerDataType => typeof(MyPlayerData);
+    public Type GameSettingsType => typeof(MyGameSettings);
 
-    public override object CreateDefaultPlayerData()
+    public object CreateDefaultPlayerData()
         => new MyPlayerData();
 
-    public override object CreateDefaultGameSettings()
+    public object CreateDefaultGameSettings()
         => new MyGameSettings();
 }
 ```
 
-Right-click in the Project panel and choose **MyGame → Save Data Provider** to create the ScriptableObject asset.
+The framework resolves providers automatically at startup.
 
-**Step 3: Assign the provider in the Inspector**
-
-Select the GameObject with `SaveComponent` attached, then drag your provider asset into **Settings → Save Data Provider**.
+**Step 3: Run and use your model types**
 
 **Accessing custom model data**:
 

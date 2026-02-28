@@ -48,8 +48,11 @@ StarryFramework 是一个轻量化的Unity开发框架，提供了一系列开�
 ├── /Test                      # 模块测试示例
 ├── /Overview                  # 项目文档目录
 │   ├── PROJECT_OVERVIEW.md    # 项目概览文档（当前文档）
-│   └── API_QUICK_REFERENCE.md # API 速查手册
-│   └── SaveModule_Refactor_Plan.md # Save模块数据模型解耦重构计划
+│   ├── API_QUICK_REFERENCE.md # API 速查手册
+│   ├── SaveModule_Refactor_Plan.md # Save模块数据模型解耦重构计划
+│   ├── SaveModule_Implementation_Issues.md # Save模块实现问题清单（现状审查）
+│   ├── SaveModule_AutoDiscovery_Refactor_Plan.md # Save模块Provider自动发现重构计划
+│   └── SaveModule_IL2CPP_Preserve_Guide.md # Save模块IL2CPP裁剪保留指南
 └── /Scenes                    # 游戏场景
 
 ```
@@ -181,13 +184,13 @@ Framework.EventComponent.ClearAllEventLinsteners(string eventName)
 
 ### 2. Save Module（存档模块）
 
-**核心文件**: `SaveComponent.cs`, `SaveManager.cs`, `SaveDataProviderAsset.cs`, `PlayerData.cs`, `GameSettings.cs`
+**核心文件**: `SaveComponent.cs`, `SaveManager.cs`, `SaveDataProvider.cs`, `SaveDataProviderResolver.cs`, `PlayerData.cs`, `GameSettings.cs`
 
 **功能特性**:
 - 自动存档和手动存档
 - 多存档管理（创建、删除、覆盖）
 - 存档注释和信息管理
-- **数据模型解耦**: 通过 `SaveDataProviderAsset` 支持自定义存档数据类型（兼容内置 `PlayerData`/`GameSettings`）
+- **数据模型解耦**: 通过 `ISaveDataProvider` + `[SaveDataProvider]` 自动发现机制支持自定义存档数据类型（兼容内置 `PlayerData`/`GameSettings`）
 - **迁移策略**: 默认推荐 `GetPlayerData<T>()` / `GetGameSettings<T>()` 与对象入口；旧强类型属性保留兼容并已进入弃用预警
 - **JSON序列化**: 使用 Newtonsoft.Json 进行序列化（支持 Dictionary、多态、Nullable、自定义转换器）
 - **UTF-8编码**: 所有文件读写使用 UTF-8 编码
@@ -214,12 +217,13 @@ Framework.SaveComponent.GetGameSettingsObject()
 - **PlayerData**: 可序列化类，存储玩家游戏数据（用户自定义）
 - **GameSettings**: 可序列化类，存储游戏设置（用户自定义）
 - **PlayerDataInfo**: 存档元信息（时间、注释等）
-- **SaveDataProviderAsset**: 数据提供器抽象，建议在框架外定义自定义数据模型并通过该资产接入
+- **ISaveDataProvider**: 数据提供器接口，建议在框架外定义自定义数据模型并实现该接口
+- **SaveDataProviderAttribute**: Provider 自动发现特性，支持优先级决议
 
 **外置自定义模型示例**:
 - 示例脚本：`/Assets/Test/SaveModule/CustomSaveDataProviderExample.cs`
-- 通过菜单 `Assets/Create/StarryFramework/Save/Custom Save Data Provider (Demo)` 创建 Provider 资产
-- 将创建好的资产拖入 `SaveComponent -> Settings -> Save Data Provider`
+- 创建普通 C# Provider 类并实现 `ISaveDataProvider`
+- 在 Provider 类上添加 `[SaveDataProvider]`（可设置 `priority`）
 - 运行时通过 `Framework.SaveComponent.GetPlayerData<T>()`、`GetGameSettings<T>()` 访问自定义模型
 
 **Inspector功能**:
@@ -979,7 +983,29 @@ Player:
 
 ## 版本历史
 
-### 最新更新 (2024年12月)
+### 最新更新 (2026年2月)
+
+#### Save 模块 Provider 自动发现重构 ⭐
+
+**核心改动**
+- ✅ 新增 `[SaveDataProvider]` 特性，支持 Provider 自动发现
+- ✅ 新增 `SaveDataProviderResolver`，统一处理扫描、校验与优先级决议
+- ✅ Provider 冲突决议规则确定化：优先级高者优先，同优先级按类型全名字典序
+- ✅ `SaveManager` 启动时先解析 Provider，再加载设置，修复首次加载时序问题
+
+**配置与编辑器**
+- ✅ 移除 `SaveSettings` 的 `SaveDataProvider` 手动配置字段
+- ✅ `SaveComponentInspector` 移除手动拖拽 Provider 配置入口
+- ✅ Inspector 中新增自动发现机制提示信息
+
+**示例与文档**
+- ✅ `CustomSaveDataProviderExample` 改为“普通类 + 特性”示例
+- ✅ 新增 Save 模块自动发现 Editor 测试程序集与核心用例
+- ✅ 新增 IL2CPP 裁剪保留指南（`link.xml` 与 `[Preserve]`）
+- ✅ 存档模块文档更新为自动发现接入流程
+- ✅ 新增重构计划文档与问题审查文档，便于后续维护
+
+### 历史更新 (2024年12月)
 
 #### FrameworkSettings 自动同步架构重构 ⭐
 
@@ -1055,6 +1081,6 @@ StarryFramework 是一个成熟、易用、可扩展的Unity游戏开发框架�
 
 ---
 
-*文档生成日期: 2024*  
+*文档生成日期: 2026-02-28*  
 *框架版本: StarryFramework*  
 *Unity版本: 2022.3*

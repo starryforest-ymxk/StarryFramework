@@ -235,34 +235,31 @@ public class MyGameSettings
 }
 ```
 
-**第二步：创建 SaveDataProvider 资产**
+**第二步：实现自动发现 Provider**
 
-继承 `SaveDataProviderAsset`，同样放在框架目录之外：
+实现 `ISaveDataProvider` 并添加 `[SaveDataProvider]`（建议放在框架目录之外）：
 
 ```csharp
 using System;
-using UnityEngine;
 using StarryFramework;
 
-[CreateAssetMenu(menuName = "MyGame/Save Data Provider", fileName = "MySaveDataProvider")]
-public class MySaveDataProvider : SaveDataProviderAsset
+[SaveDataProvider(priority: 100)]
+public class MySaveDataProvider : ISaveDataProvider
 {
-    public override Type PlayerDataType => typeof(MyPlayerData);
-    public override Type GameSettingsType => typeof(MyGameSettings);
+    public Type PlayerDataType => typeof(MyPlayerData);
+    public Type GameSettingsType => typeof(MyGameSettings);
 
-    public override object CreateDefaultPlayerData()
+    public object CreateDefaultPlayerData()
         => new MyPlayerData();
 
-    public override object CreateDefaultGameSettings()
+    public object CreateDefaultGameSettings()
         => new MyGameSettings();
 }
 ```
 
-在 Project 面板右键菜单选择 **MyGame → Save Data Provider**，创建 ScriptableObject 资产文件。
+框架会在启动时自动解析 Provider。
 
-**第三步：在 Inspector 中挂载 Provider**
-
-选中场景中挂有 `SaveComponent` 的物体，在 **Settings → Save Data Provider** 字段拖入刚创建的资产。
+**第三步：运行并使用你的模型类型**
 
 **访问自定义模型数据**：
 

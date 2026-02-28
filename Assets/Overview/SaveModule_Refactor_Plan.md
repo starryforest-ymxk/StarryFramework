@@ -1,5 +1,8 @@
 # Save 模块数据模型解耦重构计划
 
+> 历史文档（2026-02-28）：该计划对应的是“解耦改造早期阶段”，已完成。
+> 当前生效方案为 Provider 特性自动发现，请以 `SaveModule_AutoDiscovery_Refactor_Plan.md` 与 `SaveModule_IL2CPP_Preserve_Guide.md` 为准。
+
 ## 背景与目标
 
 当前存档系统将 `PlayerData` 与 `GameSettings` 内置在框架目录中。用户直接修改这两个类时，后续框架升级容易覆盖用户自定义字段。

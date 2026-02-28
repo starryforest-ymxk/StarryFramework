@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using StarryFramework.Editor;
 using UnityEditor;
 
-namespace StarryFramework.Extentions.Editor
+namespace StarryFramework.Extensions.Editor
 {
     /// <summary>
     /// Custom inspector for AudioComponent.

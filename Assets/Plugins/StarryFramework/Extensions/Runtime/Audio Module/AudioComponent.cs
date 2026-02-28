@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using GUID = FMOD.GUID;
 
-namespace StarryFramework.Extentions
+namespace StarryFramework.Extensions
 {
     public class AudioComponent : ConfigurableComponent
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace StarryFramework.Extentions
+namespace StarryFramework.Extensions
 {
     internal static class ModuleRegistration
     {

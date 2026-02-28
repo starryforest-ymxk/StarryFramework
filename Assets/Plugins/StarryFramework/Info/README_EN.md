@@ -51,12 +51,12 @@ StarryFramework is a lightweight Unity game development framework designed to pr
 │       ├── /Extensions            # Extension Modules
 │       ├── /Info                  # Framework Documentation
 │       ├── /Resources
-│       └── StarryFrameworkRoot.marker # Plugin root marker
+│       └── StarryFrameworkRootMarker.txt # Plugin root marker
 ```
 
 ### Plugin Root Discovery
 
-- The framework locates its root directory via `StarryFrameworkRoot.marker` at the plugin root.
+- The framework locates its root directory via `StarryFrameworkRootMarker.txt` at the plugin root.
 - Users can move the plugin folder to any `Assets` subfolder and paths will be resolved automatically.
 - Do not remove this marker file, otherwise editor tools cannot determine the plugin root.
 

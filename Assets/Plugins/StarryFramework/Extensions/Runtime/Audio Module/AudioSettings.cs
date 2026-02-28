@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace StarryFramework.Extentions
+namespace StarryFramework.Extensions
 {
     [Serializable]
     internal class AudioSettings : IManagerSettings

@@ -9,7 +9,7 @@ namespace StarryFramework
 {
     internal static class FrameworkPathUtility
     {
-        internal const string RootMarkerFileName = "StarryFrameworkRoot.marker";
+        internal const string RootMarkerFileName = "StarryFrameworkRootMarker.txt";
         private const string PathUtilityScriptSuffix = "/Runtime/Framework/Base/FrameworkPathUtility.cs";
 
 #if UNITY_EDITOR
@@ -24,7 +24,7 @@ namespace StarryFramework
                     return _cachedPluginRootPath;
                 }
 
-                string[] guids = AssetDatabase.FindAssets("StarryFrameworkRoot t:DefaultAsset");
+                string[] guids = AssetDatabase.FindAssets("StarryFrameworkRootMarker t:TextAsset");
                 string foundRootPath = null;
                 int matchCount = 0;
 

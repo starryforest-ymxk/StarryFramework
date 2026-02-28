@@ -1,4 +1,4 @@
-namespace StarryFramework.Extentions
+namespace StarryFramework.Extensions
 {
     public static class FrameworkExtensions
     {

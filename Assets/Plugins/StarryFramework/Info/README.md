@@ -51,12 +51,12 @@ StarryFramework 是一个轻量化的 Unity 游戏开发框架，旨在提供一
 │       ├── /Extensions            # 扩展模块
 │       ├── /Info                  # 框架文档
 │       ├── /Resources
-│       └── StarryFrameworkRoot.marker # 插件根目录定位标记
+│       └── StarryFrameworkRootMarker.txt # 插件根目录定位标记
 ```
 
 ### 插件根目录定位
 
-- 框架通过插件根目录下的 `StarryFrameworkRoot.marker` 自动定位根目录。
+- 框架通过插件根目录下的 `StarryFrameworkRootMarker.txt` 自动定位根目录。
 - 用户可将插件目录移动到任意 `Assets` 子目录，路径会自动重新解析。
 - 请勿删除该标记文件，否则编辑器工具无法确定插件根目录。
 

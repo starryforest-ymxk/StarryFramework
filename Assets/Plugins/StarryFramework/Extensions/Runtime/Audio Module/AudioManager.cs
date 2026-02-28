@@ -4,7 +4,7 @@ using FMODUnity;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace StarryFramework.Extentions
+namespace StarryFramework.Extensions
 {
     internal class AudioManager : IManager, IConfigurableManager
     {

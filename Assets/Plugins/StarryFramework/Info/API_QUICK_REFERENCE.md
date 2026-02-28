@@ -141,34 +141,37 @@ Framework.ShutDown(ShutdownType.Restart);
 | `GetPlayerDataObject()` | Get player data object | object |
 | `GetGameSettingsObject()` | Get game settings object | object |
 
-### 🧩 Important Classes
+### 🧩 Data Models & Custom Extension
 
-#### PlayerData (Save Data Class)
+The Save module supports two data model approaches: **Built-in models** (quick setup) and **Custom models** (defined outside the framework, upgrade-safe).
+
+---
+
+#### Option 1: Built-in Models (Simple / Legacy)
+
+The built-in `PlayerData` and `GameSettings` live inside the framework directory. Edit their fields directly — no extra setup needed.
+
+> ⚠️ Note: These files may be overwritten when upgrading the framework. Best suited for small projects that don't require future upgrades.
 
 **Location**: `StarryFramework/Runtime/Framework/Save Module/PlayerData.cs`
-
-Users need to define their own save data structure in this file.
 
 ```csharp
 [Serializable]
 public sealed class PlayerData
 {
-    public int test = 0;
-    
-    // Auto-integrate event module: bool fields can be automatically set to true by triggering same-name events
-    public bool event1;
-    
-    // Supports complex types like List, Dictionary
-    public List<string> inventoryList = new();
-    public CustomData customData = new();
+    public int gold = 0;
+    public int level = 1;
+    public string playerName = "Player";
+
+    // bool fields can be automatically set to true by triggering a same-name event
+    public bool hasSeenIntro;
+
+    // Supports List, Dictionary and other complex types
+    public List<string> unlockedAbilities = new();
 }
 ```
 
-#### GameSettings (Game Settings Class)
-
 **Location**: `StarryFramework/Runtime/Framework/Save Module/GameSettings.cs`
-
-Users need to define their game settings data structure in this file.
 
 ```csharp
 [Serializable]
@@ -176,9 +179,135 @@ public sealed class GameSettings
 {
     public float bgmVolume = 1f;
     public float soundVolume = 1f;
-    public float uiVolume = 1f;
+    public bool fullScreen = true;
 }
 ```
+
+**Access** (Obsolete warning applied, still available):
+
+```csharp
+// Access after loading a save
+if (Framework.SaveComponent.LoadData(0))
+{
+    PlayerData data = Framework.SaveComponent.GetPlayerData<PlayerData>();
+    if (data != null)
+    {
+        Debug.Log(data.playerName);
+        data.gold += 100;
+    }
+}
+```
+
+---
+
+#### Option 2: Custom Models (Recommended / Defined Outside Framework)
+
+Define your data classes outside the framework directory so they are never touched by framework upgrades. Three steps to set up:
+
+**Step 1: Define your data classes outside the framework**
+
+Place them anywhere in your project (e.g. `Assets/Scripts/SaveData/`):
+
+```csharp
+using System;
+using System.Collections.Generic;
+
+[Serializable]
+public class MyPlayerData
+{
+    public string playerName = "Hero";
+    public int level = 1;
+    public float playTime;
+    public bool hasSeenIntro;
+
+    // Supports nested classes, List, Dictionary
+    public List<string> unlockedStages = new();
+    public Dictionary<string, int> inventory = new();
+}
+
+[Serializable]
+public class MyGameSettings
+{
+    public float bgmVolume = 1f;
+    public float sfxVolume = 1f;
+    public bool fullScreen = true;
+    public int resolutionIndex;
+}
+```
+
+**Step 2: Create a SaveDataProvider asset**
+
+Inherit from `SaveDataProviderAsset` — also placed outside the framework directory:
+
+```csharp
+using System;
+using UnityEngine;
+using StarryFramework;
+
+[CreateAssetMenu(menuName = "MyGame/Save Data Provider", fileName = "MySaveDataProvider")]
+public class MySaveDataProvider : SaveDataProviderAsset
+{
+    public override Type PlayerDataType => typeof(MyPlayerData);
+    public override Type GameSettingsType => typeof(MyGameSettings);
+
+    public override object CreateDefaultPlayerData()
+        => new MyPlayerData();
+
+    public override object CreateDefaultGameSettings()
+        => new MyGameSettings();
+}
+```
+
+Right-click in the Project panel and choose **MyGame → Save Data Provider** to create the ScriptableObject asset.
+
+**Step 3: Assign the provider in the Inspector**
+
+Select the GameObject with `SaveComponent` attached, then drag your provider asset into **Settings → Save Data Provider**.
+
+**Accessing custom model data**:
+
+```csharp
+// Load a save
+if (Framework.SaveComponent.LoadData(0))
+{
+    MyPlayerData data = Framework.SaveComponent.GetPlayerData<MyPlayerData>();
+    if (data != null)
+    {
+        Debug.Log($"Player: {data.playerName}, Level: {data.level}");
+        data.level++;
+    }
+}
+
+// Access game settings
+MyGameSettings settings = Framework.SaveComponent.GetGameSettings<MyGameSettings>();
+if (settings != null)
+{
+    AudioListener.volume = settings.bgmVolume;
+}
+
+// Modify settings (auto-persisted to PlayerPrefs)
+if (settings != null)
+{
+    settings.fullScreen = false;
+    Screen.fullScreen = false;
+}
+```
+
+---
+
+#### bool Fields and Event Module Integration
+
+Regardless of whether you use built-in or custom models, any **public bool field** in PlayerData can be automatically set to `true` by triggering a same-name event:
+
+```csharp
+// Triggering an event with the same name as the field sets it to true
+Framework.EventComponent.InvokeEvent("hasSeenIntro");
+
+// Equivalent to (not recommended to write manually):
+// data.hasSeenIntro = true;
+```
+
+> This works via reflection and is ideal for achievements, story unlocks, tutorial completion flags, and similar boolean markers.
 
 ---
 

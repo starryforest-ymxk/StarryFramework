@@ -141,34 +141,37 @@ Framework.ShutDown(ShutdownType.Restart);
 | `GetPlayerDataObject()` | 获取玩家数据对象 | object |
 | `GetGameSettingsObject()` | 获取游戏设置对象 | object |
 
-### 🧩 重要类
+### 🧩 数据模型与自定义扩展
 
-#### PlayerData（存档数据类）
+存档模块支持两种数据模型使用方式：**内置模型**（快速接入）和**自定义模型**（框架外定义，升级安全）。
+
+---
+
+#### 方式一：使用内置模型（简单/旧版方式）
+
+内置 `PlayerData` 和 `GameSettings` 位于框架目录内，可直接修改字段使用，无需额外配置。
+
+> ⚠️ 注意：升级框架时这两个文件可能被覆盖，适合不需要升级的小型项目。
 
 **位置**: `StarryFramework/Runtime/Framework/Save Module/PlayerData.cs`
-
-用户需在此文件中定义自己的存档数据结构。
 
 ```csharp
 [Serializable]
 public sealed class PlayerData
 {
-    public int test = 0;
-    
-    // 自动集成事件模块：bool字段可通过触发同名事件自动设为true
-    public bool event1;
-    
-    // 支持List、Dictionary等复杂类型
-    public List<string> inventoryList = new();
-    public CustomData customData = new();
+    public int gold = 0;
+    public int level = 1;
+    public string playerName = "Player";
+
+    // bool 字段可通过触发同名事件自动设置为 true
+    public bool hasSeenIntro;
+
+    // 支持 List、Dictionary 等复杂类型
+    public List<string> unlockedAbilities = new();
 }
 ```
 
-#### GameSettings（游戏设置类）
-
 **位置**: `StarryFramework/Runtime/Framework/Save Module/GameSettings.cs`
-
-用户需在此文件中定义游戏设置数据结构。
 
 ```csharp
 [Serializable]
@@ -176,9 +179,135 @@ public sealed class GameSettings
 {
     public float bgmVolume = 1f;
     public float soundVolume = 1f;
-    public float uiVolume = 1f;
+    public bool fullScreen = true;
 }
 ```
+
+**访问方式**（已标记弃用预警，当前仍可用）：
+
+```csharp
+// 加载存档后访问
+if (Framework.SaveComponent.LoadData(0))
+{
+    PlayerData data = Framework.SaveComponent.GetPlayerData<PlayerData>();
+    if (data != null)
+    {
+        Debug.Log(data.playerName);
+        data.gold += 100;
+    }
+}
+```
+
+---
+
+#### 方式二：自定义模型（推荐/框架外定义）
+
+自定义模型定义在框架目录之外，升级框架不会覆盖业务数据类。分三步完成接入：
+
+**第一步：在框架外定义数据类**
+
+可放在项目任意目录（如 `Assets/Scripts/SaveData/`）：
+
+```csharp
+using System;
+using System.Collections.Generic;
+
+[Serializable]
+public class MyPlayerData
+{
+    public string playerName = "Hero";
+    public int level = 1;
+    public float playTime;
+    public bool hasSeenIntro;
+
+    // 支持嵌套类、List、Dictionary
+    public List<string> unlockedStages = new();
+    public Dictionary<string, int> inventory = new();
+}
+
+[Serializable]
+public class MyGameSettings
+{
+    public float bgmVolume = 1f;
+    public float sfxVolume = 1f;
+    public bool fullScreen = true;
+    public int resolutionIndex;
+}
+```
+
+**第二步：创建 SaveDataProvider 资产**
+
+继承 `SaveDataProviderAsset`，同样放在框架目录之外：
+
+```csharp
+using System;
+using UnityEngine;
+using StarryFramework;
+
+[CreateAssetMenu(menuName = "MyGame/Save Data Provider", fileName = "MySaveDataProvider")]
+public class MySaveDataProvider : SaveDataProviderAsset
+{
+    public override Type PlayerDataType => typeof(MyPlayerData);
+    public override Type GameSettingsType => typeof(MyGameSettings);
+
+    public override object CreateDefaultPlayerData()
+        => new MyPlayerData();
+
+    public override object CreateDefaultGameSettings()
+        => new MyGameSettings();
+}
+```
+
+在 Project 面板右键菜单选择 **MyGame → Save Data Provider**，创建 ScriptableObject 资产文件。
+
+**第三步：在 Inspector 中挂载 Provider**
+
+选中场景中挂有 `SaveComponent` 的物体，在 **Settings → Save Data Provider** 字段拖入刚创建的资产。
+
+**访问自定义模型数据**：
+
+```csharp
+// 加载存档
+if (Framework.SaveComponent.LoadData(0))
+{
+    MyPlayerData data = Framework.SaveComponent.GetPlayerData<MyPlayerData>();
+    if (data != null)
+    {
+        Debug.Log($"玩家: {data.playerName}, 等级: {data.level}");
+        data.level++;
+    }
+}
+
+// 访问游戏设置
+MyGameSettings settings = Framework.SaveComponent.GetGameSettings<MyGameSettings>();
+if (settings != null)
+{
+    AudioListener.volume = settings.bgmVolume;
+}
+
+// 修改设置并保存（游戏设置自动持久化到 PlayerPrefs）
+if (settings != null)
+{
+    settings.fullScreen = false;
+    Screen.fullScreen = false;
+}
+```
+
+---
+
+#### bool 字段与事件模块联动
+
+无论内置还是自定义模型，PlayerData 中的 **公共 bool 字段**都支持通过同名事件自动设为 `true`：
+
+```csharp
+// 触发与字段同名的事件，字段自动置 true
+Framework.EventComponent.InvokeEvent("hasSeenIntro");
+
+// 等价于（不推荐手动写）：
+// data.hasSeenIntro = true;
+```
+
+> 这一机制通过反射实现，适用于成就、剧情解锁、教程完成等布尔标记场景。
 
 ---
 

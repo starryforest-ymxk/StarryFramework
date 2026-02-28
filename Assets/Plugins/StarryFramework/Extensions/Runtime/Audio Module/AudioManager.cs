@@ -12,6 +12,8 @@ namespace StarryFramework.Extensions
         private AudioSettings settings;
         private bool isInitialized;
         private readonly HashSet<string> loadedGlobalBanks = new();
+        private readonly Dictionary<GUID, int> loadedAudioEvents = new();
+        private readonly Dictionary<string, int> loadedBanks = new();
         
         private EventInstance currentBGM;
 
@@ -53,14 +55,16 @@ namespace StarryFramework.Extensions
         void IManager.ShutDown()
         {
             isInitialized = false;
+            StopBGM(STOP_MODE.IMMEDIATE);
+            StopAndReleaseAllUnnamedEvent(STOP_MODE.IMMEDIATE);
+            StopAndReleaseAllNamedEventInstance(STOP_MODE.IMMEDIATE);
+            UnloadAllData();
             if (loadedGlobalBanks.Count > 0)
             {
-                UnloadBankData(new List<string>(loadedGlobalBanks));
+                UnloadBankDataInternal(new List<string>(loadedGlobalBanks), false);
                 loadedGlobalBanks.Clear();
             }
-            bgmState = AudioState.Stop;
-            namedEventDic.Clear();
-            unnamedEventDic.Clear();
+            UnloadAllBankData();
             clearTimer.Close();
         }
 
@@ -110,7 +114,7 @@ namespace StarryFramework.Extensions
 
             if (banksToUnload.Count > 0)
             {
-                UnloadBankData(banksToUnload);
+                UnloadBankDataInternal(banksToUnload, false);
                 foreach (var bank in banksToUnload)
                 {
                     loadedGlobalBanks.Remove(bank);
@@ -129,7 +133,7 @@ namespace StarryFramework.Extensions
 
             if (banksToLoad.Count > 0)
             {
-                PreloadBankData(banksToLoad);
+                PreloadBankDataInternal(banksToLoad, false);
             }
         }
 
@@ -412,34 +416,144 @@ namespace StarryFramework.Extensions
 
         #region AudioData
 
-        internal void PreloadData(List<EventReference> events)
+        internal void PreloadData(IEnumerable<EventReference> events)
         {
+            if (events == null)
+            {
+                return;
+            }
+
             foreach(var e in events)
             {
+                if (loadedAudioEvents.ContainsKey(e.Guid))
+                {
+                    loadedAudioEvents[e.Guid]++;
+                }
+                else
+                {
+                    loadedAudioEvents.Add(e.Guid, 1);
+                }
                 RuntimeManager.GetEventDescription(e).loadSampleData();
             }
         }
-        internal void UnloadData(List<EventReference> events)
+        internal void UnloadData(IEnumerable<EventReference> events)
         {
+            if (events == null)
+            {
+                return;
+            }
+
             foreach (var e in events)
             {
-                RuntimeManager.GetEventDescription(e).unloadSampleData();
+                if (loadedAudioEvents.TryGetValue(e.Guid, out int referenceCount))
+                {
+                    if (referenceCount <= 1)
+                    {
+                        loadedAudioEvents.Remove(e.Guid);
+                    }
+                    else
+                    {
+                        loadedAudioEvents[e.Guid] = referenceCount - 1;
+                    }
+
+                    RuntimeManager.GetEventDescription(e).unloadSampleData();
+                }
             }
         }
-        internal void PreloadBankData(List<string> banks)
+        internal void UnloadAllData()
         {
+            foreach (var kvp in loadedAudioEvents)
+            {
+                RuntimeManager.StudioSystem.getEventByID(kvp.Key, out EventDescription description);
+                for (int i = 0; i < kvp.Value; i++)
+                {
+                    description.unloadSampleData();
+                }
+            }
+            loadedAudioEvents.Clear();
+        }
+
+        internal void PreloadBankData(IEnumerable<string> banks)
+        {
+            PreloadBankDataInternal(banks, true);
+        }
+        internal void UnloadBankData(IEnumerable<string> banks)
+        {
+            UnloadBankDataInternal(banks, true);
+        }
+        internal void UnloadAllBankData()
+        {
+            foreach (var kvp in loadedBanks)
+            {
+                RuntimeManager.StudioSystem.getBank($"bank:/{kvp.Key}", out Bank bank);
+                for (int i = 0; i < kvp.Value; i++)
+                {
+                    bank.unloadSampleData();
+                }
+            }
+            loadedBanks.Clear();
+        }
+
+        private void PreloadBankDataInternal(IEnumerable<string> banks, bool trackManualReference)
+        {
+            if (banks == null)
+            {
+                return;
+            }
+
             foreach (var bank in banks)
             {
-                RuntimeManager.StudioSystem.getBank($"bank:/{bank}", out Bank _bank);
-                _bank.loadSampleData();
+                if (string.IsNullOrWhiteSpace(bank))
+                {
+                    continue;
+                }
+
+                if (trackManualReference)
+                {
+                    if (loadedBanks.ContainsKey(bank))
+                    {
+                        loadedBanks[bank]++;
+                    }
+                    else
+                    {
+                        loadedBanks.Add(bank, 1);
+                    }
+                }
+
+                RuntimeManager.StudioSystem.getBank($"bank:/{bank}", out Bank loadedBank);
+                loadedBank.loadSampleData();
             }
         }
-        internal void UnloadBankData(List<string> banks)
+
+        private void UnloadBankDataInternal(IEnumerable<string> banks, bool trackManualReference)
         {
+            if (banks == null)
+            {
+                return;
+            }
+
             foreach (var bank in banks)
             {
-                RuntimeManager.StudioSystem.getBank($"bank:/{bank}", out Bank _bank);
-                _bank.unloadSampleData();
+                if (string.IsNullOrWhiteSpace(bank))
+                {
+                    continue;
+                }
+
+                if (trackManualReference && loadedBanks.ContainsKey(bank))
+                {
+                    loadedBanks[bank]--;
+                    if (loadedBanks[bank] <= 0)
+                    {
+                        loadedBanks.Remove(bank);
+                    }
+                }
+                else if (trackManualReference)
+                {
+                    continue;
+                }
+
+                RuntimeManager.StudioSystem.getBank($"bank:/{bank}", out Bank loadedBank);
+                loadedBank.unloadSampleData();
             }
         }
 
@@ -450,11 +564,11 @@ namespace StarryFramework.Extensions
 
         internal void PlayOneShot(EventReference reference , Vector3 pos = default)
         {
-            RuntimeManager.PlayOneShot(reference);
+            RuntimeManager.PlayOneShot(reference, pos);
         }
         internal void PlayOneShot(string path, Vector3 pos = default)
         {
-            RuntimeManager.PlayOneShot(path);
+            RuntimeManager.PlayOneShot(path, pos);
         }
         internal void PlayOneShotAttached(EventReference reference , GameObject gameObject)
         {
@@ -684,7 +798,7 @@ namespace StarryFramework.Extensions
         }
         internal void StopBGM(STOP_MODE mode)
         {
-            if (bgmState == AudioState.Playing)
+            if (bgmState != AudioState.Stop)
             {
                 currentBGM.stop(mode);
                 currentBGM.release();

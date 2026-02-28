@@ -191,6 +191,7 @@ Framework.EventComponent.ClearAllEventLinsteners(string eventName)
 - 多存档管理（创建、删除、覆盖）
 - 存档注释和信息管理
 - **数据模型解耦**: 通过 `ISaveDataProvider` + `[SaveDataProvider]` 自动发现机制支持自定义存档数据类型（兼容内置 `PlayerData`/`GameSettings`）
+- **扫描降噪策略**: 自动发现默认跳过 `*.Tests` 程序集，避免测试桩类型污染运行时日志
 - **迁移策略**: 默认推荐 `GetPlayerData<T>()` / `GetGameSettings<T>()` 与对象入口；旧强类型属性保留兼容并已进入弃用预警
 - **JSON序列化**: 使用 Newtonsoft.Json 进行序列化（支持 Dictionary、多态、Nullable、自定义转换器）
 - **UTF-8编码**: 所有文件读写使用 UTF-8 编码
@@ -1004,6 +1005,9 @@ Player:
 - ✅ 新增 IL2CPP 裁剪保留指南（`link.xml` 与 `[Preserve]`）
 - ✅ 存档模块文档更新为自动发现接入流程
 - ✅ 新增重构计划文档与问题审查文档，便于后续维护
+
+**Audio 模块兼容修复**
+- ✅ 修复 FMOD `AttachInstanceToGameObject` 旧签名调用，改用 `GameObject` 重载，消除 CS0618 过时警告
 
 ### 历史更新 (2024年12月)
 

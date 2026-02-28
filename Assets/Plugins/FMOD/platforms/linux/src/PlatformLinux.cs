@@ -9,7 +9,7 @@ namespace FMOD
 {
     public partial class VERSION
     {
-        public const string dll = "fmodstudio" + dllSuffix;
+        public const string dll = "fmodstudio" + suffix;
     }
 }
 
@@ -17,7 +17,7 @@ namespace FMOD.Studio
 {
     public partial class STUDIO_VERSION
     {
-        public const string dll = "fmodstudio" + dllSuffix;
+        public const string dll = "fmodstudio" + VERSION.suffix;
     }
 }
 #endif
@@ -72,7 +72,9 @@ namespace FMODUnity
 
         protected override IEnumerable<string> GetObsoleteFiles()
         {
+            yield return "lib/linux/x86/libfmodstudio.so";
             yield return "platforms/linux/lib/x86/libfmodstudio.so";
+            yield return "lib/linux/x86/libfmodstudioL.so";
             yield return "platforms/linux/lib/x86/libfmodstudioL.so";
         }
 #endif

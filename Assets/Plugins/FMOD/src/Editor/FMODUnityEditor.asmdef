@@ -7,7 +7,8 @@
         "Unity.VisualScripting.Core",
         "Unity.VisualScripting.Core.Editor",
         "Unity.VisualScripting.Flow.Editor",
-        "Unity.ScriptableBuildPipeline.Editor"
+        "Unity.ScriptableBuildPipeline.Editor",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [
         "Editor"
@@ -17,7 +18,9 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "UNITY_2021_3_OR_NEWER"
+    ],
     "versionDefines": [
         {
             "name": "com.unity.timeline",
@@ -33,6 +36,11 @@
             "name": "com.unity.visualscripting",
             "expression": "1.0.0",
             "define": "UNITY_VISUALSCRIPTING_EXIST"
+        },
+        {
+            "name": "com.unity.inputsystem",
+            "expression": "1.0.0",
+            "define": "UNITY_INPUTSYSTEM_EXIST"
         }
     ],
     "noEngineReferences": false

@@ -37,6 +37,8 @@ namespace FMODUnity
         [NonSerialized]
         public bool CachedParameters = false;
 
+        public static event System.EventHandler<EventArgs> OnCreatePlayable;
+
         private FMODEventPlayableBehavior behavior;
 
         public GameObject TrackTargetObject { get; set; }
@@ -63,7 +65,7 @@ namespace FMODUnity
 
         public TimelineClip OwningClip { get; set; }
 
-        public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
+        public void LinkParameters(FMOD.Studio.EventDescription eventDescription)
         {
 #if UNITY_EDITOR
             if (!EventReference.IsNull)
@@ -71,8 +73,6 @@ namespace FMODUnity
             if (!CachedParameters && !EventReference.IsNull)
 #endif
             {
-                FMOD.Studio.EventDescription eventDescription = RuntimeManager.GetEventDescription(EventReference);
-
                 for (int i = 0; i < Parameters.Length; i++)
                 {
                     FMOD.Studio.PARAMETER_DESCRIPTION parameterDescription;
@@ -90,6 +90,20 @@ namespace FMODUnity
                 }
 
                 CachedParameters = true;
+            }
+        }
+
+        public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
+        {
+            if (Application.isPlaying)
+            {
+                LinkParameters(RuntimeManager.GetEventDescription(EventReference));
+            }
+            else
+            {
+                // Handled by the editor auditioning system.
+                EventArgs args = new EventArgs();
+                OnCreatePlayable.Invoke(this, args);
             }
 
             var playable = ScriptPlayable<FMODEventPlayableBehavior>.Create(graph, Template);
@@ -120,8 +134,15 @@ namespace FMODUnity
                 }
                 else
                 {
-                    int index = EventReference.Path.LastIndexOf("/");
-                    OwningClip.displayName = EventReference.Path.Substring(index + 1);
+                    if (EventReference.Path == null)
+                    {
+                        EventReference.Path = "";
+                    }
+                    else
+                    {
+                        int index = EventReference.Path.LastIndexOf("/");
+                        OwningClip.displayName = EventReference.Path.Substring(index + 1);
+                    }
                 }
             }
             if (behavior != null)
@@ -206,19 +227,19 @@ namespace FMODUnity
 #if UNITY_PHYSICS_EXIST
                     if (TrackTargetObject.GetComponent<Rigidbody>())
                     {
-                        RuntimeManager.AttachInstanceToGameObject(eventInstance, TrackTargetObject.transform, TrackTargetObject.GetComponent<Rigidbody>());
+                        RuntimeManager.AttachInstanceToGameObject(eventInstance, TrackTargetObject, TrackTargetObject.GetComponent<Rigidbody>());
                     }
                     else
 #endif
 #if UNITY_PHYSICS2D_EXIST
                     if (TrackTargetObject.GetComponent<Rigidbody2D>())
                     {
-                        RuntimeManager.AttachInstanceToGameObject(eventInstance, TrackTargetObject.transform, TrackTargetObject.GetComponent<Rigidbody2D>());
+                        RuntimeManager.AttachInstanceToGameObject(eventInstance, TrackTargetObject, TrackTargetObject.GetComponent<Rigidbody2D>());
                     }
                     else
 #endif
                     {
-                        RuntimeManager.AttachInstanceToGameObject(eventInstance, TrackTargetObject.transform);
+                        RuntimeManager.AttachInstanceToGameObject(eventInstance, TrackTargetObject);
                     }
                 }
                 else

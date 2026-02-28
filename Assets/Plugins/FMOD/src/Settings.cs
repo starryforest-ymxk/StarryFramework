@@ -51,6 +51,18 @@ namespace FMODUnity
         Development,
     }
 
+    public enum ScreenPosition
+    {
+        TopLeft,
+        TopCenter,
+        TopRight,
+        BottomLeft,
+        BottomCenter,
+        BottomRight,
+        Center,
+        VR,
+    }
+
     public interface IEditorSettings
     {
 #if UNITY_EDITOR
@@ -140,7 +152,14 @@ namespace FMODUnity
         public string TargetBankFolder = "";
 
         [SerializeField]
+#if FMOD_SERIALIZE_GUID_ONLY
+        public EventLinkage EventLinkage = EventLinkage.GUID;
+#else
         public EventLinkage EventLinkage = EventLinkage.Path;
+#endif
+
+        [SerializeField]
+        public bool SerializeGUIDsOnly;
 
         [SerializeField]
         public FMOD.DEBUG_FLAGS LoggingLevel = FMOD.DEBUG_FLAGS.WARNING;
@@ -186,6 +205,9 @@ namespace FMODUnity
 
         [SerializeField]
         public bool AndroidUseOBB = false;
+
+        [SerializeField]
+        public bool AndroidPatchBuild = false;
 
         [SerializeField]
         public MeterChannelOrderingType MeterChannelOrdering;
@@ -287,9 +309,24 @@ namespace FMODUnity
                     }
 #endif
                 }
+                else
+                {
+#if UNITY_EDITOR
+                    if (AssetDatabase.GetAssetPath(instance).StartsWith("Packages"))
+                    {
+                        RuntimeUtils.DebugLogError($"[FMOD] {SettingsAssetName} initialization failed. {SettingsAssetName} located in \"Packages\" folder. Please delete {SettingsAssetName} in file explorer.");
+                        instance = CreateInstance<Settings>();
+                    }
+#endif
+                }
 
                 isInitializing = false;
             }
+        }
+
+        internal static bool IsInitialized()
+        {
+            return !(instance == null || isInitializing);
         }
 
         internal static IEditorSettings EditorSettings
@@ -344,7 +381,7 @@ namespace FMODUnity
                     }
                 }
                 else
-                { 
+                {
                     if (string.IsNullOrEmpty(TargetBankFolder))
                     {
                         return Application.streamingAssetsPath;
@@ -377,7 +414,7 @@ namespace FMODUnity
                     TargetAssetPath = value;
                 }
                 else
-                { 
+                {
                     TargetBankFolder = value;
                 }
             }
@@ -617,10 +654,6 @@ namespace FMODUnity
 
             // Link all known platforms
             Platforms.ForEach(LinkPlatform);
-
-#if UNITY_EDITOR
-            EditorSettings.CheckActiveBuildTarget();
-#endif
         }
 
         private void PopulatePlatformsFromAsset()

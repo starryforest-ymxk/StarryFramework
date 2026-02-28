@@ -44,6 +44,9 @@ namespace FMODUnity
         internal override IEnumerable<BuildTarget> GetBuildTargets()
         {
             yield return BuildTarget.WebGL;
+#if UNITY_WEIXINMINIGAME
+            yield return BuildTarget.WeixinMiniGame;
+#endif
         }
 
         internal override Legacy.Platform LegacyIdentifier { get { return Legacy.Platform.WebGL; } }
@@ -55,20 +58,31 @@ namespace FMODUnity
 
         protected override IEnumerable<FileRecord> GetBinaryFiles(BuildTarget buildTarget, bool allVariants, string suffix)
         {
-            #if UNITY_2021_2_OR_NEWER
-            bool useWASM = true;
-            #else
-            bool useWASM = false;
-            #endif
+            bool emVer_2_0_19 = false;
+            bool emVer_3_1_8 = false;
+            bool emVer_3_1_39 = false;
 
-            if (allVariants || useWASM)
+#if UNITY_6000_0_OR_NEWER
+            emVer_3_1_39 = true;
+#elif UNITY_2022_3_OR_NEWER
+            emVer_3_1_8 = true;
+#else
+            emVer_2_0_19 = true;
+#endif
+
+            if (allVariants || emVer_3_1_39)
             {
-                yield return new FileRecord(string.Format("2.0.19/libfmodstudio{0}.a", suffix));
+                yield return new FileRecord(string.Format("3.1.39/libfmodstudio{0}.a", suffix));
             }
 
-            if (allVariants || !useWASM)
+            if (allVariants || emVer_3_1_8)
             {
-                yield return new FileRecord(string.Format("libfmodstudiounityplugin{0}.bc", suffix));
+                yield return new FileRecord(string.Format("3.1.8/libfmodstudio{0}.a", suffix));
+            }
+
+            if (allVariants || emVer_2_0_19)
+            {
+                yield return new FileRecord(string.Format("2.0.19/libfmodstudio{0}.a", suffix));
             }
         }
 
@@ -77,11 +91,7 @@ namespace FMODUnity
 
         internal override string GetPluginPath(string pluginName)
         {
-            #if UNITY_2021_2_OR_NEWER
             return string.Format("{0}/{1}.a", GetPluginBasePath(), pluginName);
-            #else
-            return string.Format("{0}/{1}.bc", GetPluginBasePath(), pluginName);
-            #endif
         }
 #if UNITY_EDITOR
         internal override OutputType[] ValidOutputTypes

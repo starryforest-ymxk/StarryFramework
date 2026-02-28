@@ -10,7 +10,7 @@ namespace FMOD
 {
     public partial class VERSION
     {
-        public const string dll = "fmod" + dllSuffix;
+        public const string dll = "fmod" + suffix;
     }
 }
 
@@ -18,7 +18,7 @@ namespace FMOD.Studio
 {
     public partial class STUDIO_VERSION
     {
-        public const string dll = "fmodstudio" + dllSuffix;
+        public const string dll = "fmodstudio" + VERSION.suffix;
     }
 }
 #endif
@@ -93,7 +93,8 @@ namespace FMODUnity
 
         internal static string StaticGetBankFolder()
         {
-            return Settings.Instance.AndroidUseOBB ? Application.streamingAssetsPath : "file:///android_asset";
+            return (Settings.Instance.AndroidUseOBB || Settings.Instance.AndroidPatchBuild)
+                ? Application.streamingAssetsPath : "file:///android_asset";
         }
 
         internal override string GetPluginPath(string pluginName)

@@ -3,6 +3,7 @@ using FMOD.Studio;
 using FMODUnity;
 using System.Collections.Generic;
 using UnityEngine;
+using STOP_MODE = FMOD.Studio.STOP_MODE;
 
 namespace StarryFramework.Extensions
 {
@@ -10,17 +11,17 @@ namespace StarryFramework.Extensions
     {
         private AudioSettings settings;
         private bool isInitialized;
-        private readonly HashSet<string> loadedGlobalBanks = new HashSet<string>();
+        private readonly HashSet<string> loadedGlobalBanks = new();
         
         private EventInstance currentBGM;
 
         private AudioState bgmState = AudioState.Stop;
 
-        private Dictionary<GUID, List<EventInstance>> unnamedEventDic = new Dictionary<GUID, List<EventInstance>>();
+        private readonly Dictionary<GUID, List<EventInstance>> unnamedEventDic = new();
 
-        private Dictionary<string, EventInstance> namedEventDic = new Dictionary<string, EventInstance>();
+        private Dictionary<string, EventInstance> namedEventDic = new();
 
-        private System.Timers.Timer clearTimer = new System.Timers.Timer();
+        private readonly System.Timers.Timer clearTimer = new();
 
         private static double GetClearUnusedAudioTimerIntervalMilliseconds(float intervalSeconds)
         {
@@ -35,7 +36,7 @@ namespace StarryFramework.Extensions
         }
         void IManager.Init()
         {
-            clearTimer.Elapsed += (a, e) => FrameworkManager.PostToMainThread(() =>
+            clearTimer.Elapsed += (_, _) => FrameworkManager.PostToMainThread(() =>
             {
                 if (isInitialized)
                 {
@@ -63,9 +64,9 @@ namespace StarryFramework.Extensions
             clearTimer.Close();
         }
 
-        void IConfigurableManager.SetSettings(IManagerSettings settings)
+        void IConfigurableManager.SetSettings(IManagerSettings managerSettings)
         {
-            this.settings = settings as AudioSettings;
+            this.settings = managerSettings as AudioSettings;
             if (isInitialized)
             {
                 ApplySettings();
@@ -159,28 +160,26 @@ namespace StarryFramework.Extensions
             }
         }
 
-        private void StopUnnamedEvent(GUID guid, FMOD.Studio.STOP_MODE mode)
+        private void StopUnnamedEvent(GUID guid, STOP_MODE mode)
         {
-            if (!unnamedEventDic.ContainsKey(guid))
+            if (!unnamedEventDic.TryGetValue(guid, out var value))
             {
                 FrameworkManager.Debugger.LogWarning($"Audio event [{guid}] not found.");
-                return;
             }
             else
             {
-                foreach (EventInstance eventInstance in unnamedEventDic[guid])
+                foreach (EventInstance eventInstance in value)
                 {
                     eventInstance.stop(mode);
                 }
             }
         }
 
-        private void StopAndReleaseUnnamedEvent(GUID guid, FMOD.Studio.STOP_MODE mode)
+        private void StopAndReleaseUnnamedEvent(GUID guid, STOP_MODE mode)
         {
             if (!unnamedEventDic.ContainsKey(guid))
             {
                 FrameworkManager.Debugger.LogWarning($"Audio event [{guid}] not found.");
-                return;
             }
             else
             {
@@ -195,14 +194,13 @@ namespace StarryFramework.Extensions
 
         private void PauseUnnamedEvent(GUID guid, bool pause)
         {
-            if (!unnamedEventDic.ContainsKey(guid))
+            if (!unnamedEventDic.TryGetValue(guid, out var value))
             {
                 FrameworkManager.Debugger.LogWarning($"Audio event [{guid}] not found.");
-                return;
             }
             else
             {
-                foreach (EventInstance eventInstance in unnamedEventDic[guid])
+                foreach (EventInstance eventInstance in value)
                 {
                     eventInstance.setPaused(pause);
                 }
@@ -211,14 +209,13 @@ namespace StarryFramework.Extensions
 
         private void SetUnnamedEventVolume(GUID guid, float volume)
         {
-            if (!unnamedEventDic.ContainsKey(guid))
+            if (!unnamedEventDic.TryGetValue(guid, out var value))
             {
                 FrameworkManager.Debugger.LogWarning($"Audio event [{guid}] not found.");
-                return;
             }
             else
             {
-                foreach (EventInstance eventInstance in unnamedEventDic[guid])
+                foreach (EventInstance eventInstance in value)
                 {
                     eventInstance.setVolume(volume);
                 }
@@ -227,14 +224,13 @@ namespace StarryFramework.Extensions
 
         private void SetUnnamedEventProperty(GUID guid, EVENT_PROPERTY property, float value)
         {
-            if (!unnamedEventDic.ContainsKey(guid))
+            if (!unnamedEventDic.TryGetValue(guid, out var list))
             {
                 FrameworkManager.Debugger.LogWarning($"Audio event [{guid}] not found.");
-                return;
             }
             else
             {
-                foreach (EventInstance eventInstance in unnamedEventDic[guid])
+                foreach (EventInstance eventInstance in list)
                 {
                     eventInstance.setProperty(property, value);
                 }
@@ -243,14 +239,13 @@ namespace StarryFramework.Extensions
 
         private void SetUnnamedEventParameter(GUID guid, string name, float value, bool ignoreSeekSpeed = false)
         {
-            if (!unnamedEventDic.ContainsKey(guid))
+            if (!unnamedEventDic.TryGetValue(guid, out var list))
             {
                 FrameworkManager.Debugger.LogWarning($"Audio event [{guid}] not found.");
-                return;
             }
             else
             {
-                foreach (EventInstance eventInstance in unnamedEventDic[guid])
+                foreach (EventInstance eventInstance in list)
                 {
                     eventInstance.setParameterByName(name, value, ignoreSeekSpeed);
                 }
@@ -259,14 +254,13 @@ namespace StarryFramework.Extensions
 
         private void SetUnnamedEventParameter(GUID guid, PARAMETER_ID id, float value, bool ignoreSeekSpeed = false)
         {
-            if (!unnamedEventDic.ContainsKey(guid))
+            if (!unnamedEventDic.TryGetValue(guid, out var list))
             {
                 FrameworkManager.Debugger.LogWarning($"Audio event [{guid}] not found.");
-                return;
             }
             else
             {
-                foreach (EventInstance eventInstance in unnamedEventDic[guid])
+                foreach (EventInstance eventInstance in list)
                 {
                     eventInstance.setParameterByID(id, value, ignoreSeekSpeed);
                 }
@@ -275,14 +269,13 @@ namespace StarryFramework.Extensions
 
         private void SetUnnamedEventParameterWithLabel(GUID guid, string name, string label, bool ignoreSeekSpeed = false)
         {
-            if (!unnamedEventDic.ContainsKey(guid))
+            if (!unnamedEventDic.TryGetValue(guid, out var value))
             {
                 FrameworkManager.Debugger.LogWarning($"Audio event [{guid}] not found.");
-                return;
             }
             else
             {
-                foreach (EventInstance eventInstance in unnamedEventDic[guid])
+                foreach (EventInstance eventInstance in value)
                 {
                     eventInstance.setParameterByNameWithLabel(name, label, ignoreSeekSpeed);
                 }
@@ -291,14 +284,13 @@ namespace StarryFramework.Extensions
 
         private void SetUnnamedEventParameterWithLabel(GUID guid, PARAMETER_ID id, string label, bool ignoreSeekSpeed = false)
         {
-            if (!unnamedEventDic.ContainsKey(guid))
+            if (!unnamedEventDic.TryGetValue(guid, out var value))
             {
                 FrameworkManager.Debugger.LogWarning($"Audio event [{guid}] not found.");
-                return;
             }
             else
             {
-                foreach (EventInstance eventInstance in unnamedEventDic[guid])
+                foreach (EventInstance eventInstance in value)
                 {
                     eventInstance.setParameterByIDWithLabel(id, label, ignoreSeekSpeed);
                 }
@@ -307,14 +299,13 @@ namespace StarryFramework.Extensions
 
         private void SetUnnamedEventParameters(GUID guid, PARAMETER_ID[] ids, float[] values, int count, bool ignoreSeekSpeed = false)
         {
-            if (!unnamedEventDic.ContainsKey(guid))
+            if (!unnamedEventDic.TryGetValue(guid, out var value))
             {
                 FrameworkManager.Debugger.LogWarning($"Audio event [{guid}] not found.");
-                return;
             }
             else
             {
-                foreach (EventInstance eventInstance in unnamedEventDic[guid])
+                foreach (EventInstance eventInstance in value)
                 {
                     eventInstance.setParametersByIDs(ids, values, count, ignoreSeekSpeed);
                 }
@@ -339,7 +330,7 @@ namespace StarryFramework.Extensions
             }
         }
 
-        private void StopAndReleaseAllUnnamedEvent(FMOD.Studio.STOP_MODE mode)
+        private void StopAndReleaseAllUnnamedEvent(STOP_MODE mode)
         {
             foreach (var list in unnamedEventDic.Values)
             {
@@ -367,26 +358,19 @@ namespace StarryFramework.Extensions
         }
         private EventInstance GetNamedEventInstance(string tag)
         {
-            if(!namedEventDic.ContainsKey(tag))
+            if(!namedEventDic.TryGetValue(tag, out var instance))
             {
                 FrameworkManager.Debugger.LogError($"Audio event with tag [{tag}] not found.");
                 return new EventInstance();
             }
-            else
-            {
-                return namedEventDic[tag];
-;           }
+
+            return instance;
         }
         private void AddNamedEventInstance(string tag, EventInstance eventInstance)
         {
-            if(namedEventDic.ContainsKey(tag))
+            if(!namedEventDic.TryAdd(tag, eventInstance))
             {
                 FrameworkManager.Debugger.LogError($"Audio event with tag [{tag}] has already existed.");
-                return;
-            }
-            else
-            {
-                namedEventDic.Add(tag, eventInstance);
             }
         }
         private void RemoveNamedEventInstance(string tag)
@@ -394,7 +378,6 @@ namespace StarryFramework.Extensions
             if (!namedEventDic.ContainsKey(tag))
             {
                 FrameworkManager.Debugger.LogError($"Audio event with tag [{tag}] doesn't exist.");
-                return;
             }
             else
             {
@@ -405,10 +388,10 @@ namespace StarryFramework.Extensions
         private void ClearStoppedNamedEventInstance()
         {
             namedEventDic = Utilities.DictionaryFilter(namedEventDic, 
-                (a, b) => { b.getPlaybackState(out PLAYBACK_STATE state); return state != PLAYBACK_STATE.STOPPED; },
-                (a,b)=>b.release());
+                (_, b) => { b.getPlaybackState(out PLAYBACK_STATE state); return state != PLAYBACK_STATE.STOPPED; },
+                (_,b) => b.release());
         }
-        private void StopAndReleaseAllNamedEventInstance(FMOD.Studio.STOP_MODE mode)
+        private void StopAndReleaseAllNamedEventInstance(STOP_MODE mode)
         {
             foreach(var a in namedEventDic.Values)
             {
@@ -467,11 +450,11 @@ namespace StarryFramework.Extensions
 
         internal void PlayOneShot(EventReference reference , Vector3 pos = default)
         {
-            RuntimeManager.PlayOneShot(reference, default);
+            RuntimeManager.PlayOneShot(reference);
         }
         internal void PlayOneShot(string path, Vector3 pos = default)
         {
-            RuntimeManager.PlayOneShot(path, default);
+            RuntimeManager.PlayOneShot(path);
         }
         internal void PlayOneShotAttached(EventReference reference , GameObject gameObject)
         {
@@ -497,29 +480,29 @@ namespace StarryFramework.Extensions
         internal void PlayUntaggedAudio(GUID guid, Transform transform, float volume = 1f)
         {
             EventInstance instance = GetUnnamedEvent(guid);
-            RuntimeManager.AttachInstanceToGameObject(instance, transform);
+            RuntimeManager.AttachInstanceToGameObject(instance, transform != null ? transform.gameObject : null);
             instance.setVolume(volume);
             instance.start();
         }
         internal void PlayUntaggedAudio(GUID guid, Transform transform, Rigidbody body, float volume = 1f)
         {
             EventInstance instance = GetUnnamedEvent(guid);
-            RuntimeManager.AttachInstanceToGameObject(instance, transform, body);
+            RuntimeManager.AttachInstanceToGameObject(instance, transform != null ? transform.gameObject : null, body);
             instance.setVolume(volume);
             instance.start();
         }
         internal void PlayUntaggedAudio(GUID guid, Transform transform, Rigidbody2D body2d, float volume = 1f)
         {
             EventInstance instance = GetUnnamedEvent(guid);
-            RuntimeManager.AttachInstanceToGameObject(instance, transform, body2d);
+            RuntimeManager.AttachInstanceToGameObject(instance, transform != null ? transform.gameObject : null, body2d);
             instance.setVolume(volume);
             instance.start();
         }
-        internal void StopUntaggedAudio(GUID guid, FMOD.Studio.STOP_MODE mode)
+        internal void StopUntaggedAudio(GUID guid, STOP_MODE mode)
         {
             StopUnnamedEvent(guid, mode);
         }
-        internal void StopAndReleaseUntaggedAudio(GUID guid, FMOD.Studio.STOP_MODE mode)
+        internal void StopAndReleaseUntaggedAudio(GUID guid, STOP_MODE mode)
         {
             StopAndReleaseUnnamedEvent(guid, mode);
         }
@@ -535,7 +518,7 @@ namespace StarryFramework.Extensions
         {
             ClearStoppedUnnamedEvent();
         }
-        internal void StopAndReleaseAllUntaggedAudio(FMOD.Studio.STOP_MODE mode)
+        internal void StopAndReleaseAllUntaggedAudio(STOP_MODE mode)
         {
             StopAndReleaseAllUnnamedEvent(mode);
         }
@@ -579,7 +562,7 @@ namespace StarryFramework.Extensions
         {
             GetNamedEventInstance(tag).start();
         }
-        internal void StopTaggedAudio(string tag, FMOD.Studio.STOP_MODE mode)
+        internal void StopTaggedAudio(string tag, STOP_MODE mode)
         {
             GetNamedEventInstance(tag).stop(mode);
         }
@@ -587,27 +570,27 @@ namespace StarryFramework.Extensions
         {
             RemoveNamedEventInstance(tag);
         }
-        internal void StopAndReleaseTaggedAudio(string tag, FMOD.Studio.STOP_MODE mode)
+        internal void StopAndReleaseTaggedAudio(string tag, STOP_MODE mode)
         {
             EventInstance instance = GetNamedEventInstance(tag);
             instance.stop(mode);
             RemoveNamedEventInstance(tag);
         }
-        internal void StopAndReleaseAllTaggedAudio(FMOD.Studio.STOP_MODE mode)
+        internal void StopAndReleaseAllTaggedAudio(STOP_MODE mode)
         {
             StopAndReleaseAllNamedEventInstance(mode);
         }
         internal void AttachedTaggedAudio(string tag, Transform transform)
         {
-            RuntimeManager.AttachInstanceToGameObject(GetNamedEventInstance(tag), transform);
+            RuntimeManager.AttachInstanceToGameObject(GetNamedEventInstance(tag), transform != null ? transform.gameObject : null);
         }
         internal void AttachedTaggedAudio(string tag, Transform transform, Rigidbody body)
         {
-            RuntimeManager.AttachInstanceToGameObject(GetNamedEventInstance(tag), transform, body);
+            RuntimeManager.AttachInstanceToGameObject(GetNamedEventInstance(tag), transform != null ? transform.gameObject : null, body);
         }
         internal void AttachTaggedAudio(string tag, Transform transform, Rigidbody2D body2d)
         {
-            RuntimeManager.AttachInstanceToGameObject(GetNamedEventInstance(tag), transform, body2d);
+            RuntimeManager.AttachInstanceToGameObject(GetNamedEventInstance(tag), transform != null ? transform.gameObject : null, body2d);
         }
         internal void DetachTaggedAudio(string tag)
         {
@@ -657,13 +640,13 @@ namespace StarryFramework.Extensions
         {
             GetNamedEventInstance(tag).setParametersByIDs(IDs, values, count, ignoreSeekSpeed);
         }
-        internal void SetTaggedAudioParameterWithLabel(string tag, PARAMETER_ID ID, string valueLable, bool ignoreSeekSpeed = false)
+        internal void SetTaggedAudioParameterWithLabel(string tag, PARAMETER_ID ID, string valueLabel, bool ignoreSeekSpeed = false)
         {
-            GetNamedEventInstance(tag).setParameterByIDWithLabel(ID, valueLable, ignoreSeekSpeed);
+            GetNamedEventInstance(tag).setParameterByIDWithLabel(ID, valueLabel, ignoreSeekSpeed);
         }
-        internal void SetTaggedAudioParameterWithLabel(string tag, string name, string valueLable, bool ignoreSeekSpeed = false)
+        internal void SetTaggedAudioParameterWithLabel(string tag, string name, string valueLabel, bool ignoreSeekSpeed = false)
         {
-            GetNamedEventInstance(tag).setParameterByNameWithLabel(name, valueLable, ignoreSeekSpeed);
+            GetNamedEventInstance(tag).setParameterByNameWithLabel(name, valueLabel, ignoreSeekSpeed);
         }
         internal float GetTaggedAudioParameter(string tag, string name)
         {
@@ -699,7 +682,7 @@ namespace StarryFramework.Extensions
                 FrameworkManager.Debugger.LogWarning("BGM is playing.");
             }
         }
-        internal void StopBGM(FMOD.Studio.STOP_MODE mode)
+        internal void StopBGM(STOP_MODE mode)
         {
             if (bgmState == AudioState.Playing)
             {
@@ -709,7 +692,7 @@ namespace StarryFramework.Extensions
             }
 
         }
-        internal void ChangeBGM(EventReference _event, FMOD.Studio.STOP_MODE mode)
+        internal void ChangeBGM(EventReference _event, STOP_MODE mode)
         {
             if(bgmState == AudioState.Playing)
             {
@@ -766,22 +749,22 @@ namespace StarryFramework.Extensions
                 FrameworkManager.Debugger.LogWarning("BGM has stopped.");
             }
         }
-        internal void SetBGMParameterWithLabel(PARAMETER_ID ID, string valueLable, bool ignoreSeekSpeed = false)
+        internal void SetBGMParameterWithLabel(PARAMETER_ID ID, string valueLabel, bool ignoreSeekSpeed = false)
         {
             if (bgmState == AudioState.Playing)
             {
-                currentBGM.setParameterByIDWithLabel(ID, valueLable, ignoreSeekSpeed);
+                currentBGM.setParameterByIDWithLabel(ID, valueLabel, ignoreSeekSpeed);
             }
             else
             {
                 FrameworkManager.Debugger.LogWarning("BGM has stopped.");
             }
         }
-        internal void SetBGMParameterWithLabel(string name, string valueLable, bool ignoreSeekSpeed = false)
+        internal void SetBGMParameterWithLabel(string name, string valueLabel, bool ignoreSeekSpeed = false)
         {
             if (bgmState == AudioState.Playing)
             {
-                currentBGM.setParameterByNameWithLabel(name, valueLable, ignoreSeekSpeed);
+                currentBGM.setParameterByNameWithLabel(name, valueLabel, ignoreSeekSpeed);
             }
             else
             {

@@ -25,6 +25,12 @@ MonoBehaviour:
     Overlay:
       Value: 0
       HasValue: 0
+    OverlayPosition:
+      Value: 0
+      HasValue: 0
+    OverlayFontSize:
+      Value: 0
+      HasValue: 0
     Logging:
       Value: 0
       HasValue: 0
@@ -90,6 +96,12 @@ MonoBehaviour:
       Value: 0
       HasValue: 0
     Overlay:
+      Value: 0
+      HasValue: 0
+    OverlayPosition:
+      Value: 0
+      HasValue: 0
+    OverlayFontSize:
       Value: 0
       HasValue: 0
     Logging:
@@ -159,6 +171,12 @@ MonoBehaviour:
     Overlay:
       Value: 0
       HasValue: 0
+    OverlayPosition:
+      Value: 0
+      HasValue: 0
+    OverlayFontSize:
+      Value: 0
+      HasValue: 0
     Logging:
       Value: 0
       HasValue: 0
@@ -224,6 +242,12 @@ MonoBehaviour:
       Value: 0
       HasValue: 0
     Overlay:
+      Value: 0
+      HasValue: 0
+    OverlayPosition:
+      Value: 0
+      HasValue: 0
+    OverlayFontSize:
       Value: 0
       HasValue: 0
     Logging:
@@ -293,6 +317,12 @@ MonoBehaviour:
     Overlay:
       Value: 0
       HasValue: 0
+    OverlayPosition:
+      Value: 0
+      HasValue: 0
+    OverlayFontSize:
+      Value: 0
+      HasValue: 0
     Logging:
       Value: 0
       HasValue: 0
@@ -332,6 +362,7 @@ MonoBehaviour:
     HasValue: 0
   displaySortOrder: 0
   childIdentifiers:
+  - de700ef3f37a49b58a57ae3addf01ad9
   - e7a046c753c3c3d4aacc91f6597f310d
   - 52eb9df5db46521439908db3a29a1bbb
   - 46fbfdf3fc43db0458918377fd40293e
@@ -367,6 +398,85 @@ MonoBehaviour:
       Value: 0
       HasValue: 0
     Overlay:
+      Value: 0
+      HasValue: 0
+    OverlayPosition:
+      Value: 0
+      HasValue: 0
+    OverlayFontSize:
+      Value: 0
+      HasValue: 0
+    Logging:
+      Value: 0
+      HasValue: 0
+    SampleRate:
+      Value: 0
+      HasValue: 0
+    BuildDirectory:
+      Value: 
+      HasValue: 0
+    SpeakerMode:
+      Value: 0
+      HasValue: 0
+    VirtualChannelCount:
+      Value: 0
+      HasValue: 0
+    RealChannelCount:
+      Value: 0
+      HasValue: 0
+    DSPBufferLength:
+      Value: 0
+      HasValue: 0
+    DSPBufferCount:
+      Value: 0
+      HasValue: 0
+    Plugins:
+      Value: []
+      HasValue: 0
+    StaticPlugins:
+      Value: []
+      HasValue: 0
+    CallbackHandler:
+      Value: {fileID: 0}
+      HasValue: 0
+  OutputTypeName: 
+  threadAffinities:
+    Value: []
+    HasValue: 0
+  displaySortOrder: 0
+  childIdentifiers: []
+  codecChannels:
+    Value: []
+    HasValue: 0
+--- !u!114 &-14013137489870368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f591a193113347409efedcc618e83d6, type: 3}
+  m_Name: FMODStudioSettingsPlatform
+  m_EditorClassIdentifier: 
+  identifier: de700ef3f37a49b58a57ae3addf01ad9
+  parentIdentifier: default
+  active: 0
+  Properties:
+    LiveUpdate:
+      Value: 0
+      HasValue: 0
+    LiveUpdatePort:
+      Value: 0
+      HasValue: 0
+    Overlay:
+      Value: 0
+      HasValue: 0
+    OverlayPosition:
+      Value: 0
+      HasValue: 0
+    OverlayFontSize:
       Value: 0
       HasValue: 0
     Logging:
@@ -439,6 +549,7 @@ MonoBehaviour:
   TargetAssetPath: FMODBanks
   TargetBankFolder: 
   EventLinkage: 0
+  SerializeGUIDsOnly: 0
   LoggingLevel: 2
   SpeakerModeSettings: []
   SampleRateSettings: []
@@ -448,23 +559,24 @@ MonoBehaviour:
   VirtualChannelSettings: []
   RealChannelSettings: []
   Plugins: []
-  MasterBanks:
-  - Master
+  MasterBanks: []
   Banks: []
   BanksToLoad: []
   LiveUpdatePort: 9264
   EnableMemoryTracking: 0
   AndroidUseOBB: 0
+  AndroidPatchBuild: 0
   MeterChannelOrdering: 0
   StopEventsOutsideMaxDistance: 0
   BoltUnitOptionsBuildPending: 0
   EnableErrorCallback: 0
   SharedLibraryUpdateStage: 0
   SharedLibraryTimeSinceStart: 0
-  CurrentVersion: 131601
-  HideSetupWizard: 1
-  LastEventReferenceScanVersion: 131601
+  CurrentVersion: 131858
+  HideSetupWizard: 0
+  LastEventReferenceScanVersion: 131858
   Platforms:
+  - {fileID: -14013137489870368}
   - {fileID: -7658231476000166773}
   - {fileID: -3475660482767914200}
   - {fileID: -3343426544751963732}
@@ -476,7 +588,7 @@ MonoBehaviour:
   - {fileID: 2065490562952338383}
   - {fileID: 5935515616226777426}
   - {fileID: 6065256655879006854}
-  MigratedPlatforms: 0c000000150000000b0000000a00000009000000120000000800000005000000060000000200000001000000
+  MigratedPlatforms: 0c000000150000000b0000000a0000000900000012000000080000000500000006000000020000000100000000000000
 --- !u!114 &1614058945945427280
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -500,6 +612,12 @@ MonoBehaviour:
       Value: 0
       HasValue: 0
     Overlay:
+      Value: 0
+      HasValue: 0
+    OverlayPosition:
+      Value: 0
+      HasValue: 0
+    OverlayFontSize:
       Value: 0
       HasValue: 0
     Logging:
@@ -569,6 +687,12 @@ MonoBehaviour:
     Overlay:
       Value: 0
       HasValue: 0
+    OverlayPosition:
+      Value: 0
+      HasValue: 0
+    OverlayFontSize:
+      Value: 0
+      HasValue: 0
     Logging:
       Value: 0
       HasValue: 0
@@ -634,6 +758,12 @@ MonoBehaviour:
       Value: 0
       HasValue: 0
     Overlay:
+      Value: 0
+      HasValue: 0
+    OverlayPosition:
+      Value: 0
+      HasValue: 0
+    OverlayFontSize:
       Value: 0
       HasValue: 0
     Logging:
@@ -703,6 +833,12 @@ MonoBehaviour:
     Overlay:
       Value: 0
       HasValue: 0
+    OverlayPosition:
+      Value: 0
+      HasValue: 0
+    OverlayFontSize:
+      Value: 0
+      HasValue: 0
     Logging:
       Value: 0
       HasValue: 0
@@ -770,6 +906,12 @@ MonoBehaviour:
     Overlay:
       Value: 0
       HasValue: 1
+    OverlayPosition:
+      Value: 0
+      HasValue: 0
+    OverlayFontSize:
+      Value: 0
+      HasValue: 0
     Logging:
       Value: 0
       HasValue: 0

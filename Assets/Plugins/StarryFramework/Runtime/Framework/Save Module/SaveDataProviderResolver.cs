@@ -73,6 +73,13 @@ namespace StarryFramework
                     continue;
                 }
 
+                string assemblyName = assembly.GetName().Name;
+                if (!string.IsNullOrEmpty(assemblyName) &&
+                    assemblyName.EndsWith(".Tests", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
                 try
                 {
                     types.AddRange(assembly.GetTypes());

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -9,7 +10,7 @@ namespace FMOD
 {
     public partial class VERSION
     {
-        public const string dll = "fmodstudio" + dllSuffix;
+        public const string dll = "fmodstudio" + suffix;
     }
 }
 
@@ -17,7 +18,7 @@ namespace FMOD.Studio
 {
     public partial class STUDIO_VERSION
     {
-        public const string dll = "fmodstudio" + dllSuffix;
+        public const string dll = "fmodstudio" + VERSION.suffix;
     }
 }
 #endif
@@ -72,7 +73,15 @@ namespace FMODUnity
 
         internal override string GetPluginPath(string pluginName)
         {
-            return string.Format("{0}/{1}.bundle", GetPluginBasePath(), pluginName);
+            string pluginPath = string.Format("{0}/{1}.bundle", GetPluginBasePath(), pluginName);
+            if (System.IO.Directory.Exists((pluginPath)))
+            {
+                return pluginPath;
+            }
+            else
+            {
+                return string.Format("{0}/{1}.dylib", GetPluginBasePath(), pluginName);
+            }
         }
 #if UNITY_EDITOR
         internal override OutputType[] ValidOutputTypes

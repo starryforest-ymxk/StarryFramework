@@ -171,7 +171,7 @@ StarryFramework 依赖以下 Unity Package Manager (UPM) 包和第三方插件�
 **前置要求**
 
 1. 安装 FMOD for Unity
-   - 前往 [FMOD 官网](https://www.fmod.com/) 下载 FMOD for Unity 插件（2.02.11版本或以上）
+   - 前往 [FMOD 官网](https://www.fmod.com/) 下载 FMOD for Unity 插件（2.03.11版本或以上）
    - 将 FMOD 插件导入到 Unity 项目中
    - 确保 FMOD 已正确配置并能正常工作
 
